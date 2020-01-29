@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BBAE4626-C51C-4946-ACD1-832E92D73D8B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>U5ki.Infrastructure</RootNamespace>
+    <AssemblyName>U5ki.Infrastructure</AssemblyName>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\TFT\HMI\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="protobuf-net, Version=1.0.0.275, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpSnmpLib">
+      <HintPath>..\..\Lib\SharpSnmpLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cd40Cfg.cs" />
+    <Compile Include="Code\Base\BaseCode.cs" />
+    <Compile Include="Code\Base\BaseDto.cs" />
+    <Compile Include="Code\Base\BaseFactory.cs" />
+    <Compile Include="Code\Base\BaseHelper.cs" />
+    <Compile Include="Code\Base\BaseNode.cs" />
+    <Compile Include="Code\Base\BaseServer.cs" />
+    <Compile Include="Code\Base\IBaseInterface.cs" />
+    <Compile Include="Code\Delegates.cs" />
+    <Compile Include="Code\Enums.cs" />
+    <Compile Include="Code\Exceptions\EventException.cs" />
+    <Compile Include="Code\Exceptions\NotExpectedException.cs" />
+    <Compile Include="Code\Handlers\EventsHandler.cs" />
+    <Compile Include="Code\Helpers\SerializerHelper.cs" />
+    <Compile Include="Code\Servers\SNMPListener.cs" />
+    <Compile Include="Code\Servers\UDPListener.cs" />
+    <Compile Include="U5kiIncidencias.cs" />
+    <Compile Include="Code\Globals.cs" />
+    <Compile Include="Code\Helpers\DataHelper.cs" />
+    <Compile Include="Code\Manager\BaseManager.cs" />
+    <Compile Include="Code\Manager\BaseTimeManager.cs" />
+    <Compile Include="Code\Manager\IPoolManager.cs" />
+    <Compile Include="Code\Manager\NodeManager.cs" />
+    <Compile Include="InterProcessEvent.cs" />
+    <Compile Include="IService.cs" />
+    <Compile Include="Identifiers.cs" />
+    <Compile Include="Messages\Cd40Cfg.proto.cs" />
+    <Compile Include="Messages\Common.proto.cs" />
+    <Compile Include="Messages\NbxHist.proto.cs" />
+    <Compile Include="Messages\RdSrvMessages.proto.cs" />
+    <Compile Include="Messages\RegistryMessages.proto.cs" />
+    <Compile Include="Messages\GwRsMessages.proto.cs" />
+    <Compile Include="Messages\TopMessages.proto.cs" />
+    <Compile Include="Mixer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Registry.cs" />
+    <Compile Include="Resources\Errors.Designer.cs" />
+    <Compile Include="Resources\Messages.Designer.cs" />
+    <Compile Include="Resources\ServiceNames.Designer.cs" />
+    <Compile Include="SelcalGen.cs" />
+    <Compile Include="SipAgent.cs" />
+    <Compile Include="SnmpClient.cs" />
+    <Compile Include="SpreadChannel.cs" />
+    <Compile Include="SpreadConf.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Messages\Cd40Cfg.proto" />
+    <None Include="Messages\Common.proto" />
+    <None Include="Messages\NbxHist.proto" />
+    <None Include="Messages\RdSrvMessages.proto" />
+    <None Include="Messages\RegistryMessages.proto" />
+    <None Include="Messages\GwRsMessages.proto" />
+    <None Include="Messages\TopMessages.proto" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Utilities\Utilities.csproj">
+      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Errors.resx" />
+    <EmbeddedResource Include="Resources\Messages.resx" />
+    <EmbeddedResource Include="Resources\ServiceNames.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Lib\coresip-voter.dll">
+      <Link>coresip-voter.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Lib\coresip.dll">
+      <Link>coresip.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Lib\libspread.dll">
+      <Link>libspread.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Habilite la restauración del paquete NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+</Project>

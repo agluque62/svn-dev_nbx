@@ -1,0 +1,3 @@
+- Para crear la versión de coresip.dll y NodeBox.exe compatible con ED137, hay que definir _ED137_:
+  * Proyecto CD40.Infrastructure: Página de propiedades como "Símbolos de compilación condicional".
+  * Proyecto CD40.Sip: Página de propiedades de configuración/Preprocesador/Definiciones del preprocesador.

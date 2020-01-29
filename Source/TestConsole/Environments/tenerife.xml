@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+
+<!--
+
+¡¡¡README!!!
+
+NOTA: Añadir el xmlns, al atributo gears para optener ayuda del formato si queremos añadir elementos. 
+      Pero es imprescindible volver a quitarlo luego para que el serializador pueda optener la información.
+      
+      xmlns="http://localhost/EnvironmentProfile.xsd"
+
+-->
+
+<gears>
+  
+  <gear>
+    <id>1</id>
+    <ip>127.0.0.1</ip>
+    <port>160</port>
+    <type>RCRohde4200</type>
+  </gear>
+
+  <gear>
+    <id>2</id>
+    <ip>127.0.0.1</ip>
+    <port>161</port>
+    <type>RCRohde4200</type>
+  </gear>
+
+</gears>
+
+
+

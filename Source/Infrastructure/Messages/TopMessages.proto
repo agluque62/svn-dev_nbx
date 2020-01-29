@@ -1,0 +1,78 @@
+package U5ki.Infrastructure;
+import "Common.proto";
+
+message TopRs
+{
+}
+
+message FrRxChangeAsk
+{
+	required string HostId = 1;
+	required string Frecuency = 2;
+	required bool Rx = 3;
+}
+
+message FrTxChangeAsk
+{
+	required string HostId = 1;
+	required string Frecuency = 2;
+	required bool Tx = 3;
+	optional uint32 PttType = 4;
+	optional bool CheckAlreadyAssigned = 5;
+}
+
+message FrTxAssigned
+{
+	required string Frecuency = 1;
+	required string UserId = 2;
+}
+
+message PttChangeAsk
+{
+	required string HostId = 1;
+	required PttSource Src = 2;
+}
+
+message RtxGroupChangeAsk
+{
+	enum ChangeType 
+	{ 
+		NoChanged = 0;
+		Add = 1;
+		Delete = 2;
+	}
+	
+	required string HostId = 1;
+	required uint32 GroupId = 2;
+	repeated string FrIds = 3;
+	repeated ChangeType Changes = 4;
+}
+
+message SelcalPrepareMsg
+{
+	required string HostId = 1;
+	required bool OnOff = 2;
+	required string Code = 3;
+}
+
+message SelcalPrepareRsp
+{
+	required bool resultado = 1;
+	required string Frecuency = 2;
+	required string mensaje = 3;
+	required string Code = 4;
+}
+
+message ChangeSiteMsg
+{
+	required string HostId = 1;
+	required string Frequency = 2;
+	required string Alias = 3;
+}
+
+message ChangeSiteRsp
+{
+	required bool resultado = 1;
+	required string Frecuency = 2;
+	required string Alias = 3;
+}

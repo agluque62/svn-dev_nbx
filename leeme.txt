@@ -1,0 +1,21 @@
+Ulises V 5000 Versión 2.5.3
+Utilidades de Puesto de Operador. 
+Notas de Instalación.
+
+La instalación de esta versión de utilidades de puesto requiere la desinstalación completa de las versiones anteriores.
+Para efectuarla correctamente, hay que proceder de la siguiente manera:
+
+	1.- Abrir 'Panel de Control' + 'Programas y caracteristicas'.
+	2.- Localizar el Item 'Ulises5000I Audio Terminal Utilities' y proceder a 'desinstalarlo'.
+	3.- Asegurarse que se ha desistalado correctamente:
+		1.- Abrir 'Panel de Control' + 'Herramientas Administrativas' + 'Servicios'.
+		2.- Comprobar que NO EXISTEN los servicios 'u5ki.mcast' y 'u5ki.nodebox'.
+		3.- Si alguno de ellos no se hubiera desinstalado, proceder a hacerlo manualmente:
+			1.- Detener el servicio.
+			2.- Desde una consola de comandos con PERMISOS DE ADMINISTRACION teclear 'sc delete u5ki.mcast' o 'sc delete u5ki.nodebox' segun corresponda.
+			3.- Verificar que ya han desaparecido de la lista de servicios.
+	4.- Borrar los directorios:
+		1.- 'c:\Program Files\DF Nucleo\Ulises5000I-MCast\'.
+		2.- 'c:\Program Files\DF Nucleo\Ulises5000I-NodeBox\'.
+
+La instalación de la nueva versión del módulo, se efectuará conforme se describe en la 'guia de instalacion'.

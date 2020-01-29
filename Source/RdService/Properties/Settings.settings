@@ -1,0 +1,66 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="U5ki.RdService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SipPort" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">6060</Value>
+    </Setting>
+    <Setting Name="ListenPort" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">10000</Value>
+    </Setting>
+    <Setting Name="McastPortBegin" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">10000</Value>
+    </Setting>
+    <Setting Name="MonitorCarrierTimeOut" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">5000</Value>
+    </Setting>
+    <Setting Name="ConectionRetryTimer" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="HFSnmpSimula" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="HFSnmpReadCommunity" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">public</Value>
+    </Setting>
+    <Setting Name="HFSnmpWriteCommunity" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">public</Value>
+    </Setting>
+    <Setting Name="HFSnmpTimeout" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5000</Value>
+    </Setting>
+    <Setting Name="HFJBusTimeout" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5000</Value>
+    </Setting>
+    <Setting Name="HFBalanceoAsignacion" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="RtxDelay" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="HFMonitorTimer" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="SipIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.2.168</Value>
+    </Setting>
+    <Setting Name="TimeoutIgnoreValidationCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="TimeoutHitAmount" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="KOAmount" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="FrequencyDisabled" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="HFSipSupervisionMode" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="McastIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">224.10.10.52</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

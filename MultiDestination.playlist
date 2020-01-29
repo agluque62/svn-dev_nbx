@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="PhoneServiceUnitTests.PhoneServiceResourcesUnitTest.CfgPhoneService" /><Add Test="PhoneServiceUnitTests.PhoneServiceResourcesUnitTest.MDEstablish" /></Playlist>

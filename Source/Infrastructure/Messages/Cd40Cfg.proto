@@ -1,0 +1,450 @@
+package U5ki.Infrastructure;
+
+enum Tipo_Elemento_HW 
+{
+	TEH_TOP = 0;
+	TEH_TIFX = 1;
+	TEH_EXTERNO_RADIO = 2;
+	TEH_EXTERNO_TELEFONIA = 3;
+	TEH_SISTEMA = 4;
+	TEH_GRABADOR = 5;
+}
+
+enum TipoInterface 
+{
+  TI_Radio = 0;
+  TI_LCEN = 1;
+  TI_BC = 2;
+  TI_BL = 3;
+  TI_AB = 4;
+  TI_ATS_R2 = 5;
+  TI_ATS_N5 = 6;
+  TI_ATS_QSIG = 7;
+  TI_ISDN_2BD = 8;
+  TI_ISDN_30BD = 9;
+  TI_I_O = 10;
+  TI_DATOS = 11;
+  TI_RRC = 12;
+  TI_EyM_PP = 13;
+  TI_EyM_MARC = 14;
+  TI_IP = 15;
+  TI_IP_PROXY = 16;
+}
+
+enum Tipo_Frecuencia 
+{
+    Basica = 0;
+    HF = 1;
+    VHF = 2;
+    UHF = 3;
+	DUAL = 4;
+	FD = 5;
+	ME = 6;
+}
+
+enum Tipo_Canal 
+{
+	Monocanal = 0;
+	Multicanal = 1;
+	Otros = 2;
+}
+    
+enum Tipo_Formato_Trabajo 
+{
+    Principal = 0;
+    Reserva = 1;
+    Ambos = 2;
+}
+
+enum Tipo_Formato_Frecuencia 
+{
+    MHz = 0;
+	Hz = 1;
+}
+
+enum GearChannelSpacings
+{
+	ChannelSpacingsDefault = 0;
+    kHz_8_33 = 1; 
+    kHz_12_5 = 2;
+    kHz_25_00 = 3;
+}
+
+enum GearCarrierOffStatus
+{
+    Off = 0;
+    kHz_7_5 = 1;
+    kHz_5_0 = 2;
+    kHz_2_5 = 3;
+    Hz_0_0 = 4;
+    kHz_minus_2_5 = 5;
+    kHz_minus_5_0 = 6;
+    kHz_minus_7_5 = 7;
+    kHz_8 = 8;
+    kHz_4 = 9;
+    kHz_minus_4 = 10;
+    kHz_minus_8 = 11;
+    kHz_7_3 = 12;
+    kHz_minus_7_3 = 13;
+}
+
+enum GearModulations
+{
+    AM = 0;
+    Reserved = 1;
+    ACARS = 2;
+    VDL2 = 3;
+    AM_CT = 4;
+}
+
+enum GearPowerLevels
+{
+	PowerLevelsDefault = 0;
+    Low = 1;
+    Normal = 2;
+}
+    
+enum Tipo_MetodoCalculoClimax
+{
+	Relativo = 0;
+	Absoluto = 1;
+}
+
+enum Tipo_ModoTransmision
+{
+    Climax = 0;
+	UltimoReceptor = 1;
+	Manual = 2;
+    Ninguno = 3;
+}
+message ParametrosGeneralesSistema 
+{
+	optional uint32 TiempoMaximoPTT = 1;
+	optional uint32 TiempoSinJack1 = 2;
+	optional uint32 TiempoSinJack2 = 3;
+	optional uint32 TamLiteralEnlExt = 4;
+	optional uint32 TamLiteralEnlDA = 5;
+	optional uint32 TamLiteralEnlIA = 6;
+	optional uint32 TamLiteralEnlAG = 7;
+	optional uint32 TamLiteralEmplazamiento = 8;
+}
+
+message RangosSCV
+{
+	optional uint32 IdPrefijo = 1;
+	optional string IdAbonado = 2;
+	optional uint64 Inicial = 3;
+	optional uint64 Final = 4;
+}
+
+message PlanRutas 
+{
+	optional string TipoRuta = 1;
+	repeated string ListaTroncales = 2;
+}
+
+message NumeracionATS 
+{
+	optional bool CentralPropia = 1;
+	optional bool Throwswitching = 2;
+	repeated RangosSCV RangosOperador = 3;
+	repeated RangosSCV RangosPrivilegiados = 4;
+	repeated PlanRutas ListaRutas = 5;
+	optional string Central = 6;
+}
+
+message DireccionamientoIP 
+{
+	optional string IdHost = 1;
+	optional string IpRed1 = 2;
+	optional string IpRed2 = 3;
+	optional string IpRed3 = 4;
+	optional Tipo_Elemento_HW TipoHost = 5;
+	optional bool Interno = 6;
+	optional int64 Min = 7;
+	optional int64 Max = 8;
+	optional bool EsCentralIP = 9;
+	optional string SrvPresenciaIpRed1 = 10;
+	optional string SrvPresenciaIpRed2 = 11;
+	optional string SrvPresenciaIpRed3 = 12;	
+}
+
+message PlanRecursos 
+{
+	optional string IdRecurso = 1;
+	optional TipoInterface Tipo = 2;
+}
+
+message ListaTroncales 
+{
+	optional string IdTroncal = 1;
+	optional string NumeroTest = 2;
+	repeated PlanRecursos ListaRecursos = 3;
+}
+
+message ListaRedes 
+{
+	optional string IdRed = 1;
+	optional uint32 Prefijo = 2;
+	repeated PlanRecursos ListaRecursos = 3;
+}
+
+message AsignacionUsuariosTV 
+{
+	optional string IdUsuario = 1;
+	optional string IdHost = 2;
+	optional string IpGrabador1 = 3;
+	optional string IpGrabador2 = 4;
+	optional int32 RtspPort = 5;
+}
+
+message AsignacionUsuariosDominantesTV 
+{
+	optional string IdUsuario = 1;
+	optional string IdHost = 2;
+}
+
+message AsignacionRecursosGW 
+{
+	optional string IdRecurso = 1;
+	optional string IdHost = 2;
+	optional uint32 SipPort = 3;
+}
+
+message StrNumeroAbonado 
+{
+	optional string IdAgrupacion = 1;
+	optional uint32 Prefijo = 2;
+	optional string NumeroAbonado = 3;
+}
+
+message DireccionamientoSIP 
+{
+	optional string IdUsuario = 1;
+	repeated StrNumeroAbonado NumerosAbonadoQueAtiende = 2;
+}
+
+message NumerosAbonado
+{
+	optional uint32 Prefijo = 1;
+	optional string Numero = 2;
+}
+
+message SectoresSCV
+{
+	optional string IdParejaUCS = 1;
+	optional string TipoPosicion = 2;
+	optional uint32 PrioridadR2 = 3;
+	optional uint32 TipoHMI = 4;
+}
+
+message ParametrosSectorSCVKeepAlive
+{
+	optional uint32 NumLlamadasEntrantesIda = 1;
+	optional uint32 NumLlamadasEnIda = 2;
+	optional uint32 NumFrecPagina = 3;
+	optional uint32 NumPagFrec = 4;
+	optional uint32 NumEnlacesInternosPag = 5;
+	optional uint32 NumPagEnlacesInt = 6;
+	optional bool Intrusion = 7;
+	optional bool Intruido = 8;
+	optional uint32 KeepAlivePeriod = 9;
+	optional uint32 KeepAliveMultiplier = 10;
+	optional bool GrabacionEd137 = 11;
+}
+
+message PermisosRedesSCV
+{
+	optional string IdRed = 1;
+	optional bool Llamar = 2;
+	optional bool Recibir = 3;
+}
+
+message TeclasSectorSCV
+{
+	optional bool TransConConsultaPrev = 1;
+	optional bool TransDirecta = 2;
+	optional bool Conferencia = 3;
+	optional bool Escucha = 4;
+	optional bool Retener = 5;
+	optional bool Captura = 6;
+	optional bool Redireccion = 7;
+	optional bool RepeticionUltLlamada = 8;
+	optional bool RellamadaAut = 9;
+	optional bool TeclaPrioridad = 10;
+	optional bool Tecla55mas1 = 11;
+	optional bool Monitoring = 12;
+	optional bool CoordinadorTF = 13;
+	optional bool CoordinadorRD = 14;
+	optional bool IntegracionRDTF = 15;
+	optional bool LlamadaSelectiva = 16;
+	optional bool GrupoBSS = 17;
+	optional bool LTT = 18;
+	optional bool SayAgain = 19;
+	optional bool InhabilitacionRedirec = 20;
+	optional bool Glp = 21;
+}
+
+message NivelesSCV
+{
+	optional uint32 CICL = 1;
+	optional uint32 CIPL = 2;
+	optional uint32 CPICL = 3;
+	optional uint32 CPIPL = 4;
+}
+
+message CfgUsuario
+{
+	optional string Nombre = 1;
+	optional string IdIdentificador = 2;
+	repeated NumerosAbonado ListaAbonados = 3;
+	optional int32 NumeroEnlacesInternos = 4;
+	optional int32 NumeroEnlacesExternos = 5;
+	optional SectoresSCV Sector = 6;
+	optional ParametrosSectorSCVKeepAlive ParametrosDelSector = 7;
+	repeated PermisosRedesSCV PermisosRedDelSector = 8;
+	optional TeclasSectorSCV TeclasDelSector = 9;
+	optional NivelesSCV NivelesDelSector = 10;
+}
+
+message MetodosBssDelRecurso 
+{
+	optional int32 IdMetodo = 1;
+	optional string NombreMetodo = 2;
+}
+
+message CfgRecursoEnlaceExterno 
+{
+	optional string IdRecurso = 1;
+	optional uint32 Tipo = 2;
+	optional string Estado = 3;
+	optional uint32 ModoConfPTT = 4;
+	optional uint32 NumFlujosAudio = 5;
+	optional string IdEmplazamiento = 6;
+	optional string NombreZona = 7;
+	optional uint32 MetodoBss = 8;
+	optional string IdMetodoBss = 9;
+    optional int32 GrsDelay = 10;
+	optional int32 OffSetFrequency = 11;
+	optional bool EnableEventPttSq = 12;
+}
+
+message CfgEnlaceExterno
+{
+	optional string Literal = 1;
+	repeated uint32 ListaPosicionesEnHmi = 2;
+	optional Tipo_Frecuencia TipoFrecuencia = 3;
+	optional bool ExclusividadTxRx = 4;
+	repeated CfgRecursoEnlaceExterno ListaRecursos = 5;
+	optional string EstadoAsignacion = 6;
+	repeated string DestinoAudio = 7;
+	optional uint32 Prioridad = 8;
+	optional bool SupervisionPortadora = 9;
+	optional int32 FrecuenciaSintonizada = 10;
+	optional int32 MetodoCalculoClimax = 11;
+	optional int32 VentanaSeleccionBss = 12;
+	optional bool SincronizaGrupoClimax = 13;
+	optional bool AudioPrimerSqBss = 14;
+	optional bool FrecuenciaNoDesasignable = 15;
+	optional int32 VentanaReposoZonaTxDefecto = 16;
+	optional int32 PrioridadSesionSip = 17;
+	optional int32 CldSupervisionTime = 18;
+	optional int32 MetodosBssOfrecidos = 19;
+	optional string Alias = 20;
+	optional Tipo_ModoTransmision ModoTransmision = 21;
+    optional string EmplazamientoDefecto = 22;
+	optional int32 TiempoVueltaADefecto = 23;
+	optional uint32 PorcentajeRSSI = 24;
+}
+
+message CfgRecursoEnlaceInterno
+{
+	optional uint32 Prefijo = 1;
+	optional string NombreRecurso = 2;
+	optional string NumeroAbonado = 3;
+	optional TipoInterface Interface = 4;
+	optional string NombreMostrar = 5;
+}
+
+message CfgEnlaceInterno
+{
+	optional string Literal = 1;
+	optional uint32 PosicionHMI = 2;
+	optional string TipoEnlaceInterno = 3;
+	repeated CfgRecursoEnlaceInterno ListaRecursos = 4;
+	optional string Dependencia = 5;
+	optional uint32 Prioridad = 6;
+	optional string OrigenR2 = 7;
+	optional string Dominio = 8;
+	optional string Host = 9;
+}
+
+message ConfiguracionSistema 
+{
+	optional ParametrosGeneralesSistema ParametrosGenerales = 1;
+	repeated NumeracionATS PlanNumeracionATS = 2;
+	repeated DireccionamientoIP PlanDireccionamientoIP = 3;
+	repeated ListaTroncales PlanTroncales = 4;
+	repeated ListaRedes PlanRedes = 5;
+	repeated AsignacionUsuariosTV PlanAsignacionUsuarios = 6;
+	repeated AsignacionUsuariosDominantesTV PlanAsignacionUsuariosDominantes = 7;
+	repeated AsignacionRecursosGW PlanAsignacionRecursos = 8;
+	repeated DireccionamientoSIP PlanDireccionamientoSIP = 9;
+}
+
+message ConfiguracionUsuario
+{
+	optional CfgUsuario User = 1;
+	repeated CfgEnlaceExterno RdLinks = 2;
+	repeated CfgEnlaceInterno TlfLinks = 3;
+}
+
+message HfRangoFrecuencias
+{
+	required uint32 fmin = 1;
+	required uint32 fmax = 2;
+}
+
+message PoolHfElement
+{
+	required string Id = 1;
+	required string SipUri = 2;
+	required string IpGestor = 3;
+	required string Oid = 4;
+	repeated HfRangoFrecuencias Frecs = 5;
+}
+
+message Node
+{
+	required string Id = 1;
+	required string SipUri = 2;
+	required string IpGestor = 3;
+	required string Oid = 4;
+	repeated HfRangoFrecuencias Frecs = 5;
+    required bool EsReceptor = 6;
+    required bool EsTransmisor = 7;
+    required Tipo_Frecuencia TipoDeFrecuencia = 8;
+	required string FrecuenciaPrincipal = 9;
+    required Tipo_Canal TipoDeCanal = 10;
+    required Tipo_Formato_Trabajo FormaDeTrabajo = 11;
+    required int32 Prioridad = 12;
+	optional uint32 Puerto = 13;
+	optional GearCarrierOffStatus Offset = 14;
+	optional GearChannelSpacings Canalizacion = 15;
+	optional GearModulations Modulacion = 16;
+	optional int32 Potencia = 17;
+	optional Tipo_Formato_Frecuencia FormatoFrecuenciaPrincipal = 18;
+	optional GearPowerLevels NivelDePotencia = 19;
+	required string FrecuenciaClave = 20;
+	required int32 ModeloEquipo = 21;
+	optional string idEmplazamiento = 22;
+}
+
+message Cd40Cfg 
+{
+	optional string Version = 1;
+	optional ConfiguracionSistema ConfiguracionGeneral = 2;
+	repeated ConfiguracionUsuario ConfiguracionUsuarios = 3;
+	repeated PoolHfElement PoolHf = 4;
+	repeated Node Nodes = 5;
+}

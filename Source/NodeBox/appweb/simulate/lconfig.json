@@ -1,0 +1,280 @@
+{
+	"pgn" : {
+		"name" : "Parametros Generales",
+		"par" : [{
+				"nombre" : "pgn1",
+				"mostrar" : "P. General 1",
+				"tipo" : 1,
+				"opciones": ["opcion-0","opcion-1","opcion-2"],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : 1
+			}, {
+				"nombre" : "pgn2",
+				"mostrar" : "P. General 2",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 1,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "192.168.0.129"
+			}, {
+				"nombre" : "pgn3",
+				"mostrar" : "P. General 3",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 2,
+				"margenes": {"min": 0, "max":100},
+				"valor" : 33
+			}, {
+				"nombre" : "pgn4",
+				"mostrar" : "P. General 4",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 4"
+			}, {
+				"nombre" : "pgn5",
+				"mostrar" : "P. General 5",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 5"
+			}
+		]
+	},
+	"pif" : {
+		"name" : "Parametros Infraestructura",
+		"par" : [{
+				"nombre" : "pif1",
+				"mostrar" : "P. Infraestructura 1",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 1"
+			}, {
+				"nombre" : "pif2",
+				"mostrar" : "P. Infraestructura 2",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 2"
+			}, {
+				"nombre" : "pif3",
+				"mostrar" : "P. Infraestructura 3",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 3"
+			}, {
+				"nombre" : "pif4",
+				"mostrar" : "P. Infraestructura 4",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 4"
+			}, {
+				"nombre" : "pif5",
+				"mostrar" : "P. Infraestructura 5",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 5"
+			}, {
+				"nombre" : "pif6",
+				"mostrar" : "P. Infraestructura 6",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 6"
+			}
+		]
+	},
+	"prd" : {
+		"name" : "Parametros Servicio Radio",
+		"par" : [{
+				"nombre" : "prd1",
+				"mostrar" : "P. Servicio Radio 1",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 1"
+			}, {
+				"nombre" : "prd2",
+				"mostrar" : "P. Servicio Radio 2",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 2"
+			}, {
+				"nombre" : "prd3",
+				"mostrar" : "P. Servicio Radio 3",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 3"
+			}, {
+				"nombre" : "prd4",
+				"mostrar" : "P. Servicio Radio 4",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 4"
+			}, {
+				"nombre" : "prd5",
+				"mostrar" : "P. Servicio Radio 5",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 5"
+			}, {
+				"nombre" : "prd6",
+				"mostrar" : "P. Servicio Radio 6",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 6"
+			}, {
+				"nombre" : "prd7",
+				"mostrar" : "P. Servicio Radio 7",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 7"
+			}, {
+				"nombre" : "prd8",
+				"mostrar" : "P. Servicio Radio 8",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 8"
+			}
+		]
+	},
+	"pcf" : {
+		"name" : "Parametros Servicio Configuracion",
+		"par" : [{
+				"nombre" : "pcf1",
+				"mostrar" : "P. Servicio Configuracion 1",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 1"
+			}, {
+				"nombre" : "pcf2",
+				"mostrar" : "P. Servicio Configuracion 2",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 2"
+			}, {
+				"nombre" : "pcf3",
+				"mostrar" : "P. Servicio Configuracion 3",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 3"
+			}, {
+				"nombre" : "pcf4",
+				"mostrar" : "P. Servicio Configuracion 4",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 4"
+			}
+		]
+	},
+	"pit" : {
+		"name" : "Parametros Servicio Interfaces",
+		"par" : [{
+				"nombre" : "pit1",
+				"mostrar" : "P. Servicio Interfaces 1",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 1"
+			}, {
+				"nombre" : "pit2",
+				"mostrar" : "P. Servicio Interfaces 2",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 2"
+			}, {
+				"nombre" : "pit3",
+				"mostrar" : "P. Servicio Interfaces 3",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 3"
+			}, {
+				"nombre" : "pit4",
+				"mostrar" : "P. Servicio Interfaces 4",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 4"
+			}, {
+				"nombre" : "pit5",
+				"mostrar" : "P. Servicio Interfaces 5",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 5"
+			}
+		]
+	},
+	"ppx" : {
+		"name" : "Parametros Pabx",
+		"par" : [{
+				"nombre" : "ppx1",
+				"mostrar" : "P. Servicio Pabx 1",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 1"
+			}, {
+				"nombre" : "ppx2",
+				"mostrar" : "P. Servicio Pabx 2",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 2"
+			}, {
+				"nombre" : "ppx3",
+				"mostrar" : "P. Servicio Pabx 3",
+				"tipo" : 0,
+				"opciones": [],
+				"validar": 0,
+				"margenes": {"min": 0, "max":100},
+				"valor" : "Valor 3"
+			}
+		]
+	}
+}

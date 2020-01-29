@@ -1,0 +1,31 @@
+/** Estilos Generales. */
+body { /*font: "Gothan", Verdana, sans-serif;*/font-family: Verdana;	font-size:12px;background-color: #FFFFFF;color: #E00034;}
+#main {padding: 30px; background-color: #ffffff; border-radius: 0 0 4px 4px;}
+h1 {font: Ghotan, serif; border-bottom: 3px solid #cc9900; color: #E00034; }
+h2 { }
+h3 { background-color: #E00034; color: #FFFFFF; }
+h4 { }
+a { color: #0000FF;}
+th  { color: #000000; text-align: left;}
+
+/** Estilos para el menu */
+ul#menu {padding: 0px; position: relative; margin: 1; font-family: Verdana;}
+ul#menu li {display: inline; }
+ul#menu li a {background-color: #e8eef4;padding: 8px 25px;text-decoration: none;line-height: 0.8em;color: #000000;/*border-radius: 4px 4px 0 0;*/}
+ul#menu li a:hover {background-color: #e8eef4;color: #808080;}
+
+/** Estilos de la lista de propiedades. */
+ul.a {color:#E00034;font-size:150%; list-style: square; }
+ul.b {color:black; list-style-type: none; font-size:65%; margin-top: 2em;}
+ul.b li input[type=text] {margin-left:10px;width:20em;color:#E00034;text-align:right;}
+ul.b li input[type=submit] {margin-left:20px;width:7em;margin-right:20px;}
+ul.b form {text-align:right;}
+td.par { width: 10em; color:black;}
+td.val { width: 20em; color: #E00034;}
+
+/** Estilo Pie de Pagina */
+#pie { text-align: center; bottom: 20px; width: 90%; margin-top: 10em;}
+
+.tb1 { width: 100%; margin-left: 25%; }
+
+form { width: 100%; margin-left: 25%; }

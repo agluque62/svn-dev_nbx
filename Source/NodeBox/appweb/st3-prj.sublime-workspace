@@ -1,0 +1,1014 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"rdHf",
+				"rdHfGet"
+			],
+			[
+				"gestor",
+				"gestorhf"
+			],
+			[
+				"Tra",
+				"Transmitters"
+			],
+			[
+				"editr",
+				"editor_hash"
+			],
+			[
+				"mar",
+				"markClean"
+			],
+			[
+				"lc",
+				"lcext"
+			],
+			[
+				"Confi",
+				"Configuration"
+			],
+			[
+				"su",
+				"success"
+			],
+			[
+				"margin",
+				"margin-right"
+			],
+			[
+				"pro",
+				"prompt"
+			],
+			[
+				"equip",
+				"equipment"
+			],
+			[
+				"rec",
+				"Receivers"
+			],
+			[
+				"Eqpo",
+				"Equipos"
+			],
+			[
+				"Parame",
+				"Parametters"
+			],
+			[
+				"cvs",
+				"csvData"
+			],
+			[
+				"con",
+				"confirm"
+			],
+			[
+				"ch",
+				"check_control"
+			],
+			[
+				"rq",
+				"require"
+			],
+			[
+				"re",
+				"require"
+			],
+			[
+				"alert",
+				"alertify"
+			],
+			[
+				"close",
+				"closeEvent"
+			],
+			[
+				"alet",
+				"alertify"
+			],
+			[
+				"text",
+				"text-align"
+			],
+			[
+				"aler",
+				"alert"
+			],
+			[
+				"fla",
+				"flash"
+			],
+			[
+				"co",
+				"console"
+			],
+			[
+				"flas",
+				"flash_msg"
+			],
+			[
+				"write",
+				"writeFile"
+			],
+			[
+				"is",
+				"isAuthenticated"
+			],
+			[
+				"local",
+				"localconfig"
+			],
+			[
+				"w",
+				"width\t.width()"
+			],
+			[
+				"default",
+				"defaultStyle"
+			],
+			[
+				"tipo",
+				"tipo_interfaz_tel"
+			],
+			[
+				"col",
+				"columna"
+			],
+			[
+				"gw",
+				"gwQuery"
+			],
+			[
+				"func",
+				"function"
+			],
+			[
+				"pad",
+				"padding-left"
+			],
+			[
+				"qe",
+				"query2"
+			],
+			[
+				"last",
+				"lastIdFilter"
+			],
+			[
+				"fis",
+				"firstQuery"
+			],
+			[
+				"to",
+				"toString"
+			],
+			[
+				"las",
+				"lastIdFilter"
+			],
+			[
+				"res_qu",
+				"res_query1"
+			],
+			[
+				"r",
+				"return"
+			],
+			[
+				"me",
+				"message"
+			],
+			[
+				"log",
+				"log"
+			],
+			[
+				"para",
+				"param1"
+			],
+			[
+				"Query",
+				"QueryWithPromise"
+			],
+			[
+				"par",
+				"param1"
+			],
+			[
+				"Qe",
+				"QueryCount"
+			],
+			[
+				"Que",
+				"QueryCount"
+			],
+			[
+				"res",
+				"resultado"
+			],
+			[
+				"logging",
+				"loggingresult"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"for",
+				"forEach"
+			],
+			[
+				"new",
+				"newUser"
+			],
+			[
+				"que",
+				"query1"
+			],
+			[
+				"ug5k",
+				"ug5kdb"
+			],
+			[
+				"h",
+				"href"
+			],
+			[
+				"get",
+				"getJSON"
+			],
+			[
+				"trans",
+				"translateForm"
+			],
+			[
+				"str",
+				"strTipo"
+			],
+			[
+				"ti",
+				"TipoAlarma"
+			],
+			[
+				"Tipo",
+				"TipoHardware"
+			],
+			[
+				"Id",
+				"IdIncidencia"
+			],
+			[
+				"l",
+				"length"
+			],
+			[
+				"hist",
+				"histTable"
+			],
+			[
+				"his",
+				"histTable"
+			],
+			[
+				"st",
+				"status"
+			],
+			[
+				"a",
+				"appear"
+			],
+			[
+				"lo",
+				"LoginTimeout"
+			],
+			[
+				"inser",
+				"insertHistoric"
+			],
+			[
+				"myLib",
+				"myLibHistorics"
+			],
+			[
+				"per",
+				"perfil"
+			],
+			[
+				"val",
+				"valProfile"
+			],
+			[
+				"user",
+				"userprofile"
+			],
+			[
+				"usr",
+				"userprofile"
+			],
+			[
+				"base",
+				"base64"
+			],
+			[
+				"pa",
+				"password"
+			],
+			[
+				"login",
+				"login_timeout"
+			],
+			[
+				"req",
+				"require"
+			],
+			[
+				"id",
+				"idCGW"
+			],
+			[
+				"Pasa",
+				"pasarela"
+			],
+			[
+				"conf",
+				"Configuration"
+			],
+			[
+				"Gate",
+				"Gateway"
+			],
+			[
+				"va",
+				"valor"
+			],
+			[
+				"db",
+				"db"
+			],
+			[
+				"idC",
+				"idCGW"
+			],
+			[
+				"idCgw",
+				"idCGW"
+			],
+			[
+				"cl",
+				"closest"
+			],
+			[
+				"dua",
+				"dual"
+			],
+			[
+				"umbr",
+				"umbralVad"
+			],
+			[
+				"time",
+				"timeoutPtt"
+			],
+			[
+				"des",
+				"desactivacionSq"
+			],
+			[
+				"rep",
+				"repSqBss"
+			],
+			[
+				"mo",
+				"modoConfPtt"
+			],
+			[
+				"DA",
+				"DA_Gain"
+			],
+			[
+				"AD_",
+				"AD_Gain"
+			],
+			[
+				"AD",
+				"AD_AGC"
+			],
+			[
+				"lis",
+				"listanegra"
+			],
+			[
+				"sou",
+				"sourceResourceId"
+			],
+			[
+				"t",
+				"text"
+			],
+			[
+				"result",
+				"resultPos"
+			],
+			[
+				"VA",
+				"VALUES"
+			],
+			[
+				"sla",
+				"SLAVES"
+			],
+			[
+				"pos",
+				"posTargetIds"
+			],
+			[
+				"data",
+				"data"
+			],
+			[
+				"pu",
+				"push"
+			],
+			[
+				"ERR",
+				"err"
+			],
+			[
+				"FUN",
+				"function"
+			],
+			[
+				"as",
+				"async"
+			],
+			[
+				"resul",
+				"resultSlaves"
+			],
+			[
+				"SLA",
+				"SLAVES_idSLAVES"
+			],
+			[
+				"CGW",
+				"CGW_idCGW"
+			],
+			[
+				"idS",
+				"idSlave"
+			],
+			[
+				"in",
+				"insertId"
+			],
+			[
+				"RES",
+				"result"
+			],
+			[
+				"NAME",
+				"name"
+			],
+			[
+				"cgw",
+				"CGW_idCGW"
+			],
+			[
+				"ni",
+				"nivelIncidencias"
+			],
+			[
+				"em",
+				"EMPLAZAMIENTO_idEMPLAZAMIENTO"
+			],
+			[
+				"c",
+				"copy"
+			],
+			[
+				"ro",
+				"route"
+			],
+			[
+				"name",
+				"nameCopyGw"
+			],
+			[
+				"C",
+				"Copy"
+			],
+			[
+				"ip",
+				"ipv"
+			],
+			[
+				"page",
+				"PageLog"
+			],
+			[
+				"Page",
+				"PageLog"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "app/modules/Uv5kinbx.js",
+			"settings":
+			{
+				"buffer_size": 8121,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/controllers/Uv5kinbx-global-ctrl.js",
+			"settings":
+			{
+				"buffer_size": 2609,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "simulate/std.json",
+			"settings":
+			{
+				"buffer_size": 122,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "simulate/inci.json",
+			"settings":
+			{
+				"buffer_size": 405,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"PackageResourceViewer: Extract Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"prv",
+				"PackageResourceViewer: Extract Package"
+			],
+			[
+				"Package Control: p",
+				"Package Control: List Packages"
+			],
+			[
+				"Package Control: Do",
+				"Package Control: Discover Packages"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 428.0
+	},
+	"console":
+	{
+		"height": 362.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/controllers",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/simulate",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/styles"
+	],
+	"file_history":
+	[
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/languages/en_US.json",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/views/Uv5kinbx-radio.html",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/styles/uv5ki-styles.css",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/services/Uv5kinbx-CommService.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/controllers/Uv5kinbx-radio-ctrl.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/controllers/Uv5kinbx-global-ctrl.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/modules/Uv5kinbx.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/services/Uv5kinbx-LocalService.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/index.html",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/views/Uv5kinbx-config.html",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/controllers/Uv5kinbx-config-ctrl.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/controllers/Uv5kinbx-tlf-ctrl.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/views/Uv5kinbx-tlf.html",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/simulate/gestormn.json",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/controllers/Uv5kinbx-generales-ctrl.js",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/simulate/inci.json",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/app/views/Uv5kinbx-generales.html",
+		"/D/Datos/Empresa/_SharedPrj/UlisesV5000i-trunk/ulises-ta/Sources/Cd40/Source/NodeBox/appweb/languages/es_ES.json",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/services/postGateway.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/lang/es.json",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/lang/en.json",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/configUlises.json",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/loggingDate.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/layout.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/local_config.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/stylesheets/modal.css",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/services/postParameters.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/stylesheets/style.css",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/version/version.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/index.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/historics.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/gateways.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/get_cfg_report.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/services/postConfiguration.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/javascripts/configurations.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/configurations.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/ug5kdb.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/imported.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/app.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/javascripts/gateways.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/users.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/javascripts/index.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/routes/gateways/gateways.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/historics/historics.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/stylesheets/table.css",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/javascripts/historics.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/Views/layout.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/tableBss.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/sites.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/services.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/services/postSites.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/jsonTemplate.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/resources.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/lib/authentication.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/javascripts/sites.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/views/error.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/ug5k-serv-v2/public/translator/lang.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/routes/historics/historics.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/historics.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/configUlises.json",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/translator/lang.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/layout.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/historics/statistics.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/app.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/version/version.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/bootstrap-2.3.2/js/tests/vendor/qunit.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/index.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/index.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/users.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/login.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/services/postConfiguration.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/routes/index.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/package.json",
+		"/C/Users/nucleocc/Desktop/Programas/Sublime Text 3/Data/Packages/User/node.sublime-build",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/authentication.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/authentication.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/configurations.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/gateways.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/gateways.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/sites.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/services/postSites.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/services/postGateway.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/parametersRadio.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/public/javascripts/hardware.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/views/services/postParameters.jade",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/routes/gateways/gateways.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/services.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/routes/configurations/configurations.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/hardware.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/routes/hardware/hardware.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/routes/hardware/resources.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/resources.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/lib/configurations.js",
+		"/C/Users/nucleocc/Desktop/Redan-Setup/UG5K-Serv/data_model/BD_UG5K_New_Installation.sql",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/lang/es.json",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/lang/en.json",
+		"/D/Users/f5016937.DF/Documents/dumps/Dump20160408.sql",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/data_model/BD_UG5K_New_Installation.sql",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/views/services/postConfiguration.jade",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/configurations.js",
+		"/H/REDAN/UG5K-Serv/backup.bat",
+		"/D/Proyectos/Ulises-5000I/Ulises-5000I-SGM/Web/Web.config",
+		"/F/logfile.txt",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/parametersRadio.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/hardware.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/views/services/postParameters.jade",
+		"/D/Users/f5016937.DF/AppData/Local/Temp/notes675864/U5kManServer.exe.config",
+		"/D/Proyectos/Ulises-5000I/Ulises-5000I-TA-M+N/ulises-ta/Sources/TFT/HMI/bin/Release/HMI.exe.config",
+		"/D/Proyectos/Ulises-5000I/Ulises-5000I-TA-Nouakchott/Sources/TFT/HMI/bin/Release/HMI.exe.config",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/parametersTel.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/backups.js",
+		"/C/Program Files (x86)/DFNucleo/Ug5kDbBackupService/UG5KDbBackupService.exe.config",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/views/services/postGateway.jade",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/stylesheets/style.css",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/routes/hardware/resources.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/logs/LastConfig-192.168.0.41.json",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/lib/hardware.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/lib/resources.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/lib/configurations.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/app.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/views/services/postHardware.jade",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/resources.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/backup.bat",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-v0/views/services/postGateway.jade",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-v0/public/javascripts/gateways.js",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/views/backups/backups.jade",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/views/layout.jade",
+		"/D/Proyectos/Ulises G 5000 2X/UG5K-Serv/public/javascripts/historics.js"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"EnableDisable",
+			"setVh",
+			"console",
+			"lconfig_load",
+			"ctrl.editor",
+			"editor",
+			"version",
+			"_version",
+			"v_version",
+			"version",
+			"alertify",
+			"button",
+			"enabledi",
+			"\t\"\"\n",
+			"txtPestana",
+			"getInci",
+			"config"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "app/modules/Uv5kinbx.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8121,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6837,
+								6841
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "app/controllers/Uv5kinbx-global-ctrl.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2609,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1125,
+								1102
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 456.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "simulate/std.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 122,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								120,
+								120
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "simulate/inci.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 405,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								405,
+								404
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 34.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 239.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/node.sublime-build",
+	"project": "st3-prj.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"D:\\Proyectos\\Ulises G 5000 2X\\UG5K-Client\\UG5K-Client.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 264.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

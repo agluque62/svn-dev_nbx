@@ -1,0 +1,43 @@
+{
+    "cfg_activa": "16/11/2017 13:00:38",
+    "sw_version": "2.5.7.0",
+    "type": "Mixed",
+    "level": "Master",
+    "rad": {
+        "std": "Running",
+        "level": "Master",
+        "modules": [{
+                "id": "M+N",
+                "enable": 0,
+                "std": "Disabled",
+                "level": "Error"
+            }, {
+                "id": "HF",
+                "enable": 1,
+                "std": "Stopped",
+                "level": "Error"
+            }, {
+                "id": "1+1",
+                "enable": 1,
+                "std": "Running",
+                "level": "Error"
+            }
+        ]
+    },
+    "cfg": {
+        "std": "Running",
+        "level": "Slave"
+    },
+    "ifx": {
+        "std": "Running",
+        "level": "Master"
+    },
+    "pre": {
+        "std": "Stopped",
+        "level": "Master"
+    },
+    "pho": {
+        "std": "Running",
+        "level": "Master"
+    }
+}

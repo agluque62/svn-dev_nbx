@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="U5ki.PabxItfService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PabxIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.1.4</Value>
+    </Setting>
+    <Setting Name="PabxWsPort" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">8080</Value>
+    </Setting>
+    <Setting Name="PabxSaPwd" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">sa</Value>
+    </Setting>
+    <Setting Name="TifxMcastIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">224.100.10.1</Value>
+    </Setting>
+    <Setting Name="TifxMcastPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1001</Value>
+    </Setting>
+    <Setting Name="PabxPollTime" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="TifMcastItf" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.1.129</Value>
+    </Setting>
+    <Setting Name="PabxSimulada" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

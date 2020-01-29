@@ -1,0 +1,87 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="U5ki.Infrastructure.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="KAPeriod" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="KAMultiplier" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="TsxTout" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">400</Value>
+    </Setting>
+    <Setting Name="InvProceedingIaTout" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="InvProceedingDiaTout" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">300000</Value>
+    </Setting>
+    <Setting Name="InvProceedingRdTout" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="DefaultCodec" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">PCMA</Value>
+    </Setting>
+    <Setting Name="DefaultDelayBufPframes" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="DefaultJBufPframes" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="RxLevel" Description="0 - Mute, 1 - Idem, &gt;1 - Aumenta volumen" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="TxLevel" Description="0 - Mute, 1 - Idem, &gt;1 - Aumenta volumen" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="SndSamplingRate" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">8000</Value>
+    </Setting>
+    <Setting Name="InvProceedingMonitoringTout" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">300000</Value>
+    </Setting>
+    <Setting Name="EchoTail" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="EchoLatency" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Server=192.168.1.111;Database=cd40;Uid=root;Pwd=cd40;</Value>
+    </Setting>
+    <Setting Name="SipLogLevel" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="RecordingEd137" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="LogLevel" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Info</Value>
+    </Setting>
+    <Setting Name="LogLevelLocal" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Debug</Value>
+    </Setting>
+    <Setting Name="Voter" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">coresip-voter</Value>
+    </Setting>
+    <Setting Name="RecorderServicePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Ed137b4Service</Value>
+    </Setting>
+    <Setting Name="SQSourceConfirmTime" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="CompressCfg" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DIA_TxAttenuation_dB" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="IA_TxAttenuation_dB" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="RD_TxAttenuation_dB" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

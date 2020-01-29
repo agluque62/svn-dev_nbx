@@ -1,0 +1,53 @@
+Para el Gestor HF ???
+
+[x] Algoritmos inteligentes de seleccion. (Balanceo de Asignaciones)
+	[x] Configurable.
+
+[x] Configuracion Local.
+	[x] La 'community de read / write configurable...
+	[x] Los tiempos tambien deberían ser configurables...
+	[x] Parámetro de Simulacion configurable.
+
+[x] Integracion con RdService
+	[x] Inicializacion / Carga en Modo MASTER
+	[x] Integración con el proceso de Asignacion / Desasignacion
+	[x] Notificaciones de Errores Asincronos a los Usuarios (TA).
+
+[x] Gestion de Historicos.
+	[x] Gestor unico para todo 'nodebox'
+	[x] Conectar el Gestor con 'Historico GRAL Ulises'
+	[ ] Presencia de Gestor.
+
+[x] SELCAL.
+
+[ ] Programa de Gestion (Nodebox)
+	[x] Cambiar las acciones de TELNET a WEB
+	[x] Algo de Seguridad en el acceso...
+	[x] Puerto Escucha Configurable.
+	[x] Tiempo Sesion Configurable.
+	[x] Menu Opciones.
+		[x] Editor de Configuracion Local
+		[x] Gestor de Preconfiguraciones por defecto.
+		[x] Gestor de Equipos HF
+		[x] Visor LOG Local.
+		[x] Configuracion Local de HMI.
+
+	[ ] Estado en la cabecera (IP + M/S de los Servicios).
+		[ ] Acceso a Gestion Configuraciones solo MASTER CF
+		[ ] Acceso a Gestion Equipos Radio solo MASTER RD.
+
+	[ ] Monitor de Estado.
+		[x] Para el Servicio de Configuracion
+		[x] Para el Servicio de Radio.
+		[x] Para el Servicio de Interfaces.
+
+	[ ] Opcion RESET...
+		[ ] Programa Autoreset...
+
+	[ ] Opcion Salir...
+
+[x] ¿que es 'favicon.ico'?
+
+
+
+

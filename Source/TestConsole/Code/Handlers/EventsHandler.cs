@@ -1,0 +1,97 @@
+﻿using AdminConsole.Code.Delegates;
+using AdminConsole.Code.Enums;
+using AdminConsole.Code.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AdminConsole.Code
+{
+    public class EventsHandler
+    {
+        
+        private static event StringDelegate OnMessage;
+        
+        #region Event Logic
+
+        private void SuscribeEvent(GlobalEventTypes type, Object suscriber)
+        {
+            try
+            {
+                switch (type)
+                {
+                    case GlobalEventTypes.OnMessage:
+                        OnMessage += (StringDelegate)suscriber;
+                        break;
+
+                    default:
+                        throw new NotImplementedException("Suscribe does not implement this type of event");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotImplementedException)
+                    throw;
+                throw new EventException(ex);
+            }
+        }
+        public void Suscribe(GlobalEventTypes type, StringDelegate suscriber)
+        {
+            switch (type)
+            {
+                case GlobalEventTypes.OnMessage:
+                    SuscribeEvent(type, suscriber);
+                    break;
+
+                default:
+                    throw new NotImplementedException("Suscribe [StringDelegate] does not implement this type of event");
+            }
+        }
+
+        private Boolean TriggerEvent(GlobalEventTypes type, Object input)
+        {
+            Boolean output = false;
+            try
+            {
+                switch (type)
+                {
+                    case GlobalEventTypes.OnMessage:
+                        if (null == input)
+                            throw new NotImplementedException("Trigger OnMessage input cannot be null");
+                        if (null != OnMessage)
+                        {
+                            OnMessage.Invoke(input.ToString());
+                            output = true;
+                        }
+                        break;
+
+                    default:
+                        throw new NotImplementedException("Trigger does not implement this type of event");
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex is NotImplementedException)
+                    throw;
+                throw new EventException(ex);
+            }
+            return output;
+        }
+        public Boolean Trigger(GlobalEventTypes type, String input)
+        {
+            switch (type)
+            {
+                case GlobalEventTypes.OnMessage:
+                    return TriggerEvent(type, input);
+
+                default:
+                    throw new NotImplementedException("Suscribe [StringDelegate] does not implement this type of event");
+            }
+        }
+
+        #endregion
+
+    }
+}

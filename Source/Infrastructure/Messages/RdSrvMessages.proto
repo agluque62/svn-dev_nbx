@@ -1,0 +1,68 @@
+package U5ki.Infrastructure;
+import "Common.proto";
+
+message RdSrvRxRs
+{
+	required uint32 ClkRate = 1;
+	required uint32 ChannelCount = 2;
+	required uint32 BitsPerSample = 3;
+	required uint32 FrameTime = 4;
+	required string McastIp = 5;
+	required uint32 RdRxPort = 6;
+}
+
+message RdSrvTxRs
+{
+}
+
+message RdSrvFrRs
+{
+	enum SquelchType
+	{
+		NoSquelch = 0;
+		SquelchOnlyPort = 1;
+		SquelchPortAndMod = 2;
+	}
+	enum FrequencyStatusType 
+	{ 
+		NotAvailable = 0;
+		Available = 1;
+		Degraded = 2;
+	}
+
+	optional string PttSrcId = 1;	
+	optional SquelchType Squelch = 2;
+	
+	optional uint32 RtxGroupId = 3 [default = 0];
+	optional string RtxGroupOwner = 4;
+	optional string SqSite = 5;
+	optional string ResourceId = 6;
+	optional string QidxMethod = 7;
+	optional uint32 QidxValue = 8;
+	optional FrequencyStatusType FrequencyStatus = 9;
+}
+
+message FrChangeResponse
+{
+	required string Frecuency = 1;
+	required bool Set = 2;
+	required uint32 Estado = 3;
+}
+
+// Para el Estado Global del Subsistema HF.
+enum HFStatusCodes {
+    DISC = 0;		// Desconectado. El servidor no está presente.
+    NODISP = 1;		// No Hay Transmisores disponibles.
+    DISP = 2;		// Hay Transmisores Disponibles.
+  }
+
+message HFStatus
+{
+	required HFStatusCodes code = 1;
+}
+
+// 20180316. Estado de Habilitacion de equipos en NBX
+message MNDisabledNodes
+{
+	repeated string nodes=1;
+}

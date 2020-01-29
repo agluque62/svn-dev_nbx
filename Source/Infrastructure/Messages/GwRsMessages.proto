@@ -1,0 +1,27 @@
+package U5ki.Infrastructure;
+
+message GwTlfRs
+{
+	enum State 
+	{ 
+		Idle = 0;
+		BusyInterruptionAllow = 1;
+		BusyInterruptionNotAllow = 2;
+		NotAvailable = 3;
+	}
+
+	required State St = 1;
+	required uint32 Priority = 2;
+	required uint32 CallBegin = 3;
+	required uint32 Type = 4;
+	optional string GwIp = 5;
+}
+
+message GwLcRs
+{
+	optional string GwIp = 1;
+}
+
+message GwRdRs
+{
+}

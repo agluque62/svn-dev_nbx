@@ -1,0 +1,197 @@
+{
+    "Name": "PresenceServer",
+    "Mode": "Master",
+    "Status": "Running",
+    "Configured": "Si",
+    "BdtConfig": "12/02/2018 17:29:02",
+    "ProxiesAgent": {
+        "DependencyName": "",
+        "MainService": "Si",
+        "Type": "ForProxies",
+        "ProxyEndpoint": "",
+        "PresenceEndpoint": "",
+        "Status": "Connected",
+        "Users": [
+            {
+                "Name": "ACC-BCN",
+                "Type": "ExternalProxy",
+                "Status": "NotAvailable",
+                "Version": "1",
+                "Uri": "<sip:10.30.184.13:5060>"
+            },
+            {
+                "Name": "ACC-CAN",
+                "Type": "ExternalProxy",
+                "Status": "NotAvailable",
+                "Version": "1",
+                "Uri": "<sip:10.40.60.129:5060>"
+            },
+            {
+                "Name": "ACC-MAD",
+                "Type": "ExternalProxy",
+                "Status": "NotAvailable",
+                "Version": "1",
+                "Uri": "<sip:10.12.60.36:5060>"
+            },
+            {
+                "Name": "ACC-MAD",
+                "Type": "ExternalAltProxy",
+                "Status": "NotAvailable",
+                "Version": "1",
+                "Uri": "<sip:10.10.184.16:5060>"
+            },
+            {
+                "Name": "TorreNorte",
+                "Type": "InternalProxy",
+                "Status": "Available",
+                "Version": "2",
+                "Uri": "<sip:10.12.60.35:5060>"
+            },
+            {
+                "Name": "TorreNorte",
+                "Type": "InternalAltProxy",
+                "Status": "NotAvailable",
+                "Version": "1",
+                "Uri": "<sip:10.12.60.37:5060>"
+            }
+        ]
+    },
+    "UsersAgents": [
+        {
+            "DependencyName": "ACC-BCN",
+            "MainService": "Si",
+            "Type": "ForExternalSub",
+            "ProxyEndpoint": "10.30.184.13:5060",
+            "PresenceEndpoint": "10.30.184.13:5060",
+            "Status": "NotConnected",
+            "Users": [
+                {
+                    "Name": "315001",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:315001@10.30.184.13:5060>"
+                },
+                {
+                    "Name": "315002",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:315002@10.30.184.13:5060>"
+                }
+            ]
+        },
+        {
+            "DependencyName": "ACC-CAN",
+            "MainService": "Si",
+            "Type": "ForExternalSub",
+            "ProxyEndpoint": "10.40.60.129:5060",
+            "PresenceEndpoint": "10.40.60.129:5060",
+            "Status": "NotConnected",
+            "Users": [
+                {
+                    "Name": "315701",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:315701@10.40.60.129:5060>"
+                },
+                {
+                    "Name": "315703",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:315703@10.40.60.129:5060>"
+                }
+            ]
+        },
+        {
+            "DependencyName": "ACC-MAD",
+            "MainService": "Si",
+            "Type": "ForExternalSub",
+            "ProxyEndpoint": "10.12.60.36:5060",
+            "PresenceEndpoint": "10.12.60.36:5060",
+            "Status": "NotConnected",
+            "Users": [
+                {
+                    "Name": "314001",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:314001@10.12.60.36:5060>"
+                },
+                {
+                    "Name": "318001",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:318001@10.12.60.36:5060>"
+                },
+                {
+                    "Name": "314002",
+                    "Type": "ExternalSub",
+                    "Status": "Available",
+                    "Version": "0",
+                    "Uri": "<sip:314002@10.12.60.36:5060>"
+                }
+            ]
+        },
+        {
+            "DependencyName": "ACC-MAD",
+            "MainService": "No",
+            "Type": "ForExternalSub",
+            "ProxyEndpoint": "10.10.184.16:5060",
+            "PresenceEndpoint": "",
+            "Status": "NotConnected",
+            "Users": []
+        },
+        {
+            "DependencyName": "TorreNorte",
+            "MainService": "Si",
+            "Type": "ForInternalSub",
+            "ProxyEndpoint": "10.12.60.35:5060",
+            "PresenceEndpoint": "10.12.60.35:8080",
+            "Status": "Connected",
+            "Users": [
+                {
+                    "Name": "SIP0001",
+                    "Type": "InternalSub",
+                    "Status": "Available",
+                    "Version": "1",
+                    "Uri": "<sip:SIP0001@10.12.60.35:5060>"
+                },
+                {
+                    "Name": "SIP0002",
+                    "Type": "InternalSub",
+                    "Status": "Available",
+                    "Version": "1",
+                    "Uri": "<sip:SIP0002@10.12.60.35:5060>"
+                }
+            ]
+        },
+        {
+            "DependencyName": "TorreNorte",
+            "MainService": "No",
+            "Type": "ForInternalSub",
+            "ProxyEndpoint": "10.12.60.37:5060",
+            "PresenceEndpoint": "",
+            "Status": "NotConnected",
+            "Users": [
+                {
+                    "Name": "SIP0001",
+                    "Type": "InternalSub",
+                    "Status": "NotAvailable",
+                    "Version": "0",
+                    "Uri": "<sip:SIP0001@10.12.60.37:5060>"
+                },
+                {
+                    "Name": "SIP0002",
+                    "Type": "InternalSub",
+                    "Status": "NotAvailable",
+                    "Version": "0",
+                    "Uri": "<sip:SIP0002@10.12.60.37:5060>"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet1" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DataSet1" msprop:Generator_UserDSName="DataSet1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="language" msprop:Generator_TableClassName="languageDataTable" msprop:Generator_TableVarName="tablelanguage" msprop:Generator_TablePropName="language" msprop:Generator_RowDeletingName="languageRowDeleting" msprop:Generator_RowChangingName="languageRowChanging" msprop:Generator_RowEvHandlerName="languageRowChangeEventHandler" msprop:Generator_RowDeletedName="languageRowDeleted" msprop:Generator_UserTableName="language" msprop:Generator_RowChangedName="languageRowChanged" msprop:Generator_RowEvArgName="languageRowChangeEvent" msprop:Generator_RowClassName="languageRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Spanish" msprop:Generator_ColumnVarNameInTable="columnSpanish" msprop:Generator_ColumnPropNameInRow="Spanish" msprop:Generator_ColumnPropNameInTable="SpanishColumn" msprop:Generator_UserColumnName="Spanish" type="xs:string" />
+              <xs:element name="English" msprop:Generator_ColumnVarNameInTable="columnEnglish" msprop:Generator_ColumnPropNameInRow="English" msprop:Generator_ColumnPropNameInTable="EnglishColumn" msprop:Generator_UserColumnName="English" type="xs:string" minOccurs="0" />
+              <xs:element name="French" msprop:Generator_ColumnVarNameInTable="columnFrench" msprop:Generator_ColumnPropNameInRow="French" msprop:Generator_ColumnPropNameInTable="FrenchColumn" msprop:Generator_UserColumnName="French" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="languageKey1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:language" />
+      <xs:field xpath="mstns:Spanish" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

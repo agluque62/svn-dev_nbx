@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="U5ki.TifxService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="tifxMcastPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1001</Value>
+    </Setting>
+    <Setting Name="tifxMcastIp" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">224.100.10.1</Value>
+    </Setting>
+    <Setting Name="tifxPresenceTout" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">11000</Value>
+    </Setting>
+    <Setting Name="tifxMcastSrc" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.0.211</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

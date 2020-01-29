@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7212F511-4401-4A94-ABC0-ECCFAAC24EC3}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AdminConsole</RootNamespace>
+    <AssemblyName>AdminConsole</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AdminConsole.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpSnmpLib">
+      <HintPath>..\..\Lib\SharpSnmpLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Code\DTOs\Gear.cs" />
+    <Compile Include="Controls\ISNMPElement.cs" />
+    <Compile Include="Controls\SNMPElement.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SNMPElement.Designer.cs">
+      <DependentUpon>SNMPElement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TestUDP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TestUDP.Designer.cs">
+      <DependentUpon>TestUDP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MessagesDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MessagesDetails.Designer.cs">
+      <DependentUpon>MessagesDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MNEmulator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MNEmulator.Designer.cs">
+      <DependentUpon>MNEmulator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SNMPEmulator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SNMPEmulator.Designer.cs">
+      <DependentUpon>SNMPEmulator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MDIMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MDIMain.Designer.cs">
+      <DependentUpon>MDIMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\MessagesSNMP.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MessagesSNMP.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Keywords.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Keywords.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Controls\SNMPElement.resx">
+      <DependentUpon>SNMPElement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TestUDP.resx">
+      <DependentUpon>TestUDP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MessagesDetails.resx">
+      <DependentUpon>MessagesDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MNEmulator.resx">
+      <DependentUpon>MNEmulator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SNMPEmulator.resx">
+      <DependentUpon>SNMPEmulator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MDIMain.resx">
+      <DependentUpon>MDIMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Resources\MessagesSNMP.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MessagesSNMP.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Keywords.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Keywords.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Messages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Environments\EnvironmentProfile.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Environments\tenerife.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Resources\Images\brand.jpg" />
+    <Content Include="Resources\Images\favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Utilities\Utilities.csproj">
+      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\u5ki.Infrastructure.csproj">
+      <Project>{bbae4626-c51c-4946-acd1-832e92d73d8b}</Project>
+      <Name>u5ki.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RemoteControlService\u5ki.RemoteControlService.csproj">
+      <Project>{fa844426-a8e2-4bd0-a48d-7d129c2d5cfb}</Project>
+      <Name>u5ki.RemoteControlService</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

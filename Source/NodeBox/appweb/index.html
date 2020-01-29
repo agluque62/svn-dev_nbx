@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es" data-ng-app="Uv5kinbx">
+<head>
+    <meta name="generator"
+        content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
+    <meta charset="windows-1252" />
+    <meta name="description" content="Plantilla Ulises 5000" />
+    <meta name="keywords" content="HTML5, CSS3, JavaScript" />
+    <title>UV5KI. Nodebox</title>
+    <!-- Estilos  -->
+    <link rel="stylesheet" href="./styles/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="./styles/uv5ki-styles.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/alertify/alertify.min.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/alertify/themes/bootstrap.css" />
+<!--     <link rel="stylesheet" type="text/css" href="./styles/jquery-te-1.4.0.css" />
+ -->
+</head>
+<body>
+    <div id="agrupar" data-ng-controller="uv5kiGlobalCtrl as ctrl">
+        <header id="cabecera">
+            <div id="_contSupIzq">
+                <div id="_logo" style="width:90%;">
+                    <!-- <img src="./images/nucleo-df-new.jpg" /> -->
+                    <img src="./images/corporativo-a.png" 
+						 style="width:100%; height: 100%; margin: 0;"/>
+                </div>
+            </div>
+            <div id="_tit_ppal">{{ctrl.title}}</div>
+            <div id="_contSupDrcha">
+                <!--                <div id="_usuario">
+                    Usuario: <b>{{ctrl.user}}</b>
+                </div>-->
+                <div id="_hfecha"><b>{{ctrl.date}}</b></div>
+                <div id="_hsolohora">{{ctrl.hora}}</div>
+            </div>
+        </header>
+        <!--<section id="_separador"></section>-->
+        <nav id="_menu" class="container">
+            <h3 translate>Opciones</h3>
+            <ul class="nav nav-pills nav-stacked">
+                <li data-ng-class="{'active': ctrl.pagina==0}">
+                    <a href="#/" data-ng-click="ctrl.pagina=0" translate>Generales</a>
+                </li>
+                <li data-ng-class="{'active': ctrl.pagina==1}" ng-show="ctrl.RadioOptionsShow()">
+                    <a href="#/radio" data-ng-click="ctrl.pagina=1" translate>Radio</a>
+                </li>
+                <li data-ng-class="{'active': ctrl.pagina==2}" ng-show="ctrl.PhoneOptionsShow()">
+                    <a href="#/tlf" data-ng-click="ctrl.pagina=2" translate>Telefonia</a>
+                </li>
+                <li data-ng-class="{'active': ctrl.pagina==3}">
+                    <a href="#/config" data-ng-click="ctrl.pagina=3" translate>Config. Local</a>
+                </li>
+                <!--                <li style="margin-top: 60px;">
+                    <a href="#" i data-ng-click="gvm.logout()">Logout</a>
+                </li>-->
+            </ul>
+        </nav>
+
+        <section id="_ppal">
+            <div data-ng-view></div>
+        </section>
+        <div id="inci" style="border: 1px solid black">
+            <h1 translate>Ultimos Eventos</h1>
+            <table class="table table-striped" style="border: 0; margin: 1em; width: 95%; margin">
+                <thead>
+                    <tr>
+                        <th translate>Hora</th>
+                        <th translate>Servicio</th>
+                        <th translate>Incidencia</th>
+                        <th translate>Parametros</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="inci in ctrl.inciPage">
+                        <td>
+                            <div>{{inci.fh}}</div>
+                        </td>
+                        <td>
+                            <div>{{inci.ser}}</div>
+                        </td>
+                        <td>
+                            <div>{{ctrl.decodeHtml(inci.ev)}}</div>
+                        </td>
+                        <td>
+                            <div>{{ctrl.decodeHtml(inci.par)}}</div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr style="padding: 0;">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td >
+                            <div class="row">
+                                <div class="col-md-2" style="float: right; margin-top: 17px; text-align:right">
+                                    <p>Pag. {{ctrl.inciCurrentPage}}-{{ctrl.inciPages}}</p>
+                                </div>
+                                <div class="col-md-3" style="float: right">
+                                    <uib-pager style="margin-top: 10px; margin-bottom: 10px;" total-items="ctrl.listainci.length"
+                                               ng-model="ctrl.inciCurrentPage" items-per-page="ctrl.inciPageSize" next-text=">>" previous-text="<<"></uib-pager>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <footer id="_pie" translate>Nucleo Copyright @ 2015-2020. Todos los Derechos Reservados.</footer>
+    </div>
+
+    <!-- inject-vendor:js -->
+    <script src="./scripts/jquery/jquery-2.1.3.min.js"></script>
+    <script src="./scripts/angular/angular.min.js"></script>
+    <script src="./scripts/angular/angular-route.js"></script>
+    <!-- Para las Traducciones -->
+    <script src="./scripts/angular/angular-translate.min.js"></script>
+    <script src="./scripts/angular/angular-translate-loader-static-files.min.js"></script>
+    <script src="./scripts/bootsstrap/bootstrap.min.js"></script>    
+    <script src="./scripts/bootsstrap/ui-bootstrap-tpls-1.2.4.min.js"></script>
+    <script src="./scripts/smart-table.js"></script>
+    <!--    <script src="./scripts/ng-table.min.js"></script>-->
+    <script type="text/javascript" src="./scripts/moment.min.js"></script>
+    <script type="text/javascript" src="./scripts/daterangepicker.js"></script>
+    <script type="text/javascript" src="./scripts/alertify.min.js"></script>
+    <script type="text/javascript" src="./scripts/FileSaver.min.js"></script>
+     <script type="text/javascript" src="./scripts/sprintf/sprintf.min.js"></script>
+<!--     <script type="text/javascript" src="./scripts/jquery-te-1.4.0.min.js"></script>
+ -->
+     <script type="text/javascript" src="./scripts/cryptojs/core-min.js"></script>
+     <script type="text/javascript" src="./scripts/cryptojs/md5-min.js"></script>
+     <script type="text/javascript" src="./scripts/ace/src-min/ace.js"></script>
+     <script type="text/javascript" src="./scripts/ace/src-min/mode-xml.js"></script>
+
+    <!-- inject-app:js -->
+    <script src="./app/modules/Uv5kinbx.js"></script>
+    <script src="./app/routes/Uv5kiRoutes.js"></script>
+
+    <script src="./app/services/Uv5kinbx-CommService.js"></script>
+    <script src="./app/services/Uv5kinbx-LocalService.js"></script>
+
+    <script src="./app/controllers/Uv5kinbx-global-ctrl.js"></script>
+    <script src="./app/controllers/Uv5kinbx-generales-ctrl.js"></script>
+    <script src="./app/controllers/Uv5kinbx-config-ctrl.js"></script>
+    <script src="./app/controllers/Uv5kinbx-radio-ctrl.js"></script>
+    <script src="./app/controllers/Uv5kinbx-tlf-ctrl.js"></script>
+
+</body>
+</html>

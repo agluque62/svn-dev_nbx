@@ -1,0 +1,33 @@
+package U5ki.Infrastructure;
+
+message RsInfo
+{
+	required string Type = 1;
+	required string Id = 2;
+	optional bytes Content = 3;
+}
+
+message TopicChanges
+{
+	required string Topic = 1;
+	required string PrevTs = 2;
+	required string LastTs = 3;
+	repeated RsInfo Changes = 4;
+}
+
+message TopicContents
+{
+	required string Topic = 1;
+	required string LastTs = 2;
+	repeated RsInfo Resources = 3;
+}
+
+message TopicAskContents
+{
+	required string Topic = 1;
+}
+
+message SrvMaster
+{
+	required string HostId = 1;
+}

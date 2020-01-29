@@ -1,0 +1,9 @@
+package U5ki.Infrastructure;
+
+message NbxHist
+{
+	required uint64 datetime = 1;
+	required uint32 id = 2;
+	required string descripcion = 3;
+}
+

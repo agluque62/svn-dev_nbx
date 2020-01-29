@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="EnvironmentProfile"
+    targetNamespace="http://localhost/EnvironmentProfile.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://localhost/EnvironmentProfile.xsd"
+    xmlns:mstns="http://localhost/EnvironmentProfile.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <xs:simpleType name="gearTypes">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RCRohde4200"/>
+      <xs:enumeration value="RCJotron7000"/>
+    </xs:restriction>
+  </xs:simpleType>
+    
+  <xs:complexType name="gear">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="ip" type="xs:string"/>
+      <xs:element name="port" type="xs:string"/>
+      <xs:element name="type" type="gearTypes">         
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="gears">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="gear" type="gear" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

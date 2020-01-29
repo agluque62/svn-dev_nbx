@@ -1,0 +1,313 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7BC5A180-21C5-4A4A-A131-6BDF65D4287A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>U5ki.NodeBox</RootNamespace>
+    <AssemblyName>U5ki.NodeBox</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <ApplicationIcon>win32console.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugRadioService|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\DebugRadioService\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugPhoneService|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\DebugPhoneService\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'PhRelease|AnyCPU'">
+    <OutputPath>..\..\bin\PhRelease\</OutputPath>
+    <DefineConstants>TRACE;PHONE_AND_CFG</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'PhUnitTest|AnyCPU'">
+    <OutputPath>bin\PhUnitTest\</OutputPath>
+    <DefineConstants>TRACE;PHONE_AND_CFG</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=3.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="protobuf-net, Version=1.0.0.275, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\WebSocket4Net.0.14.1\lib\net45\WebSocket4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="DbDirectAccess.cs" />
+    <Compile Include="HistProc.cs" />
+    <Compile Include="nbxConfigFile.cs" />
+    <Compile Include="nbxWebAppServer.cs" />
+    <Compile Include="NodeBoxInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NodeBoxInstaller.Designer.cs">
+      <DependentUpon>NodeBoxInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NodeBoxSrv.cs" />
+    <Compile Include="NodeBoxSrv.Designer.cs">
+      <DependentUpon>NodeBoxSrv.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NodeBoxInstaller.resx">
+      <DependentUpon>NodeBoxInstaller.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NodeBoxSrv.resx">
+      <DependentUpon>NodeBoxSrv.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TFT\SharpSnmpLib\sharpsnmplib\SharpSnmpLib\SharpSnmpLib.csproj">
+      <Project>{286de6db-8f95-4bd4-86a2-86488d2e0ee1}</Project>
+      <Name>SharpSnmpLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Utilities.csproj">
+      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Infrastructure\u5ki.Infrastructure.csproj">
+      <Project>{bbae4626-c51c-4946-acd1-832e92d73d8b}</Project>
+      <Name>u5ki.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Translate\Translate.csproj">
+      <Project>{eaab8d4e-306e-417f-892f-13ad6642b883}</Project>
+      <Name>Translate</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="app.manifest" />
+    <None Include="appweb\languages\en_US.json" />
+    <None Include="appweb\languages\fr_FR.json" />
+    <None Include="appweb\scripts\angular\angular.min.js.map" />
+    <None Include="appweb\scripts\angular\smart-table.min.js.map" />
+    <None Include="appweb\simulate\gestormn.json" />
+    <None Include="appweb\simulate\gestormn\assign.json" />
+    <None Include="appweb\simulate\gestormn\enable.json" />
+    <None Include="appweb\simulate\inci.json" />
+    <None Include="appweb\simulate\lconfig-ext.json" />
+    <None Include="appweb\simulate\lconfig.json" />
+    <None Include="appweb\simulate\preconf.json" />
+    <None Include="appweb\simulate\ps.json" />
+    <None Include="appweb\simulate\rdhf.json" />
+    <None Include="appweb\simulate\rdsessions.json" />
+    <None Include="appweb\simulate\std.json" />
+    <None Include="appweb\simulate\tifxinfo.json" />
+    <None Include="appweb\simulate\versiones.json" />
+    <None Include="appweb\styles\bootstrap\bootstrap-theme.css.map" />
+    <None Include="appweb\styles\bootstrap\bootstrap.css.map" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="versiones.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="appweb\app\controllers\Uv5kinbx-config-ctrl.js" />
+    <Content Include="appweb\app\controllers\Uv5kinbx-generales-ctrl.js" />
+    <Content Include="appweb\app\controllers\Uv5kinbx-global-ctrl.js" />
+    <Content Include="appweb\app\controllers\Uv5kinbx-radio-ctrl.js" />
+    <Content Include="appweb\app\controllers\Uv5kinbx-tlf-ctrl.js" />
+    <Content Include="appweb\app\modules\Uv5kinbx.js" />
+    <Content Include="appweb\app\routes\Uv5kiRoutes.js" />
+    <Content Include="appweb\app\services\Uv5kinbx-CommService.js" />
+    <Content Include="appweb\app\services\Uv5kinbx-LocalService.js" />
+    <Content Include="appweb\app\views\Uv5kinbx-config.html" />
+    <Content Include="appweb\app\views\Uv5kinbx-generales.html" />
+    <Content Include="appweb\app\views\Uv5kinbx-radio.html" />
+    <Content Include="appweb\app\views\Uv5kinbx-tlf.html" />
+    <Content Include="appweb\favicon.ico" />
+    <Content Include="appweb\images\nucleo-df-new.jpg" />
+    <Content Include="appweb\index.html" />
+    <Content Include="appweb\login.html" />
+    <Content Include="appweb\mongoose-free-5.6.exe" />
+    <Content Include="appweb\mongoose-free-6.1.exe" />
+    <Content Include="appweb\scripts\angular\angular-route.js" />
+    <Content Include="appweb\scripts\angular\angular.min.js" />
+    <Content Include="appweb\scripts\bootsstrap\ui-bootstrap-tpls-0.13.4.min.js" />
+    <Content Include="appweb\scripts\jquery\jquery-2.1.3.min.js" />
+    <Content Include="appweb\styles\bootstrap\bootstrap-theme.css" />
+    <Content Include="appweb\styles\bootstrap\bootstrap-theme.min.css" />
+    <Content Include="appweb\styles\bootstrap\bootstrap.css" />
+    <Content Include="appweb\styles\bootstrap\bootstrap.min.css" />
+    <Content Include="appweb\styles\uv5ki-styles.css" />
+    <Content Include="data.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="nucleo-df-new.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="U5KIStyle.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="win32console.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="appweb\app\templates\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Habilite la restauración del paquete NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if not exist "$(TargetDir)appweb" mkdir "$(TargetDir)appweb"
+xcopy /E /Y /C /R "$(ProjectDir)appweb" "$(TargetDir)appweb"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

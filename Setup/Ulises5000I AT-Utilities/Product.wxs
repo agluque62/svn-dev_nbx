@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product
+    Id="*"
+    Name="Ulises5000I Audio Terminal Utilities"
+    Language="1033" Version="2.6.0"
+    Manufacturer="NucleoCC"
+    UpgradeCode="c17a4cae-94cf-4435-ada9-69eaefc872eb">
+
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <PropertyRef Id="NETFRAMEWORK45"/>
+    <Property Id="NETFRAMEWORK451">
+      <RegistrySearch Id="NetFramework" Root="HKLM" Type="raw" Name="Release" Key="SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"/>
+    </Property>
+    <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+    <!-- -->
+    <Property Id="MCAST_INSTALLFOLDER_NAME" Value="Ulises5000I-MCast"></Property>
+    <Property Id="NBOX_INSTALLFOLDER_NAME" Value="Ulises5000I-NodeBox"></Property>
+    <Property Id="NBOX_AUT" Value="True"></Property>
+    <Property Id="PVERSION" Value="2.5.9"></Property>
+
+    <!-- Propiedades para los directorios de Instalacion -->
+    <Property Id="MCAST_FOLDER">
+      <RegistrySearch Id="UV5KI_MCAST_FOLDER" Root="HKLM" Key='SOFTWARE\Wix\UV5KI_MCAST' Name='FOLDER_Property' Type='raw'  />
+    </Property>
+    <Property Id="NBX_FOLDER">
+      <RegistrySearch Id="UV5KI_NBX_FOLDER" Root="HKLM" Key='SOFTWARE\Wix\UV5KI_NBX' Name='FOLDER_Property' Type='raw'  />
+    </Property>
+
+    <!-- Propiedades de existencia de Ficheros de configuracion -->
+    <!--<Property Id='SPREAD_CONF'>
+      <DirectorySearch Id='SPREAD_CONF_DIR' Path='c:\Program Files\DF Nucleo\Ulises5000I-MCast' Depth='0'>
+        <FileSearch Id='SPREAD_CONF_FILE' Name='spread.conf'/>    
+      </DirectorySearch>
+    </Property>
+    <Property Id='SPREAD' Value='1'></Property>-->
+    <!-- Mensajes de TEST en Propiedades --><!--
+    <Condition Message="Spread.conf: File does exist.">
+      <![CDATA[Installed OR SPREAD_CONF]]>
+    </Condition>-->
+    <Property Id='SPREAD' Value='1'></Property>
+
+    <!-- Propiedades que se preservan entre instalaciones / actualizaciones -->
+    <Property Id="PICT" Value="PICT01" >
+      <RegistrySearch Id='UV5KI_MCAST_PICT' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_MCAST'
+                     Name='PICT_Property' Type='raw' />
+    </Property>
+    <Property Id="SPREAD_NUMBER" Value="4">
+      <RegistrySearch Id='UV5KI_MCAST_SPREAD_NUMBER' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_MCAST'
+                     Name='SPREAD_NUMBER_Property' Type='raw' />
+    </Property>
+    <Property Id="SPREAD_IPBASE" Value="127.0.0.1">
+      <RegistrySearch Id='UV5KI_MCAST_SPREAD_IPBASE' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_MCAST'
+                     Name='SPREAD_IPBASE_Property' Type='raw' />
+    </Property>
+
+    <Property Id="DIRIP" Value="127.0.0.1" >
+      <RegistrySearch Id='UV5KI_NBX_DIRIP' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_NBX'
+                     Name='DIRIP_Property' Type='raw' />
+    </Property>
+    <Property Id="SERVERIP" Value="127.0.0.1">
+      <RegistrySearch Id='UV5KI_NBX_SERVERIP' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_NBX'
+                     Name='SERVERIP_Property' Type='raw' />
+    </Property>
+<!--  20180208. Se sustituye por el servicio de Presencia  
+    <Property Id="PBX" Value="False">
+      <RegistrySearch Id='UV5KI_NBX_PBX' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_NBX'
+                     Name='PBX_Property' Type='raw' />
+    </Property>
+    <Property Id="PBXIP" Value="127.0.0.1">
+      <RegistrySearch Id='UV5KI_NBX_PBXIP' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_NBX'
+                     Name='PBXIP_Property' Type='raw' />
+    </Property>
+-->
+    <Property Id="NBOX_LANG" Value="es">
+      <RegistrySearch Id='UV5KI_NBX_LANG' Root='HKLM'
+                     Key='SOFTWARE\Wix\UV5KI_NBX'
+                     Name='LANG_Property' Type='raw' />
+    </Property>
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes"/>
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Condition Message="This application requires .NET Framework 4.5. Please install the .NET Framework then run this installer again.">
+      <![CDATA[Installed OR NETFRAMEWORK45 OR NETFRAMEWORK451 = "#378758"]]>
+    </Condition>
+    
+    <Feature Id="U5ki.MCast.ProductFeature" Title="Ulises5000I Mcast" Level="1">
+      <ComponentGroupRef Id="U5ki.MCast.ProductComponents" />
+      <ComponentGroupRef Id="uvki_tools_mcast" />
+    <!--</Feature>
+
+    <Feature Id="U5ki.NodeBox.ProductFeature" Title="Ulises5000I Mcast" Level="1">-->
+      <ComponentGroupRef Id="U5ki.NodeBox.ProductComponents" />
+      <ComponentGroupRef Id="U5ki.NodeBox.WebAppComponents" />
+      <ComponentGroupRef Id="EnComponents" />
+      <ComponentGroupRef Id="FrComponents" />
+      <ComponentGroupRef Id="ServicesComponents" />
+      <ComponentGroupRef Id="DebuggingMain" />
+      <ComponentGroupRef Id="DebuggingServices" />
+      <ComponentRef Id="CreateProgramFolder"/>
+      <ComponentGroupRef Id="uvki_tools_nbox" />
+    </Feature>
+
+    <UIRef Id="MyWixUI_Minimal"/>
+    <!--<UIRef Id="WixUI_FeatureTree"/>-->
+    <WixVariable Id="WixUIDialogBmp" Value="bkg-image.jpg"/>
+    <WixVariable Id="WixUIBannerBmp" Value="banner-image.jpg"/>
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+
+    <!-- DLL Custom Actions -->
+    <Binary Id="Ulises5000I_Setup_CustomActions" 
+            SourceFile="..\Ulises5000I-Setup-CustomActions\bin\$(var.Configuration)\Ulises5000I-Setup-CustomActions.CA.dll" />  
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="COMPANYFOLDER" Name="NucleoCC">
+          <Directory Id="U5ki.MCast.INSTALLFOLDER" Name="Ulises5000I-MCast"/>
+          <Directory Id="U5ki.NodeBox.INSTALLFOLDER" Name="Ulises5000I-NodeBox">
+            <Component Id="CreateProgramFolder" Guid="{2718F974-886C-49BB-8C4E-B7282AB16A14}">
+              <CreateFolder>
+                <util:PermissionEx User="Users" GenericAll="yes" />
+              </CreateFolder>
+              <!--<RegistryValue Root="HKLM" Key="SOFTWARE\Wix\UV5KI_NBX" Name="FOLDER_Property" Type="string" Value="[U5ki.NodeBox.INSTALLFOLDER]" KeyPath="yes" />
+              <util:RemoveFolderEx Id="RemoveProgramFolder" On="uninstall" Property="NBX_FOLDER"/>-->
+            </Component>
+            <Directory Id="EN" Name="en" />
+            <Directory Id="FR" Name="fr" />
+            <Directory Id="SERVICES" Name="Services"/>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+  </Fragment>
+
+  <!-- U5ki.MCast installation -->
+  <Fragment>
+    <ComponentGroup Id="U5ki.MCast.ProductComponents" Directory="U5ki.MCast.INSTALLFOLDER" Source="..\..\bin\Release">
+      <Component Id='spread_exe' Guid='{B386B60D-4413-4A23-A546-5E22629A457F}'>
+        <File Id='spread_exe' Name='spread.exe'/>
+      </Component>
+      <Component Id='utilities' Guid='{ECEDE307-7981-431A-B938-CFFF570B0A0C}'>
+        <File Id='utilities' Name='utilities.dll'/>
+      </Component>
+      <Component Id='nlog' Guid='{EFA3F270-1559-4E7B-8926-E668E892FED6}'>
+        <File Id='nlog' Name='nlog.dll'/>
+      </Component>
+      <Component Id='U5ki.MCast.cfg' Guid ='{156A5186-4A32-4FC1-9331-01CBA57DFA8A}' >
+        <File Id='U5ki.MCast.cfg' Name='U5ki.MCast.exe.config' />
+        <util:XmlFile Id="IdHost" Action="setValue"
+                        File = "[#U5ki.MCast.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.Mcast.Properties.Settings/setting[\[]@name='IdHost'[\]]/value"
+                        Value="[PICT]"/>
+      </Component>
+      <Component Id='nlog_config' Guid='{0F2E77DB-1429-4FDC-BBA9-084E3866DE4F}'> 
+        <!-- Permanent='yes'> -->
+        <File Id='nlog_config' Name='nlog.config' />
+      </Component>
+      <Component Id="MainExecutable" Guid="{4D24894F-92CD-4024-A1DD-4DEA4AC55297}">
+        <File Id="mcast" Name="U5ki.mcast.exe" KeyPath="yes" >
+          <Shortcut Id='desktopMcast' Directory='DesktopFolder' Name='Ulises5000I-MCast' WorkingDirectory='U5ki.MCast.INSTALLFOLDER' Advertise='yes' Arguments='-console' >
+          </Shortcut>
+        </File>
+        <ServiceInstall
+          Id="MCastInstaller"
+          Type="ownProcess"
+          Name="u5ki.Mcast"
+          DisplayName="U5kI.Mcast"
+          Description="Spread service for Ulises-5000I"
+          Start="auto"
+          Account="LocalSystem"
+          ErrorControl="ignore"
+          Interactive="no">
+          <ServiceConfig DelayedAutoStart="no" OnInstall="yes"  OnReinstall="yes" OnUninstall="no"></ServiceConfig>
+          <ServiceDependency Id="dot3svc"/>
+          <util:ServiceConfig
+                  FirstFailureActionType='restart'
+                  SecondFailureActionType='restart'
+                  ThirdFailureActionType='restart'
+                  RestartServiceDelayInSeconds='30'
+                  ResetPeriodInDays='1'/> 
+        </ServiceInstall>
+        <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="u5ki.Mcast" Wait="yes" />
+      </Component>
+      <Component Id="mcast_registry" Guid="{9C50679C-B343-46E7-86B6-DA38743358D5}" Permanent="yes">
+        <RegistryKey Id="mcast_registry_entries" Root="HKLM" Key="SOFTWARE\Wix\UV5KI_MCAST" Action="create">
+          <RegistryValue Name='SPREAD_NUMBER_Property' Value='[SPREAD_NUMBER]' Type='string' />
+          <RegistryValue Name='SPREAD_IPBASE_Property' Value='[SPREAD_IPBASE]' Type='string' />
+          <RegistryValue Name='PICT_Property' Value='[PICT]' Type='string' />
+        </RegistryKey>        
+    </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- U5ki.NodeBox installation -->
+  <Fragment>
+    <ComponentGroup Id="U5ki.NodeBox.ProductComponents" Directory="U5ki.NodeBox.INSTALLFOLDER" Source="..\..\bin\Release">
+      <Component Id='Newtonsoft.Json' Guid='{7CF02408-E94E-4766-BCB2-12455A574D55}'>
+        <File Id='Newtonsoft.Json' Name='Newtonsoft.Json.dll'/>
+      </Component>
+      <Component Id='WebSocket4Net' Guid='{8B2B968C-255B-412D-A649-EF704DB7B4C8}'>
+        <File Id='WebSocket4Net' Name='WebSocket4Net.dll'/>
+      </Component>
+      <Component Id='SharpSnmpLib' Guid='{7E89C4CA-8554-4EFF-93D0-328A42B47CB8}'>
+        <File Id='SharpSnmpLib' Name='SharpSnmpLib.dll'/>
+      </Component>
+      <Component Id='protobuf_net' Guid='{03723FBC-98D8-4C2D-BEC6-682716C4002C}'>
+        <File Id='protobuf_net' Name='protobuf-net.dll'/>
+      </Component>
+      <Component Id='libspread' Guid='{71314E7F-9662-40FA-8418-371D3C2DED6B}'>
+        <File Id='libspread' Name='libspread.dll'/>
+      </Component>
+      <Component Id='NodeBox_spread_exe' Guid='{2BE9D581-016A-456E-A457-38E675F9CE53}'>
+        <File Id='NodeBox_spread_exe' Name='spread.exe'/>
+      </Component>
+      <Component Id='NodeBox_nlog' Guid='{05D5720C-01E4-451E-BDBB-329FC2D613C6}'>
+        <File Id='NodeBox_nlog' Name='nlog.dll'/>
+      </Component>
+      <Component Id='NodeBox_spread_conf' Guid='{32734C3C-0ADD-46B2-9734-47973331789D}'>
+        <!--Permanent='yes'>-->
+        <File Id='NodeBox_spread_conf' Name='spread.conf' />
+      </Component>
+      <Component Id='coresip' Guid='{7F42CC4C-85D0-49E2-A797-9F64032A2EEC}'>
+        <File Id='coresip_voter' Name='coresip-voter.dll'/>
+      </Component>
+      <Component Id='NodeBox_utilities' Guid='{153E2245-9D52-4666-B702-6BB707E7E0A4}'>
+        <File Id='NodeBox_utilities' Name='utilities.dll'/>
+      </Component>
+      <Component Id='U5ki.Infrastructure' Guid='{0A881215-5A24-48A7-B815-50DCCD19AB66}'>
+        <File Id='U5ki.Infrastructure' Name='U5ki.Infrastructure.dll'/>
+      </Component>
+      <Component Id='NodeBox_versiones' Guid='*'>
+        <File Id='NodeBox_versiones' Name='versiones.json'/>
+      </Component>
+      <Component Id='U5ki.NodeBox.cfg' Guid='{862BF10F-006A-4A91-A9BE-31C60AC07A72}' >
+        <!--Permanent='yes' >-->
+        <File Id='U5ki.NodeBox.cfg' Name='U5ki.NodeBox.exe.config' />
+        <util:XmlFile Id="IpPrincipal" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.NodeBox.Properties.Settings/setting[\[]@name='IpPrincipal'[\]]/value"
+                        Value="[DIRIP]"/>
+        <util:XmlFile Id="HistServer" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.NodeBox.Properties.Settings/setting[\[]@name='HistServer'[\]]/value"
+                        Value="[SERVERIP]"/>
+<!-- 20180208. Se sustituye por el servicio de Presencia
+        <util:XmlFile Id="Pabx" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.NodeBox.Properties.Settings/setting[\[]@name='Pabx'[\]]/value"
+                        Value="[PBX]"/>
+-->                        
+        <util:XmlFile Id="NetworkOnDelay" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.NodeBox.Properties.Settings/setting[\[]@name='NetworkOnDelay'[\]]/value"
+                        Value="20"/>
+        <!-- 20180614. Por defecto a reinstalar debe valer 0 (deshabilitado) -->
+        <util:XmlFile Id="IgmpQueryPeriodSeconds" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.NodeBox.Properties.Settings/setting[\[]@name='IgmpQueryPeriodSeconds'[\]]/value"
+                        Value="0"/>
+
+        <util:XmlFile Id="RecordingEd137" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.Infrastructure.Properties.Settings/setting[\[]@name='RecordingEd137'[\]]/value"
+                        Value="0"/>
+        <util:XmlFile Id="Cd40_CfgService_SoapCfg_InterfazSOAPConfiguracion" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.CfgService.Properties.Settings/setting[\[]@name='Cd40_CfgService_SoapCfg_InterfazSOAPConfiguracion'[\]]/value"
+                        Value="http://[SERVERIP]/nucleodf/u5kcfg/InterfazSOAPConfiguracion/InterfazSOAPConfiguracion.asmx"/>
+        <util:XmlFile Id="MCastItf4Config" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.CfgService.Properties.Settings/setting[\[]@name='MCastItf4Config'[\]]/value"
+                        Value="[DIRIP]"/>
+        <util:XmlFile Id="SipIp" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.RdService.Properties.Settings/setting[\[]@name='SipIp'[\]]/value"
+                        Value="[DIRIP]"/>
+        <util:XmlFile Id="FrequencyDisabled" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.RdService.Properties.Settings/setting[\[]@name='FrequencyDisabled'[\]]/value"
+                        Value="8"/>
+        <util:XmlFile Id="RtxDelay" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.RdService.Properties.Settings/setting[\[]@name='RtxDelay'[\]]/value"
+                        Value="200"/>
+        <util:XmlFile Id="tifxMcastSrc" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.TifxService.Properties.Settings/setting[\[]@name='tifxMcastSrc'[\]]/value"
+                        Value="[DIRIP]"/>
+<!-- 20180208. Se sustituye por el servicio de Presencia
+        <util:XmlFile Id="PabxIp" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.PabxItfService.Properties.Settings/setting[\[]@name='PabxIp'[\]]/value"
+                        Value="[PBXIP]"/>        
+        <util:XmlFile Id="TifMcastItf" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.PabxItfService.Properties.Settings/setting[\[]@name='TifMcastItf'[\]]/value"
+                        Value="[DIRIP]"/>
+-->
+        <util:XmlFile Id="MulticastGroupInterfazIp" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/U5ki.PresenceService.Properties.Settings/setting[\[]@name='MulticastGroupInterfazIp'[\]]/value"
+                        Value="[DIRIP]"/>
+<!-- -->
+        <util:XmlFile Id="SipIp1" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/u5ki.RemoteControlService.Properties.Settings/setting[\[]@name='SipIp'[\]]/value"
+                        Value="[DIRIP]"/>
+        <util:XmlFile Id="ControlSessionSIP" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/u5ki.RemoteControlService.Properties.Settings/setting[\[]@name='ControlSessionSIP'[\]]/value"
+                        Value="True"/>
+        <util:XmlFile Id="Lang2" Action="setValue"
+                        File = "[#U5ki.NodeBox.cfg]"
+                        ElementPath="/configuration/applicationSettings/Translate.Properties.Settings/setting[\[]@name='language'[\]]/value"
+                        Value="[NBOX_LANG]"/>
+
+      </Component>
+      <Component Id='NodeBox_nlog_config' Guid='{10C2C1C6-6B8F-4505-B0F1-3B88AC074DA0}' >
+        <!--NeverOverwrite='yes' Permanent='yes'>-->
+        <File Id='NodeBox_nlog_config' Name='nlog.config'/>
+      </Component>
+      <Component Id='nucleo_df_logo' Guid='{49DD15C9-593C-42B2-BFD3-5066C740381B}'>
+        <File Id='nucleo.df.new' Name='nucleo-df-new.jpg'/>
+      </Component>
+      <Component Id='nucleocss_style' Guid='{36A52454-3F33-4E61-83F4-376EF48EFABE}'>
+        <File Id='U5KIStyle' Name='U5KIStyle.css'/>
+      </Component>
+      <Component Id='nucleo.favicon' Guid='{A7B9ABA5-3942-4E19-93CE-1CBE45826096}'>
+        <File Id='favicon' Name='favicon.ico'/>
+      </Component>
+      <Component Id="NodeBox_AutInstall" Guid="{1FF09F92-B731-4767-979F-690001574B8B}">
+        <Condition><![CDATA[NBOX_AUT = "True"]]></Condition>
+        <File Id="nbx_aut" Name="U5ki.NodeBox.exe">
+          <Shortcut Id='desktopNodeBox_aut' Directory='DesktopFolder' Name='Ulises5000I-NodeBox' WorkingDirectory='U5ki.NodeBox.INSTALLFOLDER' Advertise='yes' Arguments='-console'></Shortcut>
+        </File>
+        <ServiceInstall
+            Id="NodeBoxInstaller"
+            Type="ownProcess"
+            Vital="yes"
+            Name="u5ki.NodeBox.aut"
+            DisplayName="U5kI.NodeBox"
+            Description="Radio Service for Ulises 5000-I."
+            Start="auto"
+            Account="LocalSystem"
+            ErrorControl="ignore"
+            Interactive="no" >
+          <ServiceConfig DelayedAutoStart="no" OnInstall="yes"  OnReinstall="yes" OnUninstall="no"></ServiceConfig>
+          <ServiceDependency Id="u5ki.Mcast"/>
+          <util:ServiceConfig
+                  FirstFailureActionType='restart'
+                  SecondFailureActionType='restart'
+                  ThirdFailureActionType='restart'
+                  RestartServiceDelayInSeconds='30'
+                  ResetPeriodInDays='1' />
+        </ServiceInstall>
+        <ServiceControl Id="StartNodeBox_aut" Start="install" Stop="both" Remove="uninstall" Name="u5ki.NodeBox.aut" Wait="yes" />
+      </Component>
+      <Component Id="NodeBox_ManInstall" Guid="{7E05E84F-66B9-445F-BD24-1A7BAD678ED6}">
+        <Condition><![CDATA[NBOX_AUT <> "True"]]></Condition>
+        <File Id="nbx_man" Name="U5ki.NodeBox.exe">
+          <Shortcut Id='desktopNodeBox_man' Directory='DesktopFolder' Name='Ulises5000I-NodeBox' WorkingDirectory='U5ki.NodeBox.INSTALLFOLDER' Advertise='yes' Arguments='-console'></Shortcut>
+        </File>
+        <ServiceInstall
+            Id="ManNodeBoxInstaller"
+            Type="ownProcess"
+            Vital="yes"
+            Name="u5ki.NodeBox.man"
+            DisplayName="U5kI.NodeBox"
+            Description="Radio Service for Ulises 5000-I."
+            Start="demand"
+            Account="LocalSystem"
+            ErrorControl="ignore"
+            Interactive="no" >
+          <ServiceConfig DelayedAutoStart="no" OnInstall="yes"  OnReinstall="yes" OnUninstall="no"></ServiceConfig>
+          <ServiceDependency Id="u5ki.Mcast"/>
+          <util:ServiceConfig
+                  FirstFailureActionType='restart'
+                  SecondFailureActionType='restart'
+                  ThirdFailureActionType='restart'
+                  RestartServiceDelayInSeconds='30'
+                  ResetPeriodInDays='1' />
+        </ServiceInstall>
+        <ServiceControl Id="StartNodeBox_man" Stop="both" Remove="uninstall" Name="u5ki.NodeBox.man" Wait="yes" />
+      </Component>
+      <Component Id="nbx_registry" Guid="{446FED71-88DE-496B-A570-6440C0DAF72B}" Permanent="yes">
+        <RegistryKey Id="nbx_registry_entries" Root="HKLM" Key="SOFTWARE\Wix\UV5KI_NBX" Action="create">
+          <RegistryValue Name='DIRIP_Property' Value='[DIRIP]' Type='string' />
+          <RegistryValue Name='SERVERIP_Property' Value='[SERVERIP]' Type='string' />
+<!-- 20180208. Se sustituye por el servicio de Presencia
+          <RegistryValue Name='PBX_Property' Value='[PBX]' Type='string' />
+          <RegistryValue Name='PBXIP_Property' Value='[PBXIP]' Type='string' />
+-->          
+          <RegistryValue Name='LANG_Property' Value='[NBOX_LANG]' Type='string' />
+        </RegistryKey>
+      </Component>
+      <Component Id='translate' Guid='{4463D59E-B7D8-44E8-A6C8-5D792352FD70}'>
+        <File Id='translate' Name='translate.dll'></File>
+        <File Id='translate_data' Name='data.xml'></File>        
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id='uvki_tools_mcast' Directory="U5ki.MCast.INSTALLFOLDER" Source=".">
+      <Component Id ="sfk1" Guid="{EB624F62-C84B-482C-A229-21F6D374F678}">
+        <File Id="sfk.exe.1" Name="sfk.exe"></File>
+      </Component>
+    </ComponentGroup>
+    
+    <ComponentGroup Id='uvki_tools_nbox' Directory="U5ki.NodeBox.INSTALLFOLDER" Source=".">
+      <Component Id ="sfk2" Guid="{EF47489E-E928-4605-9EA1-E4BB5F429A53}">
+        <File Id="sfk.exe.2" Name="sfk.exe"></File>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id='EnComponents' Directory='EN' Source='..\..\bin\release\en'>
+      <!--<Component Id='U5ki.NodeBox.resources.en' Guid='{FDFC5492-1362-4E1E-87E9-A7D65120C842}'>
+        <File Id='U5ki.NodeBox.resources.en' Name='U5ki.NodeBox.resources.dll' />
+      </Component>-->
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id='FrComponents' Directory='FR' Source='..\..\bin\release\fr'>
+      <!--<Component Id='U5ki.NodeBox.resources.fr' Guid='{3818A540-0F7E-459D-8BD5-2F0327A44122}'>
+        <File Id='U5ki.NodeBox.resources.fr' Name='U5ki.NodeBox.resources.dll' />
+      </Component>-->
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id='ServicesComponents' Directory='SERVICES' Source='..\..\bin\release\services'>
+      <Component Id='U5ki.CfgService' Guid='{3A2FF9CE-FA71-4B5F-8AA3-8071CF28E8B4}'>
+        <File Id='U5ki.CfgService' Name='U5ki.CfgService.dll' />
+      </Component>
+      <Component Id='U5ki.RdService' Guid='{772C935D-5D3E-4A4A-B410-0ACE277B85EE}'>
+        <File Id='U5ki.RdService' Name='U5ki.RdService.dll' />
+      </Component>
+      <Component Id='U5ki.TifxService' Guid='{B9411F13-64D5-4903-9789-DD84809F1686}'>
+        <File Id='U5ki.TifxService' Name='U5ki.TifxService.dll' />
+      </Component>
+<!-- 20180208. Se sustituye por el servicio de Presencia     
+      <Component Id='U5ki.PabxItfService' Guid='{C7EA26EA-CA7B-436A-9A9D-8F8A429154E0}'>
+        <File Id='U5ki.PabxItfService' Name='U5ki.PabxItfService.dll' />
+      </Component>
+-->
+      <Component Id='U5ki.PresenceService' Guid='{856EEECD-40A6-4D69-A866-157714F39286}'>
+        <File Id='U5ki.PresenceService' Name='U5ki.PresenceService.dll' />
+      </Component>
+
+      <Component Id='u5ki.RemoteControlService' Guid='{D34B1DD6-9A4C-4304-934A-1660FEA98AC7}'>
+        <File Id='u5ki.RemoteControlService' Name='u5ki.RemoteControlService.dll' />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id='DebuggingMain' Directory='U5ki.NodeBox.INSTALLFOLDER' Source='..\..\bin\release'>
+    </ComponentGroup>
+    <ComponentGroup Id='DebuggingServices' Directory='SERVICES' Source='..\..\bin\release\services'>
+      <Component Id='U5ki.Deb.Files' Guid='{2CB9DD1B-9A52-4A6B-A2BF-727784B32D53}'>
+        <File Id='U5ki.PresenceService.dev' Name='U5ki.PresenceService.pdb' />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <!-- UI y Acciones -->
+  <Fragment>
+    <CustomAction Id='Md5NboxMark' Directory="U5ki.NodeBox.INSTALLFOLDER"
+                  Execute='deferred'
+                  Impersonate='no'
+                  ExeCommand='"[U5ki.NodeBox.INSTALLFOLDER]sfk.exe" select "[COMPANYFOLDER][NBOX_INSTALLFOLDER_NAME]" .exe .dll +md5gento "[U5ki.NodeBox.INSTALLFOLDER]md5mark_[PVERSION].md5" -rel'
+                  Return='check' />
+    <CustomAction Id='Md5McastMark' Directory="U5ki.MCast.INSTALLFOLDER"
+                  Execute='deferred'
+                  Impersonate='no'
+                  ExeCommand='"[U5ki.MCast.INSTALLFOLDER]sfk.exe" select "[COMPANYFOLDER][MCAST_INSTALLFOLDER_NAME]" .exe .dll +md5gento "[U5ki.MCast.INSTALLFOLDER]md5mark_[PVERSION].md5" -rel'
+                  Return='check' />
+    <CustomAction Id="CustomActionTest" Return="check" Execute="immediate" BinaryKey="Ulises5000I_Setup_CustomActions" DllEntry="CustomActionTest" />
+    <CustomAction Id="GenerateSpreadConf" Return="check" Execute="immediate" BinaryKey="Ulises5000I_Setup_CustomActions" DllEntry="GenerateSpreadConf" />
+    <CustomAction Id="CustomActionPict2Ip" Return="check" Execute="immediate" BinaryKey="Ulises5000I_Setup_CustomActions" DllEntry="CustomActionPict2Ip" />
+<!-- 20180208. Se sustituye por el servicio de Presencia
+    <CustomAction Id="ResetPbxIp" Property="PBXIP" Value=""  />
+-->
+    <!--<CustomAction Id="SPREAD_RESET" Property="SPREAD" Value="0"></CustomAction>
+
+    <InstallUISequence>
+      <Custom Action="SPREAD_RESET" Before="ExecuteAction"><![CDATA[SPREAD_CONF]]></Custom>
+    </InstallUISequence>-->
+    
+    <InstallExecuteSequence>
+      <!-- Launch webpage during full uninstall, but not upgrade -->
+      <Custom Action="Md5McastMark" Before="InstallFinalize">NOT Installed AND NOT REMOVE</Custom>
+      <Custom Action="Md5NboxMark" Before="InstallFinalize">NOT Installed AND NOT REMOVE</Custom>
+    </InstallExecuteSequence>
+
+
+    <!-- Modelo de Visualizacion -->
+    <UI Id="MyWixUI_Minimal">
+
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+      <Property Id="WixUI_Mode" Value="Mondo" />
+
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed AND NOT PATCH</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+
+      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+      <!--<Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="OptionsDlg" Order="2">LicenseAccepted = "1"</Publish>-->
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="SpreadConfDlf" Order="2">LicenseAccepted = "1"</Publish>
+
+      <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
+      <Publish Dialog="SetupTypeDlg" Control="TypicalButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="SetupTypeDlg" Control="CustomButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+      <Publish Dialog="SetupTypeDlg" Control="CompleteButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+
+      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Change"</Publish>
+      <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
+      <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+
+      <!--<Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="OptionsDlg" Order="3">1</Publish>-->
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SpreadConfDlf" Order="3">1</Publish>
+
+      <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+      <Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+
+      <Publish Dialog="OptionsDlg" Control="Back" Event="NewDialog" Value="SpreadConfDlf">1</Publish>
+      <Publish Dialog="OptionsDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+      <Publish Dialog="OptionsDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+      <Publish Dialog="SpreadConfDlf" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+      <Publish Dialog="SpreadConfDlf" Control="Next" Event="NewDialog" Value="OptionsDlg">1</Publish>
+      <Publish Dialog="SpreadConfDlf" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+
+        <!-- Dialogo para Generar spread.conf -->
+      <Dialog Id="SpreadConfDlf" Width="370" Height="270" Title="Spread.conf" NoMinimize="yes">
+        <Control Id="ElementsNumberLabel" Type="Text" X="45"  Y="63" Width="100" Height="18" TabSkip="no" Text="Numero de Elementos" />
+        <Control Id="ElementsNumberEdit"  Type="Edit" X="150" Y="60" Width="100" Height="18" Property="SPREAD_NUMBER" Text="{5}" />
+        <Control Id="IpBaseLabel"         Type="Text" X="45"  Y="83" Width="100" Height="18" TabSkip="no" Text="IP-Base" />
+        <Control Id="IpBaseEdit"          Type="Edit" X="150" Y="80" Width="100" Height="18" Property="SPREAD_IPBASE" Text="{20}" />
+        
+        <!--<Control Id="Generar"             Type="CheckBox" X="45" Y="120" Width="150" Height="18" Property="SPREAD" CheckBoxValue="1" Text="Generar Fichero spread.conf">
+          <Publish Event="DoAction" Value="GenerateSpreadConf">SPREAD = "1"</Publish>
+        </Control>-->
+        <!--<Control Id="Generar"             Type="CheckBox" X="45" Y="120" Width="150" Height="18" Property="SPREAD" 
+                 CheckBoxValue="1" Text="Generar Fichero spread.conf" >
+          <Condition Action="disable"><![CDATA[NOT SPREAD_CONF]]></Condition>
+        </Control>-->
+        
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)"/>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)" Disabled="yes" >
+          <Condition Action="enable"><![CDATA[SPREAD_NUMBER > 1 AND SPREAD_IPBASE]]></Condition>
+          <Condition Action="disable"><![CDATA[NOT SPREAD_NUMBER OR SPREAD_NUMBER < 2 OR NOT SPREAD_IPBASE]]></Condition>
+          <Publish Event="DoAction" Value="GenerateSpreadConf"><![CDATA[SPREAD=1]]></Publish>
+        </Control>
+      
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>Introduzca informacion del fichero SPREAD.CONF</Text>
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}Fichero SPREAD.CONF</Text>
+        </Control>
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+
+            </Dialog>
+      <!-- Dialogo de Opciones -->
+      <Dialog Id="OptionsDlg" Width="370" Height="270" Title="[ProductName] Setup" NoMinimize="yes">
+
+        <Control Id="PictLabel" Type="Text" X="45" Y="73" Width="60" Height="18" TabSkip="no" Text="PICT" />
+        <!--<Control Id="PictEdit"  Type="Edit" X="110" Y="50" Width="160" Height="18" Property="PICT" Text="{20}" />-->
+        <Control Id="PictCb" Type="ComboBox" X="110" Y="70" Width="160" Height="18" Property="PICT" ComboList="yes" />
+
+        <!--<Control Id="IPLabel"   Type="Text" X="45" Y="70" Width="60" Height="18" TabSkip="no" Text="IP" />
+        <Control Id="IPEdit"    Type="Edit" X="110" Y="70" Width="160" Height="18" Property="DIRIP" Text="{80}" />-->
+
+        <Control Id="ServLabel" Type="Text" X="45" Y="93" Width="60" Height="18" TabSkip="no" Text="IP-Servidor" />
+        <Control Id="ServEdit"  Type="Edit" X="110" Y="90" Width="160" Height="18" Property="SERVERIP" Text="{80}" />
+<!-- 20180208. Se sustituye por el servicio de Presencia
+        <Control Id="PbxLabel" Type="Text" X="45" Y="113" Width="60" Height="18" TabSkip="no" Text="PBX ?" />
+        <Control Id="PbxCheck" Type="ComboBox" X="110" Y="110" Width="160" Height="18" Property="PBX" ComboList="yes" >
+          <ComboBox Property="PBX">
+            <ListItem Value="False" Text="No" />
+            <ListItem Value="True" Text="Si" />
+          </ComboBox>
+        </Control>
+        <Control Id="PbxIpLabel" Type="Text" X="45" Y="133" Width="60" Height="18" TabSkip="no" Text="IP-PBX" />
+        <Control Id="PbxIpEdit"  Type="Edit" X="110" Y="130" Width="160" Height="18" Property="PBXIP" Text="{80}" />
+-->
+        <Control Id="ModoLabel" Type="Text" X="45" Y="113" Width="60" Height="18" TabSkip="no" Text="Modo Nodebox ?" />
+        <Control Id="ModoCheck" Type="ComboBox" X="110" Y="110" Width="160" Height="18" Property="NBOX_AUT" ComboList="yes" >
+          <ComboBox Property="NBOX_AUT">
+            <ListItem Value="True" Text="Automatico" />
+            <ListItem Value="False" Text="Manual" />
+          </ComboBox>
+        </Control>
+
+        <Control Id="LangLabel" Type="Text" X="45" Y="133" Width="60" Height="18" TabSkip="no" Text="Idioma" />
+        <Control Id="LangCheck" Type="ComboBox" X="110" Y="130" Width="160" Height="18" Property="NBOX_LANG" ComboList="yes" >
+          <ComboBox Property="NBOX_LANG">
+            <ListItem Value="es" Text="Castellano" />
+            <ListItem Value="en" Text="Inglés" />
+            <ListItem Value="fr" Text="Francés" />
+          </ComboBox>
+        </Control>
+<!-- -->
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="!(loc.WixUIBack)"/>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
+          <Publish Event="DoAction" Value="CustomActionPict2Ip">1</Publish>
+<!-- 20180208. Se sustituye por el servicio de Presencia
+          <Publish Event="DoAction" Value="ResetPbxIp">PBX = "False"</Publish>        
+-->
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)" />
+
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>Introduzca la informacion del Puesto</Text>
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
+          <Text>{\WixUI_Font_Title}Configuracion del Puesto</Text>
+        </Control>
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+      </Dialog>
+    </UI>
+
+
+  </Fragment>
+</Wix>

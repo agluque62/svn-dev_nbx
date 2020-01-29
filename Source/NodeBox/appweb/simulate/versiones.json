@@ -1,0 +1,87 @@
+{
+	"Version" : "2.5.4",
+	"Fecha": "14/07/2017",
+	"Components" : [
+		{
+			"Name": "UV5K-MCAST",
+			"Files" : [
+				{
+					"Path": "..\\Ulises5000I-MCast\\U5ki.mcast.exe",
+					"Date": "",
+					"Size": "",
+					"MD5": ""
+				},
+				{
+					"Path": "..\\Ulises5000I-MCast\\utilities.dll",
+					"Date": "",
+					"Size": "",
+					"MD5": ""
+				}
+			]
+		},
+		{
+			"Name": "UV5K-NODEBOX",
+			"Files" : [
+				{
+					"Path": ".\\U5ki.NodeBox.exe",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\coresip-voter.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\U5ki.Infrastructure.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\utilities.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				}
+			]
+		},
+		{
+			"Name": "UV5K-NODEBOX SERVICES",
+			"Files" : [
+				{
+					"Path": ".\\Services\\U5ki.CfgService.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\Services\\U5ki.RdService.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\Services\\U5ki.TifxService.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\Services\\U5ki.PabxItfService.dll",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				},
+				{
+					"Path": ".\\Services\\u5ki.RemoteControlService.dll",
+					"MD5": "04303B61569D810CBD94B85AB906B2C0",
+					"Date": "05/07/2017",
+					"Size": "338432"
+				}
+			]
+		}
+	]
+}

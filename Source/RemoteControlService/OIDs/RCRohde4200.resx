@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CarrierOffStatus" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.6.1.0</value>
+    <comment>ffCarrOffst
+
+Getting and setting Tx frequency offset.
+0 = Off
+1 = 7.5 kHz
+2 = 5.0 kHz
+3 = 2.5 kHz
+4 = 0.0 Hz
+5 = -2.5 kHz
+6 = -5.0 kHz
+7 = -7.5 kHz
+8 = 8 kHz
+9 = 4 kHz
+10 = -4 kHz
+11 = -8 kHz
+12 = 7.3 kHz
+13 = -7.3 kHz
+Default: 0
+Note: Offset values 8-11 available only with installed OCXO option.</comment>
+  </data>
+  <data name="ChannelSpacing" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.1.6.4.0</value>
+    <comment>ffChSpc
+
+Channel spacing for frequency. 1=8.33 kHz, 2=12.5 kHz, 3=25.00 kHz (default).</comment>
+  </data>
+  <data name="DeviceStatus" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.1.3.2.0</value>
+    <comment>grDevStat
+
+Indicates current states of radio activation (ACTIVE/INACTIVE), of radio GO (GO/NOGO) and of module's control access
+(REMOTE/LOCAL/NONE).</comment>
+  </data>
+  <data name="EnableCarrierOffset" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.3.1.0</value>
+    <comment>grEn5CarrOffst
+
+Provides information about actual configuration of 5 carrier offsets possibility. Default value is 0 (Off).</comment>
+  </data>
+  <data name="ExternalPowerAmplifier" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.3.3.0</value>
+    <comment>grExtPwrAmp
+
+0 =Disabled
+1 =RS (VHF only)
+2 =Jotron
+Configuration of the external power amplifier. Default value is 0 (disabled).
+Note:After setting of this parameter a reboot is required to activate the changes.</comment>
+  </data>
+  <data name="Frecuency" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.1.6.5.0</value>
+    <comment>ffFreq
+
+Set/Get Working Frecuency.</comment>
+  </data>
+  <data name="Modulation" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.1.6.6.0</value>
+    <comment>ffMode
+
+Provides a way to get or set the current mode (AM/ACARS/…).
+
+0 = AM
+1 = Reserved
+2 = ACARS
+3 = VDL2
+4 = AM-CT</comment>
+  </data>
+  <data name="RequestSession" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.1.4.3.0</value>
+    <comment>scReqSess
+
+Set/Get Request Session</comment>
+  </data>
+  <data name="TimeOut" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.1.4.1.0</value>
+    <comment>scPingTimeOut
+
+Set/Get Session Time Out.</comment>
+  </data>
+  <data name="TxPower" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.5.7.0</value>
+    <comment>rcTxPwr
+
+READONLY
+Measures current value of Tx power.</comment>
+  </data>
+  <data name="TxPowerLevel" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.5.8.0</value>
+    <comment>rcTxPwrLvl
+
+Tx power level (1=low,2=normal) can be set/get.</comment>
+  </data>
+  <data name="TxPowerLow" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.5.14.0</value>
+    <comment>rcTxPwrLvlLow
+
+Tx output power for power level low can be set/get in a resolution of 1 Watt.
+Default value is 5W (VHF) /10W (UHF).
+Note:This command only changes the value of power level low. Value of power level normal is not influenced by this command.</comment>
+  </data>
+  <data name="TxPowerNormal" xml:space="preserve">
+    <value>.1.3.6.1.4.1.2566.127.2.2.1.3.5.15.0</value>
+    <comment>rcTxPwrLvlNorm
+
+Tx output power for power level normal can be set/get in a resolution of 1 Watt.
+Default value is 50W.
+Range:
+5 - 50 (VHF)
+10 - 50 (UHF)
+Note:This command only changes the value of power level normal. Value of power level low is not influenced by this command.</comment>
+  </data>
+</root>

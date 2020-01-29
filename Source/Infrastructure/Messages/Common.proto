@@ -1,0 +1,11 @@
+package U5ki.Infrastructure;
+
+enum PttSource 
+{ 
+	NoPtt = 0;
+	Alumn = 1;
+	Instructor = 2;
+	Hmi = 3;
+	Avion = 4;
+	SelCal = 5;
+}

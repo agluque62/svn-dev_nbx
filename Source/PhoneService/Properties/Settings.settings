@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="u5ki.PhoneService.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IpPrincipal" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.2.202</Value>
+    </Setting>
+    <Setting Name="ExpireInProxy" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="SipPortPhone" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">7060</Value>
+    </Setting>
+    <Setting Name="CancelMDCallTime" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
