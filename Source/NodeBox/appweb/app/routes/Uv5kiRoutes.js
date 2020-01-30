@@ -25,10 +25,10 @@ function config($routeProvider) {
             controller: 'uv5kiTlfCtrl',
             controllerAs: 'ctrl'
         });
-            // .when(routeForUnauthorizedAccess, {
-		    // templateUrl: 'app/views/session-expired.html'
-		    // // templateUrl: 'session-expired.html'
-            // }
-		// );
+    // .when(routeForUnauthorizedAccess, {
+    // templateUrl: 'app/views/session-expired.html'
+    // // templateUrl: 'session-expired.html'
+    // }
+    // );
 }
 
