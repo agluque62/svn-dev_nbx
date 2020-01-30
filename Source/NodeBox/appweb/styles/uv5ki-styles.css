@@ -355,6 +355,7 @@ section#_ppal
     #inci table.table {
         margin-top: 2px;
         border-top: 1px solid var(--main-color);
+        border-bottom: 1px solid var(--main-color);
         font-size: 80%;
     }
 
@@ -380,11 +381,11 @@ section#_ppal
     }
 
     #inci button.btn {
-        padding-top: 1px;
+        /*padding-top: 1px;
         padding-bottom: 1px;    
         float:right;
         margin-right: 5px;
-        font-size: 80%;
+        font-size: 80%;*/
     }
 
     #inci .pagination
@@ -442,9 +443,9 @@ figcaption
     font-weight: bold;
 }
 
-tr.ng-scope {
+/*tr.ng-scope {
     border: 1px solid var(--main-color);
-}
+}*/
 
 /** */
 .ug5kdiv

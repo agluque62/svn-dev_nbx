@@ -50,61 +50,71 @@
                 <li data-ng-class="{'active': ctrl.pagina==3}">
                     <a href="#/config" data-ng-click="ctrl.pagina=3" translate>Config. Local</a>
                 </li>
-                <!--                <li style="margin-top: 60px;">
-                    <a href="#" i data-ng-click="gvm.logout()">Logout</a>
-                </li>-->
             </ul>
         </nav>
 
         <section id="_ppal">
             <div data-ng-view></div>
         </section>
-        <div id="inci" style="border: 1px solid black">
-            <h1 translate>Ultimos Eventos</h1>
-            <table class="table table-striped" style="border: 0; margin: 1em; width: 95%; margin">
+        <div id="inci" style="padding: 1em;">
+            <h1 style="margin: 0.5em;" translate>Ultimos Eventos</h1>
+            <table class="table table-striped" style="margin-bottom: 2px;">
                 <thead>
                     <tr>
-                        <th translate>Hora</th>
-                        <th translate>Servicio</th>
-                        <th translate>Incidencia</th>
-                        <th translate>Parametros</th>
+                        <th translate>Hora</th><th translate>Servicio</th><th translate>Incidencia</th><th translate>Parametros</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr data-ng-repeat="inci in ctrl.inciPage">
-                        <td>
-                            <div>{{inci.fh}}</div>
-                        </td>
-                        <td>
-                            <div>{{inci.ser}}</div>
-                        </td>
-                        <td>
-                            <div>{{ctrl.decodeHtml(inci.ev)}}</div>
-                        </td>
-                        <td>
-                            <div>{{ctrl.decodeHtml(inci.par)}}</div>
-                        </td>
+                        <td><div>{{inci.fh}}</div></td>
+                        <td><div>{{inci.ser}}</div></td>
+                        <td><div>{{ctrl.decodeHtml(inci.ev)}}</div></td>
+                        <td><div>{{ctrl.decodeHtml(inci.par)}}</div></td>
                     </tr>
                 </tbody>
-                <tfoot>
+                <!--<tfoot>
                     <tr style="padding: 0;">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td >
+                        <td>
                             <div class="row">
-                                <div class="col-md-2" style="float: right; margin-top: 17px; text-align:right">
+                                <div class="col-md-12">
+                                    <button class="btn btn-default" data-ng-click="ctrl.logs()">LOGS</button>
+
+                                </div>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-2" style="float: right; margin: 1em; text-align:right">
                                     <p>Pag. {{ctrl.inciCurrentPage}}-{{ctrl.inciPages}}</p>
                                 </div>
                                 <div class="col-md-3" style="float: right">
-                                    <uib-pager style="margin-top: 10px; margin-bottom: 10px;" total-items="ctrl.listainci.length"
+                                    <uib-pager style="margin: 0.5em;" total-items="ctrl.listainci.length"
                                                ng-model="ctrl.inciCurrentPage" items-per-page="ctrl.inciPageSize" next-text=">>" previous-text="<<"></uib-pager>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                </tfoot>
+                </tfoot>-->
             </table>
+            <div class="row">
+                <div class="col-md-9">
+                    <button class="btn btn-default" data-ng-click="ctrl.logs()" style="margin: 0.5em;">Logs</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <uib-pager style="margin: 0.5em;" total-items="ctrl.listainci.length"
+                                       ng-model="ctrl.inciCurrentPage" items-per-page="ctrl.inciPageSize" next-text=">>" previous-text="<<"></uib-pager>
+                        </div>
+                        <div class="col-md-6">
+                            <p style="margin: 1em;">Pag. {{ctrl.inciCurrentPage}}-{{ctrl.inciPages}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <footer id="_pie" translate>Nucleo Copyright @ 2015-2020. Todos los Derechos Reservados.</footer>
     </div>
