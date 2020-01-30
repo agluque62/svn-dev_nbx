@@ -27,6 +27,7 @@ angular.module("Uv5kinbx")
         ctrl.vhf_mode_select = -1;
         ctrl.uhf_mode_select = -1;
 
+        ctrl.lsrv = $lserv;
         //** */
         ctrl.Pagina = function (pg) {
             if (pg == 0)
@@ -76,6 +77,7 @@ angular.module("Uv5kinbx")
             if (pes == 1) return app_version >= 1 ? $lserv.translate("Gestor M+N") : $lserv.translate("Gestor M+N (VHF)");
             if (pes == 2) return $lserv.translate("Gestor M+N (UHF)");
             if (pes == 3) return $lserv.translate("Transmisores HF");
+            if (pes == 4) return $lserv.translate("Radio 1+1");
             return "Estado Erroneo";
         };
         ctrl.txtFrecAndType = function (fr, tp) {
@@ -106,7 +108,6 @@ angular.module("Uv5kinbx")
                 type == session_types.TX ? $lserv.translate("Tx") :
                     type == session_types.RXTX ? $lserv.translate("TxRx") : "??";
         };
-
         //** Servicios Pagina del Gestor */
         ctrl.txtTipoEquipo = function (eq) {
             var type = eq.tip == equ_types.Main ? $lserv.translate("M") :
@@ -345,7 +346,8 @@ angular.module("Uv5kinbx")
         };
 
         /** Rutinas Generales */
-        /** Datos desde el Servidor */
+    /** Datos desde el Servidor */
+        // Sesiones Radio
         function rdSessionsGet() {
             $serv.radio_sessions_get().then(function (response) {
                 console.log(response.data);
@@ -360,25 +362,6 @@ angular.module("Uv5kinbx")
                     console.log(response);
                 });
         }
-        /** */
-        function rdGestormnGet() {
-            $serv.radio_gestormn_get().then(function (response) {
-                console.log(response.data);
-                if (rdMNManagerChanged(response.data) == true) {
-                    console.log("Cambio en tabla de M+N");
-                    ctrl.gestormn = response.data;
-                    if (app_version >= 1)
-                        rdMNManagerSort();
-                }
-                ctrl.leds = ctrl.leds == led_std.On2 ? led_std.On1 : led_std.On2;
-            }
-                , function (response) {
-                    console.log(response);
-                    ctrl.leds = led_std.Off;
-                });
-        }
-
-        //** */
         function rdSessionsChanged(ses) {
             if (ses.constructor === Array && ctrl.sessions.constructor === Array) {
                 /** Deben ser iguales */
@@ -394,8 +377,6 @@ angular.module("Uv5kinbx")
             }
             return false;
         }
-
-        /** */
         function rdSessionsSort() {
             var sorted = new Object();
             for (i = 0; i < ctrl.sessions.length; i++) {
@@ -443,8 +424,26 @@ angular.module("Uv5kinbx")
             //sorted.sort();
             ctrl.frecs = sorted;
         }
-
-        //** */
+        /** Gestor M+N*/
+        function rdGestormnGet() {
+            if ($lserv.RdModuleExist('M+N')) {
+                $serv.radio_gestormn_get().then(function (response) {
+                    console.log(response.data);
+                    if (rdMNManagerChanged(response.data) == true) {
+                        console.log("Cambio en tabla de M+N");
+                        ctrl.gestormn = response.data;
+                        if (app_version >= 1)
+                            rdMNManagerSort();
+                    }
+                    ctrl.leds = ctrl.leds == led_std.On2 ? led_std.On1 : led_std.On2;
+                }, function (response) {
+                    console.log(response);
+                    ctrl.leds = led_std.Off;
+                });
+            } else {
+                ctrl.gestormn = [];
+            }
+        }
         function rdMNManagerChanged(mn) {
             if (mn.constructor === Array && ctrl.gestormn.constructor === Array) {
                 /** Deben ser iguales */
@@ -458,8 +457,6 @@ angular.module("Uv5kinbx")
             }
             return false;
         }
-
-        /** */
         function rdMNManagerSort() {
             var PrimerNivel = new Object();
             for (i = 0; i < ctrl.gestormn.length; i++) {
@@ -492,35 +489,110 @@ angular.module("Uv5kinbx")
             if (!ctrl.site_select)
                 ctrl.site_select = ctrl.gestormn.length == 0 ? "" : ctrl.gestormn[0].emp;
         }
-
-        /** */
+        /** Gestor Tx HF*/
         function rdHfGet() {
-            $serv.radio_hf_get().then(function (response) {
-                console.log(response.data);
-                if (rdHfChanged(response.data) == true) {
-                    console.log("Cambio en tabla HF");
-                    ctrl.gestorhf = response.data;
+            if ($lserv.RdModuleExist('HF')) {
+                $serv.radio_hf_get().then(function (response) {
+                    console.log(response.data);
+                    if (rdHfChanged(response.data) == true) {
+                        console.log("Cambio en tabla HF");
+                        ctrl.gestorhf = response.data;
+                    }
                 }
+                    , function (response) {
+                        console.log(response);
+                    });
+            } else {
+                ctrl.gestorhf = [];
             }
-                , function (response) {
-                    console.log(response);
-                });
         }
-
-        //** */
         function rdHfChanged(newdata) {
             return angular.toJson(newdata) != angular.toJson(ctrl.gestorhf);
         }
 
+        // Gestor 1+1
+        ctrl.dtUnoMasUno = [];
+        function rdUnoMasUnoGet() {
+            if ($lserv.RdModuleExist('1+1')) {
+                $serv.radio_11_get().then(function (response) {
+                    console.log("RD1+1 Data =>", response.data);
+                    var normalizedData = rdUnoMasUnoNormalize(response.data);
+                    if (rdUnoMasUnoChanged(normalizedData) == true) {
+                        console.log("Cambio en tabla de 1+1");
+                        ctrl.dtUnoMasUno = normalizedData;
+                    }
+                }, function (response) {
+                    console.log(response);
+                });
+            } else {
+                ctrl.dtUnoMasUno = [];
+            }
+        }
+        function rdUnoMasUnoChanged(newdata) {
+            return angular.toJson(newdata) != angular.toJson(ctrl.dtUnoMasUno);
+        }
+        // Para desordenar un Array en pruebas...
+        function shuffle(array) {
+            var currentIndex = array.length, temporaryValue, randomIndex;
+
+            // Mientras queden elementos a mezclar...
+            while (0 !== currentIndex) {
+
+                // Seleccionar un elemento sin mezclar...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // E intercambiarlo con el elemento actual
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+            return array;
+        }        
+        function rdUnoMasUnoNormalize(datain) {
+
+            //var data = shuffle(datain);
+            //console.log("1+1 Data shuffled => ", data);
+            var data = datain;
+            // Utiliza linq.js
+            // Los agrupa por frecuencia y despues por emplazamiento...
+            var res = Enumerable.from(data)
+                .groupBy(
+                    '$.fr', '$', 
+                    function (fr, grp) {
+                        //console.log("grp =>", grp);
+                        var res1 = Enumerable.from(grp.getSource())
+                            .groupBy('$.site', '$', function (site, grp1) {
+                                var en = Enumerable.from(grp1.getSource());
+                                var txs = en.where(eq => eq.tx == 1).toArray();
+                                var rxs = en.where(eq => eq.tx == 0).toArray();
+                                return { site: site, txs: txs, rxs: rxs };
+                            })
+                            .toArray();
+                        return { fr: fr, sites: res1 };
+                    }
+                )
+                .toArray();
+            console.log("Res =>", res);
+            return res;
+        }
+        ctrl.rdUnoMasUnoId = function (res) {
+            var retorno = "(" + (res.ab == 1 ? "A" : "B") + ") " + res.id;
+            return retorno;
+        };
+
+
         /** Funcion Periodica del controlador */
         var timer = $interval(function () {
-            if (ctrl.pagina == 0)
+            if (ctrl.pagina == 0) {
                 rdSessionsGet();
-            else if (ctrl.pagina == 1 || ctrl.pagina == 2) {
+            } else if (ctrl.pagina == 1 || ctrl.pagina == 2) {
                 rdGestormnGet();
-            }
-            else if (ctrl.pagina == 3) {
+            } else if (ctrl.pagina == 3) {
                 rdHfGet();
+            } else if (ctrl.pagina == 4) {
+                rdUnoMasUnoGet();
             }
         }, pollingTime);
 
@@ -529,6 +601,7 @@ angular.module("Uv5kinbx")
             rdSessionsGet();
             rdGestormnGet();
             rdHfGet();
+            rdUnoMasUnoGet();
         });
 
         /** Salida del Controlador. Borrado de Variables */

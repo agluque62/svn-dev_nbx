@@ -42,6 +42,9 @@ angular
             , radio_hf_get: function () {
                 return remoteGet(rest_url_radio_hf);
             }
+            , radio_11_get: function () {
+                return remoteGet(rest_url_radio_11);
+            }
             , radio_gestormn_enable: function (data) {
                 return remotePost(rest_url_radio_gestormn_habilita, data);
             }

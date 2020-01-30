@@ -4,14 +4,17 @@
         <li data-ng-class="{'active': ctrl.pagina==0}">
             <a href="" data-ng-click="ctrl.Pagina(0)">{{ctrl.txtPestana(0)}}</a>
         </li>
-        <li data-ng-class="{'active': ctrl.pagina==1}">
+        <li data-ng-class="{'active': ctrl.pagina==1}" ng-show="ctrl.lsrv.RdModuleExist('M+N')">
             <a href="" data-ng-click="ctrl.Pagina(1)">{{ctrl.txtPestana(1)}}</a>
         </li>
         <li data-ng-class="{'active': ctrl.pagina==2}" ng-show="ctrl.app_version==0">
             <a href="" data-ng-click="ctrl.Pagina(2)">{{ctrl.txtPestana(2)}}</a>
         </li>
-        <li data-ng-class="{'active': ctrl.pagina==3}">
+        <li data-ng-class="{'active': ctrl.pagina==3}" ng-show="ctrl.lsrv.RdModuleExist('HF')">
             <a href="" data-ng-click="ctrl.Pagina(3)">{{ctrl.txtPestana(3)}}</a>
+        </li>
+        <li data-ng-class="{'active': ctrl.pagina==4}" ng-show="ctrl.lsrv.RdModuleExist('1+1')">
+            <a href="" data-ng-click="ctrl.Pagina(4)">{{ctrl.txtPestana(4)}}</a>
         </li>
     </ul>
 </section>
@@ -125,7 +128,8 @@
 
         </div>
     </div>
-    <div id="setVhf" data-ng-show="ctrl.pagina==1">
+    
+    <div id="setVhf" ng-show="ctrl.pagina==1">
         <!-- Versiones 2.5.3 y anteriores.-->
         <div data-ng-show="ctrl.app_version==0">
             <table class="tradio">
@@ -401,6 +405,7 @@
         <div data-ng-show="ctrl.app_version>=1">
         </div>
     </div>
+
     <div id="setHf" data-ng-show="ctrl.pagina==3">
             <h1><strong translate>Trasmisores HF</strong></h1>
             <div class="TX">
@@ -433,4 +438,66 @@
                     </tbody>
                 </table>
             </div>    </div>
+
+    <div id="UnoMasUno" ng-show="ctrl.pagina==4">
+        <h1 translate>Recursos Radio en Uno mas Uno</h1>
+
+        <div style="width:98%;margin-left:1%;">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row bg-primary">
+                        <div class="col-md-1 level-1" translate>Frecuencia</div>
+                        <div class="col-md-2 level-1" translate>Emplazamiento</div>
+                        <div class="col-md-5 level-1" translate>Transmisores</div>
+                        <div class="col-md-4 level-1" translate>Receptores</div>
+                    </div>
+                </li>
+                <li class="list-group-item" ng_repeat="fr in ctrl.dtUnoMasUno" ng-init="ifrec = $index">
+                    <div class="row">
+                        <div class="col-md-1">{{fr.fr}}</div>
+                        <div class="col-md-11">
+                            <ul class="list-group">
+                                <li class="list-group-item" ng-repeat="site in fr.sites">
+                                    <div class="row">
+                                        <div class="col-md-2">{{site.site}}</div>
+                                        <div class="col-md-5">
+                                            <ul class="list-group">
+                                                <li class="list-group-item" ng-repeat="tx in site.txs">
+                                                    <div class="row">
+                                                        <div class="col-md-7"><label class="btn">{{ctrl.rdUnoMasUnoId(tx)}}</label></div>
+                                                        <div class="col-md-5">
+                                                            <button class="btn btn-default" ng-click="" ng-show="{{tx.sel==0}}">
+                                                                {{"Standby=>Sel"}}
+                                                            </button>
+                                                            <label class="btn" ng-show="{{tx.sel==1}}">Main</label>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <ul class="list-group">
+                                                <li class="list-group-item" ng-repeat="rx in site.rxs">
+                                                    <div class="row">
+                                                        <div class="col-md-7"><label class="btn">{{ctrl.rdUnoMasUnoId(rx)}}</label></div>
+                                                        <div class="col-md-5">
+                                                            <button class="btn btn-default" ng-click="" ng-show="{{rx.sel==0}}">
+                                                                {{"Standby=>Sel"}}
+                                                            </button>
+                                                            <label class="btn" ng-show="{{rx.sel==1}}">Main</label>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 </section>
