@@ -328,6 +328,7 @@
             </div>
         </div>
     </div>
+
     <div id="setUhf" data-ng-show="ctrl.pagina==2">
         <!-- Versiones 2.5.3 y anteriores.-->
         <div data-ng-show="ctrl.app_version==0">
@@ -440,10 +441,22 @@
             </div>    </div>
 
     <div id="UnoMasUno" ng-show="ctrl.pagina==4">
-        <h1 translate>Recursos Radio en Uno mas Uno</h1>
+        <div style="width:98%;margin-left:1%;font-size:80%;" ng-show="ctrl.dtUnoMasUno.length > 0">
+            <ul class="list-group" style="margin:0.75em">
+                <!-- Seleccion de la Frecuencia  -->
+                <li class="list-group-item">
+                    <div class="row text-primary">
+                        <div class="col-md-10"><label class="form-control">Seleccione la Frecuencia</label></div>
+                        <div class="col-sm-2">
+                            <select class="form-control" data-ng-model="ctrl.dtUnoMasUnoSelectedFrec">
+                                <option data-ng-repeat="fr in ctrl.dtUnoMasUno" value="{{fr.fr}}">
+                                    {{fr.fr}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </li>
 
-        <div style="width:98%;margin-left:1%;">
-            <ul class="list-group">
                 <li class="list-group-item">
                     <div class="row bg-primary">
                         <div class="col-md-1 level-1" translate>Frecuencia</div>
@@ -452,7 +465,7 @@
                         <div class="col-md-4 level-1" translate>Receptores</div>
                     </div>
                 </li>
-                <li class="list-group-item" ng_repeat="fr in ctrl.dtUnoMasUno" ng-init="ifrec = $index">
+                <li class="list-group-item text-primary" ng_repeat="fr in ctrl.dtUnoMasUno | filter: {fr: ctrl.dtUnoMasUnoSelectedFrec}" ng-init="ifrec = $index">
                     <div class="row">
                         <div class="col-md-1">{{fr.fr}}</div>
                         <div class="col-md-11">
@@ -462,14 +475,16 @@
                                         <div class="col-md-2">{{site.site}}</div>
                                         <div class="col-md-5">
                                             <ul class="list-group">
-                                                <li class="list-group-item" ng-repeat="tx in site.txs">
+                                                <li class="list-group-item" ng-repeat="tx in site.txs" style="padding:5px;">
                                                     <div class="row">
-                                                        <div class="col-md-7"><label class="btn">{{ctrl.rdUnoMasUnoId(tx)}}</label></div>
-                                                        <div class="col-md-5">
-                                                            <button class="btn btn-default" ng-click="" ng-show="{{tx.sel==0}}">
+                                                        <div class="col-md-7" style="padding-left:5px; padding-right:5px;">
+                                                            <label class="btn btn-sm" ng-class="ctrl.rdUnoMasUnoIdClass(tx)" style="font-size:90%; padding-right:5px; margin-left:10px;">{{ctrl.rdUnoMasUnoId(tx)}}</label>
+                                                        </div>
+                                                        <div class="col-md-5" style="padding-left:5px; padding-right:5px;">
+                                                            <button class="btn btn-sm btn-default" style="font-size:90%; padding-right:5px;" ng-click="" ng-show="{{tx.sel==0}}">
                                                                 {{"Standby=>Sel"}}
                                                             </button>
-                                                            <label class="btn" ng-show="{{tx.sel==1}}">Main</label>
+                                                            <label class="btn btn-sm text-success" style="font-size:90%; padding-right:5px;" ng-show="{{tx.sel==1}}"><strong>Main</strong></label>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -477,14 +492,17 @@
                                         </div>
                                         <div class="col-md-5">
                                             <ul class="list-group">
-                                                <li class="list-group-item" ng-repeat="rx in site.rxs">
+                                                <li class="list-group-item" ng-repeat="rx in site.rxs" style="padding:5px;">
                                                     <div class="row">
-                                                        <div class="col-md-7"><label class="btn">{{ctrl.rdUnoMasUnoId(rx)}}</label></div>
-                                                        <div class="col-md-5">
-                                                            <button class="btn btn-default" ng-click="" ng-show="{{rx.sel==0}}">
-                                                                {{"Standby=>Sel"}}
-                                                            </button>
-                                                            <label class="btn" ng-show="{{rx.sel==1}}">Main</label>
+                                                        <div class="col-md-7" style="padding-left:5px; padding-right:5px; margin-left:0;">
+                                                            <label class="btn btn-sm" ng-class="ctrl.rdUnoMasUnoIdClass(rx)" style="font-size:90%; padding-right:5px; margin-left:10px;">{{ctrl.rdUnoMasUnoId(rx)}}</label>
+                                                        </div>
+                                                        <div class="col-md-5" style="padding-left:5px; padding-right:5px;">
+                                                            <!--<button class="btn btn-sm btn-default" style="font-size:90%; padding-right:5px;" ng-click="" ng-show="{{rx.sel==0}}">
+                                                            {{"Standby=>Sel"}}
+                                                        </button>-->
+                                                            <label class="btn btn-sm text-success" style="font-size:90%; padding-right:5px;" ng-show="{{rx.sel==0}}"><strong>Standby</strong></label>
+                                                            <label class="btn btn-sm text-success" style="font-size:90%; padding-right:5px;" ng-show="{{rx.sel==1}}"><strong>Main</strong></label>
                                                         </div>
                                                     </div>
                                                 </li>
@@ -497,6 +515,10 @@
                     </div>
                 </li>
             </ul>
+
+        </div>
+        <div style="width:98%;margin-left:1%;font-size:80%;" ng-show="ctrl.dtUnoMasUno.lenght == 0">
+            <h1 class="text-center">No existen frecuencias con recursos 1+1</h1>
         </div>
     </div>
 

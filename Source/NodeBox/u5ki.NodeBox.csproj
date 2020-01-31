@@ -239,8 +239,6 @@
     <Content Include="appweb\images\nucleo-df-new.jpg" />
     <Content Include="appweb\index.html" />
     <Content Include="appweb\login.html" />
-    <Content Include="appweb\mongoose-free-5.6.exe" />
-    <Content Include="appweb\mongoose-free-6.1.exe" />
     <Content Include="appweb\scripts\angular\angular-route.js" />
     <Content Include="appweb\scripts\angular\angular.min.js" />
     <Content Include="appweb\scripts\bootsstrap\ui-bootstrap-tpls-0.13.4.min.js" />

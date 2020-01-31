@@ -512,6 +512,7 @@ angular.module("Uv5kinbx")
 
         // Gestor 1+1
         ctrl.dtUnoMasUno = [];
+        ctrl.dtUnoMasUnoSelectedFrec = "";
         function rdUnoMasUnoGet() {
             if ($lserv.RdModuleExist('1+1')) {
                 $serv.radio_11_get().then(function (response) {
@@ -520,6 +521,7 @@ angular.module("Uv5kinbx")
                     if (rdUnoMasUnoChanged(normalizedData) == true) {
                         console.log("Cambio en tabla de 1+1");
                         ctrl.dtUnoMasUno = normalizedData;
+                        ctrl.dtUnoMasUnoSelectedFrec = ctrl.dtUnoMasUno.length > 0 ? ctrl.dtUnoMasUno[0].fr : "";
                     }
                 }, function (response) {
                     console.log(response);
@@ -531,25 +533,6 @@ angular.module("Uv5kinbx")
         function rdUnoMasUnoChanged(newdata) {
             return angular.toJson(newdata) != angular.toJson(ctrl.dtUnoMasUno);
         }
-        // Para desordenar un Array en pruebas...
-        function shuffle(array) {
-            var currentIndex = array.length, temporaryValue, randomIndex;
-
-            // Mientras queden elementos a mezclar...
-            while (0 !== currentIndex) {
-
-                // Seleccionar un elemento sin mezclar...
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-
-                // E intercambiarlo con el elemento actual
-                temporaryValue = array[currentIndex];
-                array[currentIndex] = array[randomIndex];
-                array[randomIndex] = temporaryValue;
-            }
-
-            return array;
-        }        
         function rdUnoMasUnoNormalize(datain) {
 
             //var data = shuffle(datain);
@@ -558,11 +541,13 @@ angular.module("Uv5kinbx")
             // Utiliza linq.js
             // Los agrupa por frecuencia y despues por emplazamiento...
             var res = Enumerable.from(data)
+                .orderBy('$.fr')
                 .groupBy(
                     '$.fr', '$', 
                     function (fr, grp) {
                         //console.log("grp =>", grp);
                         var res1 = Enumerable.from(grp.getSource())
+                            .orderBy('$.site')
                             .groupBy('$.site', '$', function (site, grp1) {
                                 var en = Enumerable.from(grp1.getSource());
                                 var txs = en.where(eq => eq.tx == 1).toArray();
@@ -579,6 +564,10 @@ angular.module("Uv5kinbx")
         }
         ctrl.rdUnoMasUnoId = function (res) {
             var retorno = "(" + (res.ab == 1 ? "A" : "B") + ") " + res.id;
+            return StringCut(retorno, 24);
+        };
+        ctrl.rdUnoMasUnoIdClass = function (res) {
+            var retorno = res.ses == 0 ? "bg-danger" : "";
             return retorno;
         };
 
