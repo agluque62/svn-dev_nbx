@@ -824,11 +824,11 @@ namespace U5ki.PresenceService
 #if _WITH_EVENTQUEUE_
             });
 #endif
-
                 /** Control de envio por tiempo... */
-                TimeSpan trans = DateTime.Now - last;
+                TimeSpan elapsed = DateTime.Now - last;
                 TimeSpan tick = new TimeSpan(0, 0, PSHelper.LocalParameters.MulticastSenderTick);
-                if (trans >= tick)
+                /** Control de puesta en hora (SYNC NTP) hacia atras... */
+                if (elapsed < TimeSpan.Zero || elapsed >= tick)
                 {
                     SendingControl["PSBkkAgent"] = true;
                     SendingControl["PSExternalAgent"] = true;

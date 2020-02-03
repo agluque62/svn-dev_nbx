@@ -127,6 +127,15 @@ namespace PresenceServiceUnitTest
             }
         }
 
+        [TestMethod]
+        public void TestForNegativeTimespam()
+        {
+            var future = DateTime.Now + TimeSpan.FromMinutes(10);
+            var elapsed = DateTime.Now - future;
+            if (elapsed <= TimeSpan.Zero)
+                Console.WriteLine($"{elapsed}");
+        }
+
     }
 
 }
