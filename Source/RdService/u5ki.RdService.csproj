@@ -116,6 +116,7 @@
     <Compile Include="Gears\VHFGear.cs" />
     <Compile Include="Globals\Delegates.cs" />
     <Compile Include="Globals\Enums.cs" />
+    <Compile Include="IRdResource.cs" />
     <Compile Include="MN\MNManager.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +128,7 @@
     <Compile Include="RdMixer.cs" />
     <Compile Include="RdRegistry.cs" />
     <Compile Include="RdResource.cs" />
+    <Compile Include="RdResourcePair.cs" />
     <Compile Include="RdService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\FrecuencyHelper.cs" />

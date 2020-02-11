@@ -30,7 +30,7 @@ namespace U5ki.RdService
     /// <summary>
     /// 
     /// </summary>
-    public class RdResource : BaseCode, IDisposable
+    public class RdResource : BaseCode, IDisposable //, IRdResource
 	{
         /************************************************************************/
         /** 201702-FD. AGL. Nuevos Atributos de Configuracion y Estado. *********/
@@ -97,6 +97,7 @@ namespace U5ki.RdService
 		{
 			get { return _SipCallId; }
 		}
+
         /// <summary>
         /// 
         /// </summary>
@@ -116,7 +117,7 @@ namespace U5ki.RdService
             }
         }
         /// <summary>
-        /// Devuelve true si el recurso es de RX
+        /// Devuelve true si el recurso es de TX
         /// </summary>
         public bool isTx
         {
@@ -570,12 +571,27 @@ namespace U5ki.RdService
             new_params.offset_frequency = newrRDRP.offset_frequency;
         }
         // JOI 201709 NEWRDRP FIN
-		
-		#region Private Members
+
+        /// <summary>
+        /// Sends Ptt off to SipAgent
+        /// </summary>
+        public void PttOff ()
+        {
+            if (Connected)
+                SipAgent.PttOff(SipCallId);
+        }
+        /// <summary>
+        /// Sends Ptt on to SipAgent
+        /// </summary>
+        public void PttOn(CORESIP_PttType srcPtt)
+        {
+            if (Connected)
+                SipAgent.PttOn(SipCallId, PttId, srcPtt, PttMute);
+        }
         /// <summary>
         /// 
         /// </summary>
-		private string _Id;
+        private string _Id;
         public string ID
         {
             get { return _Id; }
@@ -588,13 +604,14 @@ namespace U5ki.RdService
         {
             get { return _Uri1; }
         }
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <summary>
-		/// 
-		/// </summary>
-		private string _Uri2;
+#region Private Members
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <summary>
+        /// 
+        /// </summary>
+        private string _Uri2;
         public string Uri2
         {
             get { return _Uri2; }

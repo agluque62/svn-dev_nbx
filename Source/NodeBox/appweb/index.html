@@ -102,22 +102,21 @@
                 </tfoot>-->
             </table>
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <button class="btn btn-default" data-ng-click="ctrl.logs()" style="margin: 0.5em;">Logs</button>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="row">
                         <div class="col-md-6">
                             <uib-pager style="margin: 0.5em;" total-items="ctrl.listainci.length"
-                                       ng-model="ctrl.inciCurrentPage" items-per-page="ctrl.inciPageSize" next-text=">>" previous-text="<<"></uib-pager>
+                                       ng-model="ctrl.inciCurrentPage" items-per-page="ctrl.inciPageSize" align="false" next-text=">>" previous-text="<<"></uib-pager>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 text-right">
                             <p style="margin: 1em;">Pag. {{ctrl.inciCurrentPage}}-{{ctrl.inciPages}}</p>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
         <footer id="_pie" translate>Nucleo Copyright @ 2015-2020. Todos los Derechos Reservados.</footer>
     </div>

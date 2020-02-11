@@ -1167,25 +1167,20 @@ namespace U5ki.RdService
                 LogTrace<RdService>("OnTimer");
 
                 _gestorHF.CheckFrequency();
-                RdFrecuency rdFrWithCheckFailed = null;
                 foreach (RdFrecuency rdFr in Frecuencies.Values)
                 {
                     try
                     {
                         rdFr.RetryFailedConnections();
                         rdFr.CheckFrequency();
-                        if (rdFr.SanityCheckCalls())
-                            rdFrWithCheckFailed = rdFr;
+                        //if (rdFr.SanityCheckCalls())
+                        //    rdFr.LimpiaLlamadaDeRecurso();
                     }
                     catch (Exception ex)
                     {
                         //LogException<RdService>("OnTimer.RetryFailedConnections", ex, false);
                         ExceptionManage<RdService>("OnTimer", ex, "OnRetryFailedConnextions Exception: " + ex.Message);
                     }
-                }
-                if (rdFrWithCheckFailed != null)
-                {
-                    rdFrWithCheckFailed.LimpiaLlamadaDeRecurso();
                 }
 
                 if (_HFTimerCount == 0 || ++_contTimerEvents >= _HFTimerCount)
@@ -1960,16 +1955,15 @@ namespace U5ki.RdService
             {
                 if (_Master)
                 {
-                foreach (RdFrecuency rdFr in Frecuencies.Values)
-                {
-                    rdFr.SupervisionPortadora = ConfirmaSupervisionPortadora(rdFr.PttSrc, rdFr.Frecuency);
-                    if (rdFr.HandleRdInfo(call, info))
+                    foreach (RdFrecuency rdFr in Frecuencies.Values)
                     {
-                        break;
+                        rdFr.SupervisionPortadora = ConfirmaSupervisionPortadora(rdFr.PttSrc, rdFr.Frecuency);
+                        if (rdFr.HandleRdInfo(call, info))
+                        {
+                            break;
+                        }
                     }
                 }
-                }
-
             });
         }
         /// <summary>
@@ -1985,7 +1979,6 @@ namespace U5ki.RdService
             {
                 return _UsrFreq[clave].SupervisionPortadora;
             }
-
             return false;
         }
         /// <summary>
