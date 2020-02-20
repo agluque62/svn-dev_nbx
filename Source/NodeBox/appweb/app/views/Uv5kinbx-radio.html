@@ -481,7 +481,10 @@
                                                             <label class="btn btn-sm" ng-class="ctrl.rdUnoMasUnoIdClass(tx)" style="font-size:90%; padding-right:5px; margin-left:10px;">{{ctrl.rdUnoMasUnoId(tx)}}</label>
                                                         </div>
                                                         <div class="col-md-5" style="padding-left:5px; padding-right:5px;">
-                                                            <button class="btn btn-sm btn-default" style="font-size:90%; padding-right:5px;" ng-click="" ng-show="{{tx.sel==0}}">
+                                                            <button class="btn btn-sm btn-default" style="font-size:90%; padding-right:5px;" 
+                                                                    ng-click="ctrl.rdUnoMasUnoSelectMain(tx)" 
+                                                                    ng-disabled="ctrl.rdUnoMasUnoTxDisabled(tx)"
+                                                                    ng-show="{{tx.sel==0}}">
                                                                 {{"Standby=>Sel"}}
                                                             </button>
                                                             <label class="btn btn-sm text-success" style="font-size:90%; padding-right:5px;" ng-show="{{tx.sel==1}}"><strong>Main</strong></label>

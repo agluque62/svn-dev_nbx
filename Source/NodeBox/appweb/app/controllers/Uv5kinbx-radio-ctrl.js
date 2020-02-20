@@ -280,7 +280,7 @@ angular.module("Uv5kinbx")
                 case 2:
                     var strQuestion = item.equ + ". " + $lserv.translate("¿Desea Desasignar el equipo?");
 
-                    alert.confirm(strQuestion,
+                    alertify.confirm(strQuestion,
                         function () {
                             var cmd = { equ: item.eq, cmd: 0, frec: "---.--" };
                             $serv.radio_gestormn_asigna(cmd).then(function (response) {
@@ -346,7 +346,7 @@ angular.module("Uv5kinbx")
         };
 
         /** Rutinas Generales */
-    /** Datos desde el Servidor */
+        /** Datos desde el Servidor */
         // Sesiones Radio
         function rdSessionsGet() {
             $serv.radio_sessions_get().then(function (response) {
@@ -543,7 +543,7 @@ angular.module("Uv5kinbx")
             var res = Enumerable.from(data)
                 .orderBy('$.fr')
                 .groupBy(
-                    '$.fr', '$', 
+                    '$.fr', '$',
                     function (fr, grp) {
                         //console.log("grp =>", grp);
                         var res1 = Enumerable.from(grp.getSource())
@@ -569,6 +569,29 @@ angular.module("Uv5kinbx")
         ctrl.rdUnoMasUnoIdClass = function (res) {
             var retorno = res.ses == 0 ? "bg-danger" : "";
             return retorno;
+        };
+        ctrl.rdUnoMasUnoTxDisabled = function (res) {
+            return res.ses == 0;
+        };
+        ctrl.rdUnoMasUnoSelectMain = function (equ) {
+            if ($lserv.RdModuleExist('1+1')) {
+                var strQuestion = equ.id + $lserv.translate(" ¿Desea Seleccionar el equipo como Principal?");
+                alertify.confirm(strQuestion,
+                    function () {
+                        $serv.radio_11_select(equ).then(function (response) {
+                            console.log("RD1+1 Post Response => ", response.data);
+                            alertify.success($lserv.translate("Operacion Ejecutada."));
+                        }, function (response) {
+                                console.log("RD1+1 Post Error => ", response);
+                                alertify.error($lserv.translate("Error: " + response.data));
+                        });
+                    },
+                    function () {
+                        alertify.message($lserv.translate("Operacion Cancelada"));
+                    });
+            } else {
+                // Meter un Mensaje.
+            }
         };
 
 

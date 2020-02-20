@@ -45,6 +45,9 @@ angular
             , radio_11_get: function () {
                 return remoteGet(rest_url_radio_11);
             }
+            , radio_11_select: function (data) {
+                return remotePost(rest_url_radio_11, data);
+            }
             , radio_gestormn_enable: function (data) {
                 return remotePost(rest_url_radio_gestormn_habilita, data);
             }
@@ -106,7 +109,7 @@ angular
         function normalizeUrl(url) {
             if (Simulate == false)
                 return url;
-            return "./simulate" + url + ".json";
+            return "/simulate" + url + ".json";
         }
 
     });
