@@ -30,7 +30,7 @@ namespace U5ki.RdService
     /// <summary>
     /// 
     /// </summary>
-    public class RdResource : BaseCode, IDisposable //, IRdResource
+    public class RdResource: BaseCode, IDisposable , IRdResource
 	{
         /************************************************************************/
         /** 201702-FD. AGL. Nuevos Atributos de Configuracion y Estado. *********/
@@ -157,7 +157,12 @@ namespace U5ki.RdService
 		{
 			get { return _WG67Subscription; }
 		}
-
+        public List<RdResource> GetListResources()
+        {
+            List<RdResource> list = new List<RdResource>(1);
+            list.Add(this);
+            return list;
+        }
         /// 
         /// 
         /// 
@@ -172,6 +177,18 @@ namespace U5ki.RdService
             get { return TxMute ? CORESIP_PttMuteType.ACTIVADO : CORESIP_PttMuteType.DESACTIVADO; }
         }
 
+        public RdResource GetSimpleResource(int sipCallId)
+        {
+            if (this.SipCallId == sipCallId)
+                return this;
+            else return null;
+        }
+
+        public RdResource GetRxSelected()
+        {
+            if (new_params.rx_selected) return this;
+            else return null;
+        }
         /// <summary>
         ///  Propiedad que indica en los transmisores si false que está seleccionado para hacer PTT normal
         ///  Si es true, el PTT es mute y no sale al aire.
@@ -246,7 +263,7 @@ namespace U5ki.RdService
             _Type = type;
             _Frecuency = frecuency;
             _Site = site;
-            _Selected = selected;
+            _SelectedSite = selected;
 
             for (_McastPort = Settings.Default.McastPortBegin; _Ports.ContainsKey(_McastPort); _McastPort++) ;
             _Ports[_McastPort] = this;
@@ -274,7 +291,7 @@ namespace U5ki.RdService
             _Type = type;
             _Frecuency = frecuency;
             _Site = site;
-            _Selected = selected;
+            _SelectedSite = selected;
 
             _FreqParams = newFreqParams;
 
@@ -367,7 +384,7 @@ namespace U5ki.RdService
                 _SipCallId = SipAgent.MakeRdCall(null, _LastUri, _Frecuency, flags, Settings.Default.McastIp, _McastPort,
                     _FreqParams.Priority, new_params.zona, _FreqParams.FrequencyType,
                     _FreqParams.CLDCalculateMethod, _FreqParams.BssWindows, _FreqParams.AudioSync,
-                    _FreqParams.AudioInBssWindow, _FreqParams.NotUnassignable, _FreqParams.cld_supervision_time, 
+                    _FreqParams.AudioInBssWindow, _FreqParams.NotUnassignable, _FreqParams.Cld_supervision_time, 
                     ((BssMethods)_FreqParams.MetodosBssOfrecidos).ToString(),
                     _FreqParams.PorcentajeRSSI);
 
@@ -383,30 +400,19 @@ namespace U5ki.RdService
         /// <summary>
         /// 
         /// </summary>
-        public void Check()
-        {
-            Connect();
-        }
-
-
-        public void HandleChecked()
-        {
-            Reset();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <returns></returns>
         public bool HandleKaTimeout(int callId)
 		{
 			bool connected = Connected;
-
-            Reset();
-            /** 20180717. Para los codigos BYE de las sesiones RADIO */
-            SipAgent.HangupCall(callId, SipAgent.WG67Reason_KATimeout);
-
-			return connected;
+            if (SipCallId == callId)
+            {
+                Reset();
+                /** 20180717. Para los codigos BYE de las sesiones RADIO */
+                SipAgent.HangupCall(callId, SipAgent.WG67Reason_KATimeout);
+            }
+            else
+                LogWarn<RdResource>(_Id + " HandleKaTimeout callId doesn't match with own "+ callId +"-"+ SipCallId);
+            return connected;
 		}
 
         /// <summary>
@@ -459,10 +465,10 @@ namespace U5ki.RdService
         /// </summary>
         /// <param name="stateInfo"></param>
         /// <returns></returns>
-		public bool HandleChangeInCallState(CORESIP_CallStateInfo stateInfo)
+		public bool HandleChangeInCallState(int sipCallId, CORESIP_CallStateInfo stateInfo)
         {
-			bool oldConnected = Connected;
-
+            if (sipCallId != _SipCallId)
+                return false;
 			if (stateInfo.State != _SipCallSt)
 			{
 				if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED)
@@ -514,15 +520,20 @@ namespace U5ki.RdService
 				}
 			}
 
-			return (oldConnected != Connected);
+			return true;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="wg67Info"></param>
-		/// <returns></returns>
-		public void HandleWG67Info(CORESIP_WG67Info wg67Info)
+
+        public bool ActivateResource(string IdResource)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wg67Info"></param>
+        /// <returns></returns>
+        public void HandleWG67Info(CORESIP_WG67Info wg67Info)
 		{
 		}
 
@@ -713,11 +724,11 @@ namespace U5ki.RdService
         /// 
         /// 
         /// 
-        private bool _Selected;
-        public bool Selected
+        private bool _SelectedSite;
+        public bool SelectedSite
         {
-            get { return _Selected; }
-            set { _Selected = value; }
+            get { return _SelectedSite; }
+            set { _SelectedSite = value; }
         }
 
         //Parametros de la frecuencia

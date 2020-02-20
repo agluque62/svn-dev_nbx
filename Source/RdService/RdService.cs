@@ -271,14 +271,14 @@ namespace U5ki.RdService
                                         {
                                             frec = frec.Frecuency,
                                             // Tipo de Frecuencia 0: Normal, 1: 1+1, 2: FD, 3: EM
-                                            ftipo = (int)frec.getParam.FrequencyType,
+                                            ftipo = (int)frec.GetParam.FrequencyType,
                                             // Prioridad de session, 0: Normal, 1: Emergencia
-                                            prio = frec.getParam.Priority == CORESIP_Priority.CORESIP_PR_NORMAL ? 0
-                                                : frec.getParam.Priority == CORESIP_Priority.CORESIP_PR_EMERGENCY ? 1 : 2,
+                                            prio = frec.GetParam.Priority == CORESIP_Priority.CORESIP_PR_NORMAL ? 0
+                                                : frec.GetParam.Priority == CORESIP_Priority.CORESIP_PR_EMERGENCY ? 1 : 2,
                                             // Metodo de Calculo CLD. 0: Relativo, 1: Absoluto
-                                            fp_climax_mc = (int)frec.getParam.CLDCalculateMethod,
+                                            fp_climax_mc = (int)frec.GetParam.CLDCalculateMethod,
                                             // Ventana BSS
-                                            fp_bss_win = frec.getParam.BssWindows,
+                                            fp_bss_win = frec.GetParam.BssWindows,
                                             // Estado Frecuencia. 0: No Disponible. 1: Disponible, 2: Degradada.
                                             fstd = (int)frec.Status,
                                             // Emplazamiento Seleccionado y QIDX del seleccionado...
@@ -371,15 +371,15 @@ namespace U5ki.RdService
                                                       Status = f.Status,
                                                       NewParams = new
                                                       {
-                                                          cld_supervision_time = f.getParam.cld_supervision_time,
-                                                          Priority = f.getParam.Priority,
-                                                          FrequencyType = f.getParam.FrequencyType,
-                                                          CLDCalculateMethod = f.getParam.CLDCalculateMethod,
-                                                          BssWindows = f.getParam.BssWindows,
-                                                          AudioSync = f.getParam.AudioSync,
-                                                          AudioInBssWindow = f.getParam.AudioInBssWindow,
-                                                          NotUnassignable = f.getParam.NotUnassignable,
-                                                          MetodosBssOfrecidos = f.getParam.MetodosBssOfrecidos
+                                                          cld_supervision_time = f.GetParam.Cld_supervision_time,
+                                                          Priority = f.GetParam.Priority,
+                                                          FrequencyType = f.GetParam.FrequencyType,
+                                                          CLDCalculateMethod = f.GetParam.CLDCalculateMethod,
+                                                          BssWindows = f.GetParam.BssWindows,
+                                                          AudioSync = f.GetParam.AudioSync,
+                                                          AudioInBssWindow = f.GetParam.AudioInBssWindow,
+                                                          NotUnassignable = f.GetParam.NotUnassignable,
+                                                          MetodosBssOfrecidos = f.GetParam.MetodosBssOfrecidos
                                                       },
                                                       PublicData = f.PublicData,
                                                       PrivateData = f.PrivateData
@@ -413,15 +413,15 @@ namespace U5ki.RdService
                                         Status = fro.Status,
                                         NewParams = new
                                         {
-                                            cld_supervision_time = fro.getParam.cld_supervision_time,
-                                            Priority = fro.getParam.Priority,
-                                            FrequencyType = fro.getParam.FrequencyType,
-                                            CLDCalculateMethod = fro.getParam.CLDCalculateMethod,
-                                            BssWindows = fro.getParam.BssWindows,
-                                            AudioSync = fro.getParam.AudioSync,
-                                            AudioInBssWindow = fro.getParam.AudioInBssWindow,
-                                            NotUnassignable = fro.getParam.NotUnassignable,
-                                            MetodosBssOfrecidos = fro.getParam.MetodosBssOfrecidos
+                                            cld_supervision_time = fro.GetParam.Cld_supervision_time,
+                                            Priority = fro.GetParam.Priority,
+                                            FrequencyType = fro.GetParam.FrequencyType,
+                                            CLDCalculateMethod = fro.GetParam.CLDCalculateMethod,
+                                            BssWindows = fro.GetParam.BssWindows,
+                                            AudioSync = fro.GetParam.AudioSync,
+                                            AudioInBssWindow = fro.GetParam.AudioInBssWindow,
+                                            NotUnassignable = fro.GetParam.NotUnassignable,
+                                            MetodosBssOfrecidos = fro.GetParam.MetodosBssOfrecidos
                                         },
                                         PublicData = fro.PublicData,
                                         PrivateData = fro.PrivateData
@@ -521,7 +521,7 @@ namespace U5ki.RdService
                 /* RdResource rec = frec.RdRs.Values.Where(r => (r.Type == RdRsType.Rx && gear.IsEmitter == false) ||
                                                               (r.Type == RdRsType.Tx && gear.IsEmitter == true)).FirstOrDefault();*/
                 // RdResource rec = frec.RdRs.Values.Where(r => r.ID == gear.Id).FirstOrDefault(); // JOI OJO 2017
-                RdResource rec = frec.RdRs.Values.Where(r => r.Uri1 == gear.SipUri).FirstOrDefault();
+                IRdResource rec = frec.RdRs.Values.Where(r => r.Uri1 == gear.SipUri).FirstOrDefault();
 
                 return rec == null ? 1 : rec.Connected ? 3 : 2;
             }
@@ -673,6 +673,29 @@ namespace U5ki.RdService
             err = MNManager != null ? MNManager.Status.ToString() : "ERROR";
             return true;
         }
+        /// <summary>
+        /// Manual command to make the resource become active. 
+        /// As a result, the resource may not become active if it has no SIP session.
+        /// </summary>
+        /// <param name="par">if of the resource</param>
+        /// <param name="err"></param>
+        /// <param name="resp"></param>
+        /// <returns>false if command not done because the resource hasn't been found</returns>
+        private bool ActivateResource(string par, ref string err, List<string> resp = null)
+        {
+            foreach (RdFrecuency freq in Frecuencies.Values)
+                if (freq.ActivateResource(par))
+                {
+                    LogInfo<RdService>("Equipo " + par + " conmutado manualmente", U5kiIncidencias.U5kiIncidencia.U5KI_NBX_COMMAND);
+                    return true;
+                }
+
+            LogInfo<RdService>("Equipo " + par + " no encontrado.", U5kiIncidencias.U5kiIncidencia.U5KI_NBX_COMMAND_ERROR, "RdService",
+                CTranslate.translateResource("Equipo " + par + " no encontrado."));
+            err = "Equipo " + par + " no encontrado.";
+            return false;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1354,11 +1377,11 @@ namespace U5ki.RdService
                                     RdFrecuency rF;
                                     if (Frecuencies.TryGetValue(rdLink.Literal.ToUpper(), out rF))
                                     {
-                                        foreach (KeyValuePair<string, RdResource> rdRs in rF.RdRs)
+                                        foreach (KeyValuePair<string, IRdResource> rdRs in rF.RdRs)
                                         {
                                             if (rdRs.Value.ID == rs.IdRecurso)
                                             {
-                                                rdRs.Value.Selected = (rs.Estado == "S");
+                                                rdRs.Value.SelectedSite = (rs.Estado == "S");
                                             }
                                         }
                                     }
@@ -1372,10 +1395,10 @@ namespace U5ki.RdService
                                     RdFrecuency rF;
                                     if (Frecuencies.TryGetValue(rdLink.Literal.ToUpper(), out rF))
                                     {
-                                        foreach (KeyValuePair<string, RdResource> rdRs in rF.RdRs)
+                                        foreach (KeyValuePair<string, IRdResource> rdRs in rF.RdRs)
                                         {
                                             if (rdRs.Value.ID == rs.IdRecurso)
-                                                rdRs.Value.Selected = (rs.Estado == "S");
+                                                rdRs.Value.SelectedSite = (rs.Estado == "S");
                                         }
                                     }
                                     selectedRs[rs.IdRecurso] = rs.Estado == "S";
@@ -1728,8 +1751,10 @@ namespace U5ki.RdService
                         _SndRxPorts[ask.HostId] = sndRxPort;
                     }
 
-                    sndRxPorts = new List<int>(1);
-                    sndRxPorts.Add(sndRxPort);
+                    sndRxPorts = new List<int>(1)
+                    {
+                        sndRxPort
+                    };
                 }
 
                 foreach (RdFrecuency rdFr in Frecuencies.Values)
@@ -1811,6 +1836,7 @@ namespace U5ki.RdService
                     {
                         if (rdFr.PttSrc != string.Empty)
                         {
+                            //Las frecuencias HF son todas simples
                             foreach (RdResource rs in rdFr.RdRs.Values)
                             {
                                 if (rs.Connected && (rs.Type == RdRsType.Tx || rs.Type == RdRsType.Tx))
@@ -2011,7 +2037,7 @@ namespace U5ki.RdService
                         foreach (KeyValuePair<string, RdFrecuency> rdFr in Frecuencies)
                         {
                             /** 20170126. AGL. Identifico el Recurso para poder generar el Historico. */
-                            RdResource rdRes;
+                            IRdResource rdRes;
                             if (rdFr.Value.HandleChangeInCallState(call, stateInfo, out rdRes))
                             {
                                 if (rdFr.Value.TipoDeFrecuencia == "HF" && stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_DISCONNECTED)
@@ -2444,7 +2470,7 @@ namespace U5ki.RdService
                         return;
                     }
 
-                    RdFrecuency.NewRdFrequencyParams confParams = frecuency.getParam;
+                    RdFrecuency.NewRdFrequencyParams confParams = frecuency.GetParam;
                     //JOI FREC_DES
                     if (uriGearToReplace != "--")
                     {

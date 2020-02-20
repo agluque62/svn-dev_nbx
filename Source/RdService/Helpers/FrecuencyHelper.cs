@@ -43,7 +43,7 @@ namespace U5ki.RdService.Helpers
                 return false;
            //Si está conectado, lo tengo que desconectar antes de borrar 
            //para que no se queden sesiones abiertas
-           RdResource resource = frecuency.RdRs[key];
+           IRdResource resource = frecuency.RdRs[key];
            if (resource.Connected)
            {
                 frecuency.RemoveSipCall(resource);
@@ -112,7 +112,7 @@ namespace U5ki.RdService.Helpers
             if (!frecuency.RdRs.ContainsKey(key))
                 return false;
 
-            RdResource resource = frecuency.RdRs[key];
+            IRdResource resource = frecuency.RdRs[key];
 
             frecuency.RemoveSipCall(resource);
             resource.Dispose();

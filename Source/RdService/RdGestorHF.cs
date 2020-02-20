@@ -601,7 +601,7 @@ namespace U5ki.RdService
             public void Check()
             {
                 bool toCheck = true;
-                RdResource rr;
+                IRdResource rr;
 
                 string rsId = SipUri.ToUpper() + RdRsType.Tx;
 
@@ -616,7 +616,7 @@ namespace U5ki.RdService
                 else
                 {
                     rr = _frToCheck.RdRs[rsId];
-                    rr.Check();
+                    rr.Connect();
                 }
             }
             /// <summary>
@@ -708,10 +708,13 @@ namespace U5ki.RdService
                 if (_frToCheck != null)
                 {
                     string rsId = SipUri.ToUpper() + RdRsType.Tx;
-                    if (_frToCheck.RdRs.ContainsKey(rsId))
+                    //Las frecuencias HF, son todas simples
+                    IRdResource iRes = null;
+                    if (_frToCheck.RdRs.TryGetValue(rsId, out iRes))
                     {
-                        _frToCheck.RdRs[rsId].HandleChangeInCallState(state);
-                        _frToCheck.RdRs[rsId].Dispose();
+                        RdResource res = (RdResource)iRes;
+                        res.HandleChangeInCallState(res.SipCallId, state);
+                        res.Dispose();
                         _frToCheck.RdRs.Remove(rsId);
                     }
 
@@ -1707,40 +1710,37 @@ namespace U5ki.RdService
                                     case 1:
                                         {
                                             string rToRemove = string.Empty;
-                                            foreach (KeyValuePair<string, RdResource> rs in equipo.FrToCheck.RdRs)
+                                            foreach (KeyValuePair<string, IRdResource> rdRs in equipo.FrToCheck.RdRs)
                                             {
-                                                if (rs.Value.ToCheck &&
-                                                    (equipo.SipUri.ToUpper() == rs.Value.Uri1.ToUpper() ||
-                                                     (rs.Value.Uri2 != null && equipo.SipUri.ToUpper() == rs.Value.Uri2.ToUpper()))
-                                                   )
+                                                RdResource simpleRes = rdRs.Value.GetSimpleResource(sipCallId);
+                                                if (simpleRes != null)
                                                 {
-                                                    //equipo.FrToCheck.HandleChangeInCallState(sipCallId, stateInfo);
-                                                    if (sipCallId == rs.Value.SipCallId)
+                                                    //        foreach (KeyValuePair<string, RdResource> rs in equipo.FrToCheck.RdRs)
+                                                    //{
+                                                    if (simpleRes.ToCheck &&
+                                                        (equipo.SipUri.ToUpper() == simpleRes.Uri1.ToUpper() ||
+                                                         (simpleRes.Uri2 != null && equipo.SipUri.ToUpper() == simpleRes.Uri2.ToUpper()))
+                                                       )
                                                     {
-                                                        rToRemove = rs.Key;
+                                                        HFHelper.Trace();
+                                                        equipo.DesasignaFrToCheck(stateInfo);
+
+                                                        //rs.HandleChecked();
+                                                        //fr.RemoveSipCall(fr.RdRs[rsId]);
+                                                        //fr.RdRs[rsId].Dispose();
+                                                        //fr.RdRs.Remove(rsId);
+                                                        //equipo.FrToCheck.RemoveSipCall(rs);
+
+                                                        /** AGL2014. Solo lo actualizo si el equipo radio está presente... */
+                                                        if (equipo.Estado != EquipoHFStd.stdNoinfo)
+                                                        {
+                                                            if (stateInfo.State != CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED)
+                                                                equipo.Estado = EquipoHFStd.stdNoResource;
+                                                            else if (equipo.Estado != EquipoHFStd.stdAsignado && equipo.Estado != EquipoHFStd.stdError)
+                                                                equipo.Estado = EquipoHFStd.stdDisponible;
+                                                        }
                                                         break;
                                                     }
-                                                }
-                                            }
-
-                                            if (rToRemove != string.Empty)
-                                            {
-                                                HFHelper.Trace();
-                                                equipo.DesasignaFrToCheck(stateInfo);
-
-                                                //rs.HandleChecked();
-                                                //fr.RemoveSipCall(fr.RdRs[rsId]);
-                                                //fr.RdRs[rsId].Dispose();
-                                                //fr.RdRs.Remove(rsId);
-                                                //equipo.FrToCheck.RemoveSipCall(rs);
-
-                                                /** AGL2014. Solo lo actualizo si el equipo radio está presente... */
-                                                if (equipo.Estado != EquipoHFStd.stdNoinfo)
-                                                {
-                                                    if (stateInfo.State != CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED)
-                                                        equipo.Estado = EquipoHFStd.stdNoResource;
-                                                    else if (equipo.Estado != EquipoHFStd.stdAsignado && equipo.Estado != EquipoHFStd.stdError)
-                                                        equipo.Estado = EquipoHFStd.stdDisponible;
                                                 }
                                             }
                                         }

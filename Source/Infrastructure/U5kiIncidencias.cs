@@ -40,7 +40,10 @@ namespace U5ki.Infrastructure
             IGRL_U5KI_NBX_INFO = 50,
             IGRL_U5KI_NBX_ERROR = 51,
 
-                        // 20160921. AGL. Nuevos Historicos para M+N (Segun Especificacion)
+            U5KI_NBX_COMMAND = 1000,                   
+            U5KI_NBX_COMMAND_ERROR = 1001,
+
+            // 20160921. AGL. Nuevos Historicos para M+N (Segun Especificacion)
             //U5KI_NBX_NM_GEAR_ALLOCATE_ERROR = 3052,             // AGL Revisado Contenido 20160916
             //U5KI_NBX_NM_GEAR_ALLOCATE_OK = 3053,                // AGL Revisado Contenido 20160916
             //U5KI_NBX_NM_GEAR_DEALLOCATE_ERROR = 3054,           // AGL No Ulizado. Eliminar...

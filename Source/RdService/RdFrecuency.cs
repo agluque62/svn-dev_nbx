@@ -24,7 +24,7 @@ namespace U5ki.RdService
         public class NewRdFrequencyParams
         {
             //public string Zona { get; set; }
-            public int cld_supervision_time { get; set; }
+            public int Cld_supervision_time { get; set; }
             public CORESIP_Priority Priority { get; set; }
             public CORESIP_FREQUENCY_TYPE FrequencyType { get; set; }
             public CORESIP_CLD_CALCULATE_METHOD CLDCalculateMethod { get; set; }
@@ -45,13 +45,13 @@ namespace U5ki.RdService
                 AudioSync = false;
                 AudioInBssWindow = true;
                 NotUnassignable = false;
-                cld_supervision_time = 1000;
+                Cld_supervision_time = 1000;
                 MetodosBssOfrecidos = (int)RdResource.BssMethods.Ninguno;
                 PorcentajeRSSI = 0;
             }
         }
         private NewRdFrequencyParams new_params = new NewRdFrequencyParams();
-        public NewRdFrequencyParams getParam
+        public NewRdFrequencyParams GetParam
         {
             get { return this.new_params; }
         }
@@ -236,20 +236,26 @@ namespace U5ki.RdService
         {
             _Frecuency = fr;
 
-            _RtxSquelchTimer = new Timer(TIME_DELAY_TO_RTX);
-            _RtxSquelchTimer.AutoReset = false;
+            _RtxSquelchTimer = new Timer(TIME_DELAY_TO_RTX)
+            {
+                AutoReset = false
+            };
             _RtxSquelchTimer.Elapsed += OnRtxSquelchElapsed;
 
             if (TIME_DELAY_TO_DISABLE_FREQUENCY > 0)
             {
-                _DisableFrequencyTimer = new Timer(TIME_DELAY_TO_DISABLE_FREQUENCY);
-                _DisableFrequencyTimer.AutoReset = false;
-                _DisableFrequencyTimer.Enabled = false;
+                _DisableFrequencyTimer = new Timer(TIME_DELAY_TO_DISABLE_FREQUENCY)
+                {
+                    AutoReset = false,
+                    Enabled = false
+                };
                 _DisableFrequencyTimer.Elapsed += OnDisableFrequencyElapsed;
             }
-            _TimerTxDefault = new Timer();
-            _TimerTxDefault.AutoReset = false;
-            _TimerTxDefault.Enabled = false;
+            _TimerTxDefault = new Timer
+            {
+                AutoReset = false,
+                Enabled = false
+            };
             _TimerTxDefault.Elapsed += OnTxDefaultElapsed;
         }
 
@@ -261,12 +267,21 @@ namespace U5ki.RdService
         {
             _DisableFrequencyTimer.Elapsed -= OnDisableFrequencyElapsed;
 
-            foreach (RdResource rdRs in _RdRs.Values)
+            foreach (IRdResource rdRs in _RdRs.Values)
             {
                 rdRs.Dispose();
             }
 
             Reset(false);
+
+            if (_TimerTxDefault != null)
+                _TimerTxDefault.Dispose();
+            if (_WaitingForSuperviser != null)
+                _WaitingForSuperviser.Dispose();
+            if (_RtxSquelchTimer != null)
+                _RtxSquelchTimer.Dispose();
+            if (_DisableFrequencyTimer != null)
+                _DisableFrequencyTimer.Dispose();            
         }
 
         #endregion
@@ -274,11 +289,11 @@ namespace U5ki.RdService
         /// <summary>
         /// Método para devolver el recurso tx de defecto 
         /// </summary>
-        private RdResource GetTxRsDefault()
+        private IRdResource GetTxRsDefault()
         {
             if (_TxIDDefault != null)
             {
-                foreach (RdResource res in _RdRs.Values)
+                foreach (IRdResource res in _RdRs.Values)
                     if (res.ID.Equals(_TxIDDefault, StringComparison.CurrentCultureIgnoreCase))
                         return res;
             }
@@ -288,11 +303,11 @@ namespace U5ki.RdService
         /// <summary>
         /// Método para devolver el recurso tx seleccionado 
         /// </summary>
-        private RdResource GetTxRsSelected()
+        private IRdResource GetTxRsSelected()
         {
             if (_TxIDSelected != null)
             {
-                foreach (RdResource res in _RdRs.Values)
+                foreach (IRdResource res in _RdRs.Values)
                     if (res.ID.Equals(_TxIDSelected, StringComparison.CurrentCultureIgnoreCase))
                         return res;
             }
@@ -308,14 +323,14 @@ namespace U5ki.RdService
             // Actualización de los nuevos parámetros de la frecuencia a partir de los recibidos en cfg.
             bool hayCambios = ResetNewParams(cfg);
 
-            Dictionary<string, RdResource> rdRsToRemove = new Dictionary<string, RdResource>(_RdRs);
+            Dictionary<string, IRdResource> rdRsToRemove = new Dictionary<string, IRdResource>(_RdRs);
             _RdRs.Clear();
 
             foreach (CfgRecursoEnlaceExterno rsCfg in cfg.ListaRecursos)
             {
                 if (selectedRs.ContainsKey(rsCfg.IdRecurso))
                 {
-                    RdResource rdRs = null;
+                    IRdResource rdRs = null;
                     string[] rdUri = RsUri(rsCfg.IdRecurso, sysCfg);
 
                     if (rdUri.Length == 0)
@@ -329,25 +344,15 @@ namespace U5ki.RdService
                         //20180724 #3603
                         string rsKeyOld = "";
                         bool hayCambiosEnSip = false;
-                        foreach (RdResource rdRsCtlSipPort in rdRsToRemove.Values)
+                        if (RdRs.TryGetValue(rsCfg.IdRecurso, out IRdResource res))
                         {
-                            if (rsCfg.IdRecurso == rdRsCtlSipPort.ID)
-                            {
-                                foreach (KeyValuePair<string, RdResource> rdRsPair in rdRsToRemove)
+                            if (res.MasterMN)
+                                if (rdUri[0] != res.Uri1)
                                 {
-                                    if ((rsCfg.IdRecurso == rdRsPair.Value.ID) && rdRsPair.Value.MasterMN)
-                                    {
-                                        if (rdUri[0] != rdRsCtlSipPort.Uri1)
-                                        {
-                                            rsKeyOld = rdRsCtlSipPort.Uri1;
-                                            hayCambiosEnSip = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (hayCambiosEnSip)
+                                    rsKeyOld = res.Uri1;
+                                    hayCambiosEnSip = true;
                                     break;
-                            }
+                                }
                         }
                         string rsKey;
                         if (hayCambiosEnSip)
@@ -369,7 +374,7 @@ namespace U5ki.RdService
                         {
                             //Caso de un N que sustituye a un M, ambos recursos tienen el mismo ID
                             //Mantengo el N, con los nuevos parámetros configurados
-                            foreach (KeyValuePair<string, RdResource> rdRsPair in rdRsToRemove)
+                            foreach (KeyValuePair<string, IRdResource> rdRsPair in rdRsToRemove)
                                 if ((rsCfg.IdRecurso == rdRsPair.Value.ID) && rdRsPair.Value.ReplacedMN)
                                 {
                                     rdUri[0] = rdRsPair.Value.Uri1;
@@ -391,7 +396,7 @@ namespace U5ki.RdService
                             {
                                 hayCambiosEnSip = false; //#3603
                                 if (rdRs.Connected)
-                                    RemoveSipCall(rdRs.SipCallId, rdRs);
+                                    RemoveSipCall(rdRs);
                                 rdRs.Dispose();
                                 bool isReplacedMNTemp = rdRs.ReplacedMN;
                                 bool isMasterMNTemp = rdRs.MasterMN;
@@ -425,7 +430,7 @@ namespace U5ki.RdService
                     LogDebug<RdFrecuency>(String.Format("Nuevo recurso ", rsCfg.IdRecurso));
                 }
             }
-            foreach (RdResource rdRs in rdRsToRemove.Values)
+            foreach (IRdResource rdRs in rdRsToRemove.Values)
             {
                 if (TipoDeFrecuencia != "HF")
                 {
@@ -663,11 +668,12 @@ namespace U5ki.RdService
 
         public void RetryFailedConnections()
         {
-            foreach (RdResource rdRs in _RdRs.Values)
+            foreach (IRdResource rdRs in _RdRs.Values)
             {
-                if ((!rdRs.ToCheck) && !rdRs.Connecting)
+                foreach (RdResource simpleRes in rdRs.GetListResources())
+                if ((!simpleRes.ToCheck) && !simpleRes.Connecting)
                 {
-                    rdRs.Connect();
+                    simpleRes.Connect();
                 }
             }
         }
@@ -729,26 +735,18 @@ namespace U5ki.RdService
         /// </summary>
         public bool HandleKaTimeout(int sipCallId, out RdResource rdRsOut)
         {
-            RdResource rdRs = null;
-            try
+            foreach (IRdResource rdRs in _RdRs.Values)
             {
-                rdRs = _RdRs.Values.Where(x => (x.SipCallId == sipCallId && x.Connected)).First();
+                RdResource simpleRes = rdRs.GetSimpleResource(sipCallId);
+                if (simpleRes != null)
+                {
+                    simpleRes.HandleKaTimeout(sipCallId);
+                    RemoveSipCall(sipCallId, rdRs);
+                    rdRsOut = simpleRes;
+                    return true;
+                }
             }
-            catch (System.InvalidOperationException exc)
-            {
-                //No matching values found
-                rdRsOut = rdRs;
-                return false;
-            }
-
-            if (rdRs != null)
-            {
-                rdRs.HandleKaTimeout(sipCallId);
-                RemoveSipCall(sipCallId, rdRs);
-                rdRsOut = rdRs;
-                return true;
-            }
-            rdRsOut = rdRs;
+            rdRsOut = null;
             return false;
         }
 
@@ -768,10 +766,14 @@ namespace U5ki.RdService
                 {
                     case CORESIP_FREQUENCY_TYPE.Simple:
                     case CORESIP_FREQUENCY_TYPE.FD:
-                        RdResource rdr = this.RdRs.Values.Where(r => r.isRx &&
-                                                            (r.Squelch && r.new_params.rx_selected)).FirstOrDefault();
-                        return rdr == null ? "" : rdr.Site;
-
+                        foreach (IRdResource rdr in RdRs.Values.Where(r => r.isRx &&
+                                    (r.Squelch)))
+                        {
+                            RdResource simpleResource = rdr.GetRxSelected();
+                            if (simpleResource != null)
+                                return simpleResource.Site;
+                        }
+                        break;
                     case CORESIP_FREQUENCY_TYPE.Dual:
                     case CORESIP_FREQUENCY_TYPE.ME:
                         break;
@@ -788,10 +790,14 @@ namespace U5ki.RdService
                 {
                     case CORESIP_FREQUENCY_TYPE.Simple:
                     case CORESIP_FREQUENCY_TYPE.FD:
-                        RdResource rdr = this.RdRs.Values.Where(r => r.isRx &&
-                                                            (r.Squelch && r.new_params.rx_selected)).FirstOrDefault();
-                        return rdr == null ? 0 : rdr.new_params.rx_qidx;
-
+                        foreach (IRdResource rdr in RdRs.Values.Where(r => r.isRx &&
+                                                            (r.Squelch)))
+                        {
+                            RdResource simpleResource = rdr.GetRxSelected();
+                            if (simpleResource != null)
+                                return simpleResource.new_params.rx_qidx;
+                        }
+                        break;
                     case CORESIP_FREQUENCY_TYPE.Dual:
                     case CORESIP_FREQUENCY_TYPE.ME:
                         break;
@@ -805,270 +811,276 @@ namespace U5ki.RdService
         {
             bool changed = false;
             bool sendToHMI = false;
-            RdResource rdRs = null;
-            try
+            foreach (IRdResource rdRs in _RdRs.Values)
             {
-                rdRs = _RdRs.Values.Where(x => x.SipCallId == sipCallId).First();
-            }
-            catch (System.InvalidOperationException exc)
-            {
-                //No matching values found
-                return false;
-            }
-
-            if (rdRs != null)
-            {
-                LogTrace<RdFrecuency>("Estado BSS recibido desde coresip. " + "" +
-                                        "Recurso: " + rdRs.ID +
-                                        ". PTT: " + info.PttType +
-                                        ". PttId: " + info.PttId +
-                                        ". Squelch: " + info.Squelch +
-                                        ". Seleccionado: " + info.rx_selected +
-                                        ". info.rx_qidx: " + info.rx_qidx +
-                                        ". en Site: " + rdRs.Site);
-
-                if (rdRs.HandleRdInfo(info) && (_FrRs != null))
+                RdResource simpleRes = rdRs.GetSimpleResource(sipCallId);
+                if (simpleRes != null)
                 {
-                    bool confirmaPortadora = SupervisionPortadora;
+                    LogTrace<RdFrecuency>("Estado BSS recibido desde coresip. " + "" +
+                                            "Recurso: " + rdRs.ID +
+                                            ". PTT: " + info.PttType +
+                                            ". PttId: " + info.PttId +
+                                            ". Squelch: " + info.Squelch +
+                                            ". Seleccionado: " + info.rx_selected +
+                                            ". info.rx_qidx: " + info.rx_qidx +
+                                            ". en Site: " + rdRs.Site);
 
-                    if (rdRs.isTx)
+                    if (simpleRes.HandleRdInfo(info) && (_FrRs != null))
                     {
-                        string oldPttSrcId = _FrRs.PttSrcId;
-                        if (rdRs.Ptt == RdRsPttType.OwnedPtt)
+                        bool confirmaPortadora = SupervisionPortadora;
+
+                        if (rdRs.isTx)
                         {
-                            if (_CurrentSrcPtt != null)
+                            string oldPttSrcId = _FrRs.PttSrcId;
+                            if (rdRs.Ptt == RdRsPttType.OwnedPtt)
                             {
-                                if (confirmaPortadora && _FrRs.Squelch == RdSrvFrRs.SquelchType.NoSquelch && _WaitingForSuperviser == null)
+                                if (_CurrentSrcPtt != null)
+                                {
+                                    if (confirmaPortadora && _FrRs.Squelch == RdSrvFrRs.SquelchType.NoSquelch && _WaitingForSuperviser == null)
+                                    {
+                                        _WaitingForSuperviser = new Timer(U5ki.RdService.Properties.Settings.Default.MonitorCarrierTimeOut);
+                                        _WaitingForSuperviser.Elapsed += OnTimerSuperviser;
+                                        _WaitingForSuperviser.AutoReset = false;
+                                        _WaitingForSuperviser.Enabled = true;
+                                    }
+
+                                    ConfirmaPtt();
+
+                                    /* Funciona */
+                                    /*
+                                    if (!confirmaPortadora)
+                                        ConfirmaPtt();
+                                    else
+                                    {
+                                        // A la espera de confirmar la portadora o confirmar PTT si ya se recibió el squelch
+                                        if (_FrRs.Squelch != RdSrvFrRs.SquelchType.NoSquelch)
+                                            ConfirmaPtt();
+                                        else
+                                            _FrRs.PttSrcId = "";
+                                    }
+                                    */
+                                }
+                            }
+                            else if (rdRs.Ptt == RdRsPttType.NoPtt)
+                            {
+                                //if (_FrRs.PttSrcId != null && _FrRs.RtxGroupId > 0)
+                                //{
+                                //    ReceivePtt("Rtx_" + _FrRs.RtxGroupId + "_" + _Frecuency, PttSource.NoPtt, null);
+                                //}
+
+                                if (_WaitingForSuperviser != null)
+                                {
+                                    _WaitingForSuperviser.Enabled = false;
+                                    _WaitingForSuperviser.Dispose();
+                                    _WaitingForSuperviser = null;
+                                }
+
+                                _FrRs.PttSrcId = null;
+                            }
+                            else if (rdRs.Ptt == RdRsPttType.ExternalPtt)
+                            {
+                                _FrRs.PttSrcId = _Frecuency + "ExternalPtt";
+
+                                if (_WaitingForSuperviser != null)
+                                {
+                                    _WaitingForSuperviser.Enabled = false;
+                                    _WaitingForSuperviser.Dispose();
+                                    _WaitingForSuperviser = null;
+                                }
+                            }
+
+                            changed = sendToHMI = (oldPttSrcId != _FrRs.PttSrcId);
+                        }
+
+                        if (rdRs.isRx)
+                        {
+                            RdSrvFrRs.SquelchType oldSquelch = _FrRs.Squelch;
+
+                            if (confirmaPortadora)
+                            {
+                                if (rdRs.Squelch)
+                                {
+                                    // PttId recibido y el PttID registrado de la sesión son distintos.
+                                    // Puede ser un ExternalPtt provocado por la confirmación de portadora.
+                                    // Buscar un rdRs en _SipTxCall un rdRs_Tx con PttId==rdRs.PttId
+                                    // Si lo encuentra se trata de una confirmación de portadora del recurso rdRs_Tx
+                                    // Si no lo encuentra sería un ExternalPtt
+                                    //bool confirmaPortadora = ConfirmaPortadora(rdRs.PttId);
+                                    if (rdRs.Ptt == RdRsPttType.OwnedPtt)
+                                    {
+                                        // Confirmada portadora
+                                        if (_CurrentSrcPtt != null)
+                                        {
+                                            if (_WaitingForSuperviser != null)
+                                            {
+                                                _WaitingForSuperviser.Enabled = false;
+                                                _WaitingForSuperviser.Dispose();
+                                                _WaitingForSuperviser = null;
+                                            }
+
+                                            ConfirmaPtt();
+
+                                            /* Funciona */
+                                            //ConfirmaPtt();
+                                            /* */
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _FrRs.PttSrcId = _Frecuency + "ExternalPtt";
+
+                                        foreach (RdResource rdRs_Tx in SipTxCalls().Values)
+                                        {
+                                            if (rdRs_Tx.PttId == rdRs.PttId)
+                                            {
+                                                // Confirmada portadora
+                                                if (_CurrentSrcPtt != null)
+                                                {
+                                                    if (_WaitingForSuperviser != null)
+                                                    {
+                                                        _WaitingForSuperviser.Enabled = false;
+                                                        _WaitingForSuperviser.Dispose();
+                                                        _WaitingForSuperviser = null;
+                                                    }
+
+                                                    ConfirmaPtt();
+
+                                                    /* Funciona */
+                                                    //ConfirmaPtt();
+                                                    /* */
+                                                }
+
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (_FrRs.Squelch != RdSrvFrRs.SquelchType.NoSquelch && _WaitingForSuperviser == null)
                                 {
                                     _WaitingForSuperviser = new Timer(U5ki.RdService.Properties.Settings.Default.MonitorCarrierTimeOut);
                                     _WaitingForSuperviser.Elapsed += OnTimerSuperviser;
                                     _WaitingForSuperviser.AutoReset = false;
                                     _WaitingForSuperviser.Enabled = true;
                                 }
+                            }
 
-                                ConfirmaPtt();
+                            // JCAM. El estado de squelch de la frecuencia sólo cambia
+                            // si ha cambiado el estado del recurso seleccionado en rx.
+                            if (simpleRes.new_params.rx_selected)
+                            {
+                                _FrRs.SqSite = rdRs.Site;
 
-                                /* Funciona */
-                                /*
-                                if (!confirmaPortadora)
-                                    ConfirmaPtt();
+                                // JCAM.
+                                // 27/02/2017. U5KI2.RQ.007.07
+                                if (this.new_params.FrequencyType == CORESIP_FREQUENCY_TYPE.FD)
+                                {
+                                    _FrRs.FrequencyStatus = this.Status;
+                                    if (_FrRs.FrequencyStatus != _OldStatus)
+                                        sendToHMI = true;
+                                    _FrRs.ResourceId = rdRs.ID;
+                                    _FrRs.QidxMethod = new_params.MetodosBssOfrecidos.ToString();
+                                    _FrRs.QidxValue = (UInt32)simpleRes.new_params.rx_qidx;
+                                }
+
+
+                                if (rdRs.Squelch)
+                                {
+                                    //Este caso es de SQ no provocado por PTT propio (avion u otro SCV).
+                                    if ((_CurrentSrcPtt == null) && (info.PttId == 0))
+                                    {
+                                        _LastSelectedSite = rdRs.Site;
+                                        EvaluaTxMute();
+                                        StartTimerTxDefault();
+                                    }
+                                    _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
+                                }
                                 else
                                 {
-                                    // A la espera de confirmar la portadora o confirmar PTT si ya se recibió el squelch
-                                    if (_FrRs.Squelch != RdSrvFrRs.SquelchType.NoSquelch)
-                                        ConfirmaPtt();
-                                    else
-                                        _FrRs.PttSrcId = "";
+                                    _FrRs.Squelch = RdSrvFrRs.SquelchType.NoSquelch;
+                                    if ((_CurrentSrcPtt == null) && (_PostPtt != null) &&
+                                        (_FrRs.Squelch == RdSrvFrRs.SquelchType.NoSquelch))
+                                    {
+                                        RdRegistry.EnablePublish(_Frecuency, false);
+
+                                        _PostPtt.Enabled = false;
+                                        _PostPtt.Dispose();
+                                        _PostPtt = null;
+                                    }
                                 }
-                                */
+
+                                //changed |= ((oldSquelch != _FrRs.Squelch) && rdRs.new_params.rx_selected);
+                                sendToHMI |= (oldSquelch != _FrRs.Squelch);
+                                changed |= simpleRes.new_params.rx_selected;
                             }
                         }
-                        else if (rdRs.Ptt == RdRsPttType.NoPtt)
-                        {
-                            //if (_FrRs.PttSrcId != null && _FrRs.RtxGroupId > 0)
-                            //{
-                            //    ReceivePtt("Rtx_" + _FrRs.RtxGroupId + "_" + _Frecuency, PttSource.NoPtt, null);
-                            //}
-
-                            if (_WaitingForSuperviser != null)
-                            {
-                                _WaitingForSuperviser.Enabled = false;
-                                _WaitingForSuperviser.Dispose();
-                                _WaitingForSuperviser = null;
-                            }
-
-                            _FrRs.PttSrcId = null;
-                        }
-                        else if (rdRs.Ptt == RdRsPttType.ExternalPtt)
-                        {
-                            _FrRs.PttSrcId = _Frecuency + "ExternalPtt";
-
-                            if (_WaitingForSuperviser != null)
-                            {
-                                _WaitingForSuperviser.Enabled = false;
-                                _WaitingForSuperviser.Dispose();
-                                _WaitingForSuperviser = null;
-                            }
-                        }
-
-                        changed = sendToHMI = (oldPttSrcId != _FrRs.PttSrcId);
                     }
-
-                    if (rdRs.isRx)
+                    //Se ha separado la condicion 'change' de la condicion de entrada inicial
+                    if (sendToHMI)
                     {
-                        RdSrvFrRs.SquelchType oldSquelch = _FrRs.Squelch;
-
-                        if (confirmaPortadora)
+                        LogTrace<RdFrecuency>("Estado BSS enviado al HMI:" +
+                                                ", resource ID: " + rdRs.ID +
+                                                ", qidx value: " + _FrRs.QidxValue +
+                                                ", qidx method: " + _FrRs.QidxMethod +
+                                                ", Ptt: " + rdRs.Ptt +
+                                                ", Squelch: " + rdRs.Squelch);
+                        RdRegistry.Publish(_Frecuency, _FrRs);
+                    }
+                    if (changed)
+                    {
+                        if (_FrRs.RtxGroupId > 0)
                         {
-                            if (rdRs.Squelch)
+                            LogTrace<RdFrecuency>("Evento en Grupo RTX (" + _FrRs.RtxGroupOwner + "): " +
+                                " _SendingPttToRtxGroup: " + _SendingPttToRtxGroup +
+                                ", _FrRs.Squelch: " + _FrRs.Squelch +
+                                ", _FrRs.PttSrcId: " + _FrRs.PttSrcId +
+                                ", _CurrentSrcPtt null ?: " + (_CurrentSrcPtt == null) +
+                                ", _CurrentSrcPtt.SrcId: " + ((_CurrentSrcPtt == null) ? "null" : _CurrentSrcPtt.SrcId) +
+                                ", _PostPtt null?: " + (_PostPtt == null).ToString()
+                                );
+                            if (!_SendingPttToRtxGroup && (_FrRs.Squelch != RdSrvFrRs.SquelchType.NoSquelch) &&
+                                    ((_CurrentSrcPtt == null) || (_CurrentSrcPtt.SrcId != _FrRs.PttSrcId)) &&
+                                    (_PostPtt == null))
                             {
-                                // PttId recibido y el PttID registrado de la sesión son distintos.
-                                // Puede ser un ExternalPtt provocado por la confirmación de portadora.
-                                // Buscar un rdRs en _SipTxCall un rdRs_Tx con PttId==rdRs.PttId
-                                // Si lo encuentra se trata de una confirmación de portadora del recurso rdRs_Tx
-                                // Si no lo encuentra sería un ExternalPtt
-                                //bool confirmaPortadora = ConfirmaPortadora(rdRs.PttId);
-                                if (rdRs.Ptt == RdRsPttType.OwnedPtt)
-                                {
-                                    // Confirmada portadora
-                                    if (_CurrentSrcPtt != null)
-                                    {
-                                        if (_WaitingForSuperviser != null)
-                                        {
-                                            _WaitingForSuperviser.Enabled = false;
-                                            _WaitingForSuperviser.Dispose();
-                                            _WaitingForSuperviser = null;
-                                        }
-
-                                        ConfirmaPtt();
-
-                                        /* Funciona */
-                                        //ConfirmaPtt();
-                                        /* */
-                                    }
-                                }
-                                else
-                                {
-                                    _FrRs.PttSrcId = _Frecuency + "ExternalPtt";
-
-                                    foreach (RdResource rdRs_Tx in SipTxCalls().Values)
-                                    {
-                                        if (rdRs_Tx.PttId == rdRs.PttId)
-                                        {
-                                            // Confirmada portadora
-                                            if (_CurrentSrcPtt != null)
-                                            {
-                                                if (_WaitingForSuperviser != null)
-                                                {
-                                                    _WaitingForSuperviser.Enabled = false;
-                                                    _WaitingForSuperviser.Dispose();
-                                                    _WaitingForSuperviser = null;
-                                                }
-
-                                                ConfirmaPtt();
-
-                                                /* Funciona */
-                                                //ConfirmaPtt();
-                                                /* */
-                                            }
-
-                                            break;
-                                        }
-                                    }
-                                }
+                                // La retransmisión del Squelch se temporiza para evitar oscilaciones de coupling
+                                LogTrace<RdFrecuency>("Evento en Grupo RTX: Activando TIMER...");
+                                _RtxSquelchTimer.Enabled = true;
                             }
-                            else if (_FrRs.Squelch != RdSrvFrRs.SquelchType.NoSquelch && _WaitingForSuperviser == null)
+                            else if (_SendingPttToRtxGroup && ((_FrRs.Squelch == RdSrvFrRs.SquelchType.NoSquelch) ||
+                                ((_CurrentSrcPtt != null) && (_CurrentSrcPtt.SrcId == _FrRs.PttSrcId))))
                             {
-                                _WaitingForSuperviser = new Timer(U5ki.RdService.Properties.Settings.Default.MonitorCarrierTimeOut);
-                                _WaitingForSuperviser.Elapsed += OnTimerSuperviser;
-                                _WaitingForSuperviser.AutoReset = false;
-                                _WaitingForSuperviser.Enabled = true;
-                            }
-                        }
-
-                        // JCAM. El estado de squelch de la frecuencia sólo cambia
-                        // si ha cambiado el estado del recurso seleccionado en rx.
-                        if (rdRs.new_params.rx_selected)
-                        {
-                            _FrRs.SqSite = rdRs.Site;
-
-                            // JCAM.
-                            // 27/02/2017. U5KI2.RQ.007.07
-                            if (this.new_params.FrequencyType == CORESIP_FREQUENCY_TYPE.FD)
-                            {
-                                _FrRs.FrequencyStatus = this.Status;
-                                if (_FrRs.FrequencyStatus != _OldStatus)
-                                    sendToHMI = true;
-                                _FrRs.ResourceId = rdRs.ID;
-                                _FrRs.QidxMethod = new_params.MetodosBssOfrecidos.ToString();
-                                _FrRs.QidxValue = (UInt32)rdRs.new_params.rx_qidx;
-                            }
-
-
-                            if (rdRs.Squelch)
-                            {
-                                //Este caso es de SQ no provocado por PTT propio (avion u otro SCV).
-                                if ((_CurrentSrcPtt == null) && (info.PttId == 0))
+                                if (_RtxSquelchTimer != null)
                                 {
-                                    _LastSelectedSite = rdRs.Site;
-                                    EvaluaTxMute();
-                                    StartTimerTxDefault();
+                                    _RtxSquelchTimer.Enabled = false;
+                                    LogTrace<RdFrecuency>("Evento en Grupo RTX (" + _FrRs.RtxGroupOwner + "): Para timer _RtxSquelch porque ptt off y sq off");
                                 }
-                                _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
+
+                                SendPttToRtxGroup(false, false);
                             }
                             else
                             {
-                                _FrRs.Squelch = RdSrvFrRs.SquelchType.NoSquelch;
-                                if ((_CurrentSrcPtt == null) && (_PostPtt != null) &&
-                                    (_FrRs.Squelch == RdSrvFrRs.SquelchType.NoSquelch))
-                                {
-                                    RdRegistry.EnablePublish(_Frecuency, false);
-
-                                    _PostPtt.Enabled = false;
-                                    _PostPtt.Dispose();
-                                    _PostPtt = null;
-                                }
+                                LogTrace<RdFrecuency>("Evento en Grupo RTX (" + _FrRs.RtxGroupOwner + "): Evento en Grupo RTX: Ignorado...");
                             }
-
-                            //changed |= ((oldSquelch != _FrRs.Squelch) && rdRs.new_params.rx_selected);
-                            sendToHMI |= (oldSquelch != _FrRs.Squelch);
-                            changed |= rdRs.new_params.rx_selected;
                         }
                     }
+                    return true;
                 }
-                //Se ha separado la condicion 'change' de la condicion de entrada inicial
-                if (sendToHMI)
-                {
-                    LogTrace<RdFrecuency>("Estado BSS enviado al HMI:" +
-                                            ", resource ID: " + rdRs.ID +
-                                            ", qidx value: " + _FrRs.QidxValue +
-                                            ", qidx method: " + _FrRs.QidxMethod +
-                                            ", Ptt: " + rdRs.Ptt +
-                                            ", Squelch: " + rdRs.Squelch);
-                    RdRegistry.Publish(_Frecuency, _FrRs);
-                }
-                if (changed)
-                {
-                    if (_FrRs.RtxGroupId > 0)
-                    {
-                        LogTrace<RdFrecuency>("Evento en Grupo RTX (" + _FrRs.RtxGroupOwner + "): " +
-                            " _SendingPttToRtxGroup: " + _SendingPttToRtxGroup +
-                            ", _FrRs.Squelch: " + _FrRs.Squelch +
-                            ", _FrRs.PttSrcId: " + _FrRs.PttSrcId +
-                            ", _CurrentSrcPtt null ?: " + (_CurrentSrcPtt == null) +
-                            ", _CurrentSrcPtt.SrcId: " + ((_CurrentSrcPtt == null) ? "null" : _CurrentSrcPtt.SrcId) +
-                            ", _PostPtt null?: " + (_PostPtt == null).ToString()
-                            );
-                        if (!_SendingPttToRtxGroup && (_FrRs.Squelch != RdSrvFrRs.SquelchType.NoSquelch) &&
-                                ((_CurrentSrcPtt == null) || (_CurrentSrcPtt.SrcId != _FrRs.PttSrcId)) &&
-                                (_PostPtt == null))
-                        {
-                            // La retransmisión del Squelch se temporiza para evitar oscilaciones de coupling
-                            LogTrace<RdFrecuency>("Evento en Grupo RTX: Activando TIMER...");
-                            _RtxSquelchTimer.Enabled = true;
-                        }
-                        else if (_SendingPttToRtxGroup && ((_FrRs.Squelch == RdSrvFrRs.SquelchType.NoSquelch) ||
-                            ((_CurrentSrcPtt != null) && (_CurrentSrcPtt.SrcId == _FrRs.PttSrcId))))
-                        {
-                            if (_RtxSquelchTimer != null)
-                            {
-                                _RtxSquelchTimer.Enabled = false;
-                                LogTrace<RdFrecuency>("Evento en Grupo RTX (" + _FrRs.RtxGroupOwner + "): Para timer _RtxSquelch porque ptt off y sq off");
-                            }
-
-                            SendPttToRtxGroup(false, false);
-                        }
-                        else
-                        {
-                            LogTrace<RdFrecuency>("Evento en Grupo RTX (" + _FrRs.RtxGroupOwner + "): Evento en Grupo RTX: Ignorado...");
-                        }
-                    }
-                }
-                return true;
             }
             return false;
         }
 
+        /// <summary>
+        /// Searchs in all its pair resources if the toogle towards active is for them or not.
+        /// </summary>
+        /// <param name="IdResource"></param>
+        /// <returns>false if the resource does not belongs to the frequency </returns>
+        public bool ActivateResource (string IdResource)
+        {
+            foreach (IRdResource res in _RdRs.Values)
+                if (res.GetType().Equals(typeof(RdResourcePair)))
+                    if (res.ActivateResource(IdResource))
+                        return true;
+            return false;
+        }
         /// <summary>
         /// Temporizador que se utiliza para transmitir por el emplazamiento por defecto en FD
         /// </summary>
@@ -1078,8 +1090,8 @@ namespace U5ki.RdService
         {
             RdService.evQueueRd.Enqueue("OnTxDefaultElapsed", delegate ()
             {
-                RdResource TxRsDefault = GetTxRsDefault();
-                RdResource TxRsSelected = GetTxRsSelected();
+                IRdResource TxRsDefault = GetTxRsDefault();
+                IRdResource TxRsSelected = GetTxRsSelected();
                 if ((TxRsDefault == null) || (TxRsSelected == null))
                     return;
                 if (TxRsDefault != null && (TxRsDefault.Connected) && (TxRsDefault != TxRsSelected))
@@ -1089,9 +1101,9 @@ namespace U5ki.RdService
                     //Cambio dinámico del PTT por cambio de TX seleccionado 
                     if (!string.IsNullOrEmpty(PttSrc))
                     {
-                        if (TxRsSelected.SipCallId != -1)
+                        if (TxRsSelected.Connected)
                             TxRsSelected.PttOn(_CurrentSrcPtt.Type);
-                        if (TxRsDefault.SipCallId != -1)
+                        if (TxRsDefault.Connected)
                             TxRsDefault.PttOn(_CurrentSrcPtt.Type);
                         //Esto provoca que salte el aviso acustico de falsa maniobra,
                         //lo comentamos porque se ha elegido de momento el cambio dinámico de TX
@@ -1138,26 +1150,17 @@ namespace U5ki.RdService
         /// <param name="sipCallId"></param>
         /// <param name="stateInfo"></param>
         /// <returns></returns>
-        public bool HandleChangeInCallState(int sipCallId, CORESIP_CallStateInfo stateInfo, out RdResource rdResOut)
+        public bool HandleChangeInCallState(int sipCallId, CORESIP_CallStateInfo stateInfo, out IRdResource rdResOut)
         {
             rdResOut = null;
             try
             {
-                foreach (RdResource rdRs in _RdRs.Values.Where(r => r.SipCallId == sipCallId))
+                foreach (IRdResource rdRs in _RdRs.Values)
                 {
                     bool publish = false;
-                    //if (rdRes.ToCheck)
-                    //{
-                    //    rdRes.HandleChangeInCallState(stateInfo);
-                    //    // Finalizar la sesión SIP iniciada para hacer el check
-                    //    RemoveSipCall(rdRes);
-
-                    //    _CheckStatus = stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED;
-                    //}
-                    //else
+                    bool previousSq = rdRs.Squelch;
+                    if (rdRs.HandleChangeInCallState(sipCallId, stateInfo))
                     {
-                        bool previousSq = rdRs.Squelch;
-                        rdRs.HandleChangeInCallState(stateInfo);
                         if (rdRs.Connected)
                         {
                             publish = AddSipCall(rdRs);
@@ -1171,23 +1174,20 @@ namespace U5ki.RdService
                                 RdSrvFrRs frRs = new RdSrvFrRs();
                                 frRs = _FrRs;
 
-                                foreach (RdResource rs in _RdRs.Values)
+                                foreach (IRdResource rs in _RdRs.Values.Where(x => (x.isRx && x.Connected)))
                                 {
-                                    if (rs.Connected && rs.Type == RdRsType.Rx)
-                                    {
-                                        frRs.PttSrcId = "TxHfOff";
+                                    frRs.PttSrcId = "TxHfOff";
 
-                                        //frRs.Squelch = _FrRs.Squelch;
-                                        //frRs.RtxGroupId = _FrRs.RtxGroupId;
+                                    //frRs.Squelch = _FrRs.Squelch;
+                                    //frRs.RtxGroupId = _FrRs.RtxGroupId;
 
-                                        _PttTypes.Clear();
-                                        _TxIds.Clear();
+                                    _PttTypes.Clear();
+                                    _TxIds.Clear();
 
-                                        RdRegistry.Publish(_Frecuency, frRs);
+                                    RdRegistry.Publish(_Frecuency, frRs);
 
-                                        frRs.PttSrcId = string.Empty;
-                                        break;
-                                    }
+                                    frRs.PttSrcId = string.Empty;
+                                    break;
                                 }
                             }
                             else if (TipoDeFrecuencia == "FD")
@@ -1202,19 +1202,17 @@ namespace U5ki.RdService
                                 if ((rdRs.isRx) && (_FrRs != null))
                                 {
                                     //Quitar Squelch 
-                                    if (previousSq && rdRs.new_params.rx_selected == true)
+                                    if (previousSq && rdRs.GetRxSelected() == null)
                                     {
                                         _FrRs.Squelch = RdSrvFrRs.SquelchType.NoSquelch;
                                         //Buscar si hay uno nuevo que meter el Squelch que no sea el mismo
-                                        foreach (RdResource rdRsAux in _RdRs.Values)
+                                        foreach (IRdResource res in _RdRs.Values.Where(x => x.isRx && x.Connected))
                                         {
-                                            if (rdRsAux.SipCallId != -1 && rdRsAux.SipCallId != sipCallId)
+                                            foreach (RdResource rdSimpleRes in res.GetListResources().
+                                                Where(x => x.Squelch && x.new_params.rx_selected))
                                             {
-                                                if (rdRsAux.isRx && rdRsAux.Squelch && rdRsAux.new_params.rx_selected == true)
-                                                {
-                                                    _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
-                                                    break;
-                                                }
+                                                _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
+                                                break;
                                             }
                                         }
                                         publish = true;
@@ -1231,13 +1229,12 @@ namespace U5ki.RdService
                         _CurrentPttSemaphore.Release();
                         if (publish == true)
                             RdRegistry.PublishStatusFr(_Frecuency, _FrRs);
-                    } // foreach end
-                      /** */
-                    rdResOut = rdRs;
-                    EvaluaTxMute();
-                    break;
+                        /** */
+                        rdResOut = rdRs;
+                        EvaluaTxMute();
+                        break;
+                    }
                 } // foreach end
-                  /** */
             }
             catch (Exception x)
             {
@@ -1253,7 +1250,7 @@ namespace U5ki.RdService
         /// <param name="rdRs"> recurso que hay que tomar como origen de los datos</param>
         /// <param name="rtxGroupId"></param>
         /// <param name="wantedRtxGroupRdFr"></param>
-        private bool ActualizaFrecuenciaConRecurso(RdResource rdRs)
+        private bool ActualizaFrecuenciaConRecurso(IRdResource rdRs)
         {
             bool hayCambio = false;
             //Actualiza el estado
@@ -1291,7 +1288,7 @@ namespace U5ki.RdService
             return hayCambio;
         }
 
-        public void RemoveSipCall(RdResource rdResource)
+        public void RemoveSipCall(IRdResource rdResource)
         {
             RemoveSipCall(rdResource.SipCallId, rdResource);
         }
@@ -1377,11 +1374,11 @@ namespace U5ki.RdService
             string idResource = string.Empty;
 
             // Buscar los recursos de esta frecuencia.
-            foreach (RdResource rdRs in _RdRs.Values)
+            foreach (IRdResource rdRs in _RdRs.Values)
             {
                 if (rdRs.Connected)
                 {
-                    changed = rdRs.Selected = true;
+                    changed = rdRs.SelectedSite = true;
                     alias = rdRs.Site;
                     idResource = rdRs.ID;
 
@@ -1410,16 +1407,16 @@ namespace U5ki.RdService
             bool changed = false;
             string idResource = string.Empty;
             // Buscar los recursos de esta frecuencia.
-            foreach (RdResource rdRs in _RdRs.Values)
+            foreach (IRdResource rdRs in _RdRs.Values)
             {
-                rdRs.OldSelected = rdRs.Selected;
+                rdRs.OldSelected = rdRs.SelectedSite;
 
                 if (rdRs.Connected)
                 {
-                    rdRs.Selected = false;
+                    rdRs.SelectedSite = false;
                     if (frequency == this._Frecuency && rdRs.Site == alias)
                     {
-                        changed = rdRs.Selected = rdRs.OldSelected = true;
+                        changed = rdRs.SelectedSite = rdRs.OldSelected = true;
                         _FrRs.SqSite = rdRs.Site;
                         _FrRs.Squelch = rdRs.Squelch ? RdSrvFrRs.SquelchType.SquelchOnlyPort : RdSrvFrRs.SquelchType.NoSquelch;
                         idResource = rdRs.ID;
@@ -1434,9 +1431,9 @@ namespace U5ki.RdService
             }
             else
             {
-                foreach (RdResource rdRs in _RdRs.Values)
+                foreach (IRdResource rdRs in _RdRs.Values)
                 {
-                    rdRs.Selected = rdRs.OldSelected;
+                    rdRs.SelectedSite = rdRs.OldSelected;
                 }
             }
 
@@ -1445,12 +1442,15 @@ namespace U5ki.RdService
 
         /// <summary>
         /// Añade recursos a la frecuencia procedentes de la conmutación M+N
+        /// El nuevo recurso que entra tiene mute si no reemplaza al seleccionado
+        /// o el modo de transmisión no es utlimo recpetor
         /// </summary>
         public void ResourceAdd(String key, RdResource resource, bool isMaster) //#3603
         {
-            if (_ModoTransmision == Tipo_ModoTransmision.UltimoReceptor)
+            if ((_ModoTransmision == Tipo_ModoTransmision.UltimoReceptor) && 
+                (_TxIDSelected != resource.ID))
                 resource.TxMute = true;
-            RdRs[key] = resource;
+            RdRs[key] = (IRdResource)resource;
             resource.ReplacedMN = true;
             resource.MasterMN = isMaster; //#3603
         }
@@ -1460,7 +1460,7 @@ namespace U5ki.RdService
         {
             get
             {
-                switch (getParam.FrequencyType)
+                switch (GetParam.FrequencyType)
                 {
                     case CORESIP_FREQUENCY_TYPE.Simple:
                         break;
@@ -1476,7 +1476,7 @@ namespace U5ki.RdService
                             case Tipo_ModoTransmision.Climax:
                                 return "CLX";
                             case Tipo_ModoTransmision.UltimoReceptor:
-                                RdResource TxRsSelected = GetTxRsSelected();
+                                IRdResource TxRsSelected = GetTxRsSelected();
                                 return TxRsSelected == null ? "???" : TxRsSelected.Site;
                         }
                         break;
@@ -1587,20 +1587,20 @@ namespace U5ki.RdService
         /// <summary>
         /// Tx Active Calls
         /// </summary>
-        private Dictionary<int, RdResource> SipTxCalls()
+        private Dictionary<int, IRdResource> SipTxCalls()
         {
-            Dictionary<int, RdResource> sipCalls = new Dictionary<int, RdResource>();
-            foreach (RdResource found in _RdRs.Values.Where(r => r.isTx && r.SipCallId != -1 && r.Connected))
+            Dictionary<int, IRdResource> sipCalls = new Dictionary<int, IRdResource>();
+            foreach (IRdResource found in _RdRs.Values.Where(r => r.isTx && r.Connected))
                 sipCalls.Add(found.SipCallId, found);
             return sipCalls;
         }
         /// <summary>
         /// Rx Active Calls
         /// </summary>
-        private Dictionary<int, RdResource> SipRxCalls()
+        private Dictionary<int, IRdResource> SipRxCalls()
         {
-            Dictionary<int, RdResource> sipCalls = new Dictionary<int, RdResource>();
-            foreach (RdResource found in _RdRs.Values.Where(r => r.isRx && r.SipCallId != -1 && r.Connected))
+            Dictionary<int, IRdResource> sipCalls = new Dictionary<int, IRdResource>();
+            foreach (IRdResource found in _RdRs.Values.Where(r => r.isRx && r.Connected))
                 sipCalls.Add(found.SipCallId, found);
             return sipCalls;
         }
@@ -1612,8 +1612,8 @@ namespace U5ki.RdService
         /// <summary>
         /// 
         /// </summary>
-        private Dictionary<string, RdResource> _RdRs = new Dictionary<string, RdResource>();
-        public Dictionary<string, RdResource> RdRs
+        private Dictionary<string, IRdResource> _RdRs = new Dictionary<string, IRdResource>();
+        public Dictionary<string, IRdResource> RdRs
         {
             get
             { return _RdRs; }
@@ -1698,10 +1698,8 @@ namespace U5ki.RdService
         /// </summary>
         /// <param name="rdRs"></param>
         /// <return> true si es necesario publicar el recurso, falso en caso contrario </return>
-        private bool AddSipCall(RdResource rdRs)
+        private bool AddSipCall(IRdResource rdRs)
         {
-
-            Debug.Assert(rdRs.SipCallId >= 0);
             Debug.Assert(rdRs.Connected);
             bool publish = false;
 
@@ -1719,8 +1717,7 @@ namespace U5ki.RdService
                 // Buscamos un transmisor del mismo emplazamiento y frecuencia y a este receptor le enviamos el mismo PTT
                 if ((_CurrentSrcPtt != null) && (rdRs.Type != RdRsType.RxTx))
                 {
-                    foreach (RdResource foundTx in _RdRs.Values.Where(res => (res.isTx &&
-                                        res.SipCallId != -1 &&
+                    foreach (IRdResource foundTx in _RdRs.Values.Where(res => (res.isTx &&
                                         res.Connected &&
                                         res.Site == rdRs.Site)))
                     {
@@ -1728,6 +1725,19 @@ namespace U5ki.RdService
                         break;
                     }
                 }
+                if ((_FrRs == null) && HasSIPSession())
+                {
+                    _FrRs = new RdSrvFrRs();
+                    //Actualizo datos del squelch que están en los recursos asociados de RX
+                    //IRdResource rdr = this.RdRs.Values.Where(r => r.isRx && (r.Squelch && r.new_params.rx_selected)).FirstOrDefault();
+                    if (rdRs.Squelch && rdRs.GetRxSelected() != null)
+                    {
+                        _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
+                        _FrRs.SqSite = rdRs.Site;
+                    }
+                    publish = true;
+                }
+
             }
             if (rdRs.isTx)
             {
@@ -1740,29 +1750,15 @@ namespace U5ki.RdService
                     // Al receptor del mismo emplazamiento y frecuencia se le envia el mismo PTT type
                     if (rdRs.Type != RdRsType.RxTx)
                     {
-                        foreach (RdResource foundRx in _RdRs.Values.Where(res => (res.isRx &&
-                        res.SipCallId != -1 &&
+                        foreach (IRdResource foundRx in _RdRs.Values.Where(res => (res.isRx &&
                         res.Connected &&
                         res.Site == rdRs.Site)))
                             foundRx.PttOn(_CurrentSrcPtt.Type);
                     }
                 }
-                RdResource TxRsDefault = GetTxRsDefault();
+                IRdResource TxRsDefault = GetTxRsDefault();
                 if ((TxRsDefault != null) && (rdRs.Site == TxRsDefault.Site))
                     StartTimerTxDefault();
-            }
-
-            if ((_FrRs == null) && HasSIPSession())
-            {
-                _FrRs = new RdSrvFrRs();
-                //Actualizo datos del squelch que están en los recursos asociados de RX
-                RdResource rdr = this.RdRs.Values.Where(r => r.isRx && (r.Squelch && r.new_params.rx_selected)).FirstOrDefault();
-                if (rdr != null)
-                {
-                    _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
-                    _FrRs.SqSite = rdr.Site;
-                }
-                publish = true;
             }
 
             // Para abortar el envio temporizado del ASPA
@@ -1782,7 +1778,7 @@ namespace U5ki.RdService
         /// </summary>
         /// <param name="sipCallId"></param>
         /// <param name="rsType"></param>
-        private void RemoveSipCall(int sipCallId, RdResource resource)
+        private void RemoveSipCall(int sipCallId, IRdResource resource)
         {
             if (resource.isRx)
             {
@@ -1808,14 +1804,13 @@ namespace U5ki.RdService
                     resource.PttOff();
                     if (sipCallId != -1)
                         RdMixer.Unlink(_CurrentSrcPtt.SrcType, _CurrentSrcPtt.SrcPorts, sipCallId);
-                    foreach (RdResource foundRx in RdRs.Values.Where(r => (r.isRx) &&
-                    (r.SipCallId != -1) &&
-                    (r.Site == resource.Site)))
+                    foreach (IRdResource foundRx in RdRs.Values.Where(r => (r.isRx) &&
+                            (r.Site == resource.Site)))
                     {
                         foundRx.PttOff();
                     }
                 }
-                RdResource TxRsDefault = GetTxRsDefault();
+                IRdResource TxRsDefault = GetTxRsDefault();
                 if ((TxRsDefault != null) && (resource != null) && (resource.Site == TxRsDefault.Site))
                     StopTimerTxDefault();
             }
@@ -1982,14 +1977,14 @@ namespace U5ki.RdService
         {
             bool changed = true;
             PttInfo oldPtt = _CurrentSrcPtt;
-            Dictionary<int, RdResource> sipTxCalls = SipTxCalls();
+            Dictionary<int, IRdResource> sipTxCalls = SipTxCalls();
             if (_CurrentSrcPtt != null)
             {
                 //EDU 08/06/2017
-                foreach (RdResource rdRes in RdRs.Values.Where(x => x.Connected))
-                //foreach (KeyValuePair<int, RdResource> p in _SipTxCalls)
+                //Al receptor del mismo emplazamiento y frecuencia se le envia el mismo PTT off que al tx
+                foreach (IRdResource rdRes in RdRs.Values.Where(x => x.Connected))
                 {
-                    LogTrace<RdFrecuency>("PttOff_1 " + rdRes.Frecuency + ",srcPtts.Count " + _SrcPtts.Count.ToString());
+                    LogTrace<RdFrecuency>("PttOff_1 " + Frecuency + ",srcPtts.Count " + _SrcPtts.Count.ToString());
                     rdRes.PttOff();
                 }
 
@@ -2007,15 +2002,15 @@ namespace U5ki.RdService
 
                 RdMixer.Link(_CurrentSrcPtt.SrcType, _CurrentSrcPtt.SrcPorts, sipTxCalls.Keys);
 
-                foreach (RdResource rdRes in RdRs.Values.Where(x => x.Connected))
+                foreach (IRdResource rdRes in RdRs.Values.Where(x => x.Connected))
                 {
                     // JCAM. 27/02/2017
                     // Todos los recursos asociados a la frecuencia en transmisión hacen PTT
-                    LogTrace<RdFrecuency>("PttOn_1 " + rdRes.Frecuency + "," + _CurrentSrcPtt.Type.ToString() + ",srcPtts.Count " + _SrcPtts.Count.ToString());
-                    rdRes.PttOn(_CurrentSrcPtt.Type);
-
                     //EDU 08/06/2017
                     //Al receptor del mismo emplazamiento y frecuencia se le envia el PTT type
+                    LogTrace<RdFrecuency>("PttOn_1 " + Frecuency + "," + _CurrentSrcPtt.Type.ToString() + ",srcPtts.Count " + _SrcPtts.Count.ToString());
+                    rdRes.PttOn(_CurrentSrcPtt.Type);
+
                     if (rdRes.isTx)
                     {
                         StopTimerTxDefault();
@@ -2058,7 +2053,7 @@ namespace U5ki.RdService
         /// <param name="p"></param>
         private void ActualizePtt(PttInfo p)
         {
-            Dictionary<int, RdResource> sipTxCalls = SipTxCalls();
+            Dictionary<int, IRdResource> sipTxCalls = SipTxCalls();
             _CurrentSrcPtt.Type = p.Type;
 
             List<int> currentPorts = new List<int>(_CurrentSrcPtt.SrcPorts);
@@ -2203,7 +2198,7 @@ namespace U5ki.RdService
                 if ((_CurrentSrcPtt != null) && (SipTxCalls().Count > 0))
                 {
                     StartTimerTxDefault();
-                    foreach (RdResource res in _RdRs.Values.Where(x => x.Connected))
+                    foreach (IRdResource res in _RdRs.Values.Where(x => x.Connected))
                     {
                         res.PttOff();
                     }
@@ -2327,7 +2322,7 @@ namespace U5ki.RdService
                                 this.new_params.NotUnassignable != cfg.FrecuenciaNoDesasignable ||
                                 this.new_params.AudioInBssWindow != cfg.AudioPrimerSqBss ||
                                 this.new_params.Priority != (CORESIP_Priority)cfg.PrioridadSesionSip ||
-                                this.new_params.cld_supervision_time != cfg.CldSupervisionTime ||
+                                this.new_params.Cld_supervision_time != cfg.CldSupervisionTime ||
                                 this.new_params.MetodosBssOfrecidos != cfg.MetodosBssOfrecidos ||
                                 this.new_params.PorcentajeRSSI != cfg.PorcentajeRSSI;
 
@@ -2358,7 +2353,7 @@ namespace U5ki.RdService
             this.new_params.NotUnassignable = cfg.FrecuenciaNoDesasignable;
             this.new_params.AudioInBssWindow = cfg.AudioPrimerSqBss;
             this.new_params.Priority = (CORESIP_Priority)cfg.PrioridadSesionSip;
-            this.new_params.cld_supervision_time = cfg.CldSupervisionTime;
+            this.new_params.Cld_supervision_time = cfg.CldSupervisionTime;
             this.new_params.MetodosBssOfrecidos = cfg.MetodosBssOfrecidos;
             this.new_params.PorcentajeRSSI = cfg.PorcentajeRSSI;
             return hayCambios;
@@ -2382,7 +2377,7 @@ namespace U5ki.RdService
         /// <param name="cfg"></param>
         private void ConfiguraModoTransmision(CfgEnlaceExterno cfg)
         {
-            RdResource oldTxRsDefault = GetTxRsDefault();
+            IRdResource oldTxRsDefault = GetTxRsDefault();
             _TxIDDefault = null;
             if (_TimeToTxDefault != cfg.TiempoVueltaADefecto)
             {
@@ -2398,23 +2393,20 @@ namespace U5ki.RdService
                 {
                     _ModoTransmision = cfg.ModoTransmision;
                     //Sólo a los TX o TXRX
-                    foreach (RdResource rdRs in _RdRs.Values)
-                        if (rdRs.isTx)
-                            rdRs.TxMute = _ModoTransmision == Tipo_ModoTransmision.UltimoReceptor ? true : false;
+                    foreach (IRdResource rdRs in _RdRs.Values.Where(x => x.isTx))
+                        rdRs.TxMute = _ModoTransmision == Tipo_ModoTransmision.UltimoReceptor ? true : false;
                     _TxIDSelected = null;
                 }
                 if (!String.IsNullOrEmpty(cfg.EmplazamientoDefecto))
                 {
-                    foreach (RdResource rdRs in _RdRs.Values)
-                        if (rdRs.isTx)
-                            if (rdRs.Site == cfg.EmplazamientoDefecto)
-                            {
-                                _TxIDDefault = rdRs.ID;
-                                StartTimerTxDefault();
-                                if (String.IsNullOrEmpty(_LastSelectedSite))
-                                    _LastSelectedSite = cfg.EmplazamientoDefecto;
-                                break;
-                            }
+                    foreach (IRdResource rdRs in _RdRs.Values.Where (x=>(x.isTx && x.Site == cfg.EmplazamientoDefecto)))
+                    {
+                        _TxIDDefault = rdRs.ID;
+                        StartTimerTxDefault();
+                        if (String.IsNullOrEmpty(_LastSelectedSite))
+                            _LastSelectedSite = cfg.EmplazamientoDefecto;
+                        break;
+                    }
                 }
                 else
                 {
@@ -2426,7 +2418,7 @@ namespace U5ki.RdService
             {
                 if (_ModoTransmision != cfg.ModoTransmision)
                 {
-                    foreach (RdResource rdRs in _RdRs.Values.Where(x => x.isTx))
+                    foreach (IRdResource rdRs in _RdRs.Values.Where(x => x.isTx))
                         rdRs.TxMute = false;
                     _TxIDSelected = null;
                     _LastSelectedSite = "";
@@ -2449,20 +2441,20 @@ namespace U5ki.RdService
         private void EvaluaTxMute()
         {
             bool hayTxEnSite = false;
-            RdResource txSelected = null;
-            RdResource txConnected = null;
+            IRdResource txSelected = null;
+            IRdResource txConnected = null;
 
             if (_ModoTransmision == Tipo_ModoTransmision.UltimoReceptor)
             {
                 //Para optimizar busquedas se usa TxRsSelected
-                RdResource TxRsSelected = GetTxRsSelected();
+                IRdResource TxRsSelected = GetTxRsSelected();
                 if ((TxRsSelected != null) &&
                     (TxRsSelected.Connected) &&
                     (TxRsSelected.Site == _LastSelectedSite))
                     return;
-                RdResource TxRsDefault = GetTxRsDefault();
+                IRdResource TxRsDefault = GetTxRsDefault();
                 //Se busca el seleccionado entre los recursos
-                foreach (RdResource rdRs in _RdRs.Values.Where(x => x.isTx))
+                foreach (IRdResource rdRs in _RdRs.Values.Where(x => x.isTx))
                 {
                     if (rdRs.Connected)
                     {
@@ -2534,7 +2526,7 @@ namespace U5ki.RdService
         {
             if (!string.IsNullOrEmpty(PttSrc))
                 return;
-            RdResource TxRsDefault = GetTxRsDefault();
+            IRdResource TxRsDefault = GetTxRsDefault();
             if ((_TimeToTxDefault > 0) && (TxRsDefault != null))
                 if (TxRsDefault != GetTxRsSelected())
                     _TimerTxDefault.Enabled = true;

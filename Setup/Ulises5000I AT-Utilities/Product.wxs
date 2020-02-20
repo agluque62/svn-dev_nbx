@@ -205,6 +205,21 @@
 
   <!-- U5ki.NodeBox installation -->
   <Fragment>
+    <!-- propiedad que indica si hay HMI Light instalado, contiene el nombre del fichero con su path si lo encuentra -->
+    <Property Id="HMILIGHTINSTALLED" Value="no">
+      <DirectorySearch Id="ProgramFilesFolder" Path ="[ProgramFilesFolder]" >
+        <DirectorySearch Id="CCFolder" Path ="[COMPANYFOLDER]">
+          <DirectorySearch Id="HMIFolder" Path ="Ulises5000I-TA" Depth ="1">
+            <FileSearch Id ="RadioLightFile" Name="Presentation.RadioLight.dll"/>
+          </DirectorySearch>
+        </DirectorySearch>
+      </DirectorySearch>
+    </Property>
+    <!-- No permite instalar si hay un HMI Light -->
+    <Condition Message='HMI Light must be uninstalled first'>
+      <![CDATA[HMILIGHTINSTALLED="no"]]>
+    </Condition>
+
     <ComponentGroup Id="U5ki.NodeBox.ProductComponents" Directory="U5ki.NodeBox.INSTALLFOLDER" Source="..\..\bin\Release">
       <Component Id='Newtonsoft.Json' Guid='{7CF02408-E94E-4766-BCB2-12455A574D55}'>
         <File Id='Newtonsoft.Json' Name='Newtonsoft.Json.dll'/>
