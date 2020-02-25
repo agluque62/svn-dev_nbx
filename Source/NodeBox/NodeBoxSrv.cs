@@ -29,7 +29,7 @@ using Translate;
 namespace U5ki.NodeBox
 {
     /// <summary>
-    /// 
+    /// BORRAR
     /// </summary>
     public enum CmdSupervision
     {
@@ -54,6 +54,10 @@ namespace U5ki.NodeBox
         cmdTlfInfoGet,       // Obtiene la informacion de TIFX
         cmdPresenceInfoGet,  // Obtiene la informacion del servidor de presencia.
 
+        /** 20200224 Gestio 1+1 */
+        cmdRdUnoMasUnoData,
+        cmdRdUnoMasUnoSelect,
+
         /** 20180625. AGL. Comandos DEBUG */
         cmdRdServiceDebugInfo,
     }
@@ -65,7 +69,7 @@ namespace U5ki.NodeBox
     public enum ServiceMasterStates { Master, Slave, Error }
 
     /// <summary>
-    /// 
+    /// BORRAR
     /// </summary>
     /// <param name="cmd"></param>
     /// <param name="datain"></param>
@@ -84,7 +88,7 @@ namespace U5ki.NodeBox
         /// <param name="msg"></param>
         /// <param name="x"></param>
         /// <param name="generarHistorico"></param>
-        public void ExceptionManager(string msg, Exception x, bool generarHistorico=false)
+        public void ExceptionManager(string msg, Exception x, bool generarHistorico = false)
         {
             LogException<NodeBoxSrv>(msg, x, generarHistorico);
         }
@@ -112,35 +116,35 @@ namespace U5ki.NodeBox
     /// 
     /// </summary>
 	public partial class NodeBoxSrv : ServiceBase
-	{
+    {
         /// 20181130. Para identificar el tipo de servidor de servicios.
         static public ServicesServerTypes ServerType { get; set; }
         /// <summary>
         /// 
         /// </summary>
 		public NodeBoxSrv()
-		{
+        {
             /** AGL. Set el Current directory.. */
             System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
             /** AGL. Set Global language **/
             Environment.SetEnvironmentVariable("idioma", Translate.CTranslate.Idioma);
-            
+
             InitializeComponent();
 
-			if (Directory.Exists(Application.StartupPath + "\\Services"))
-			{
-				string[] dlls = Directory.GetFiles(Application.StartupPath + "\\Services", "*.dll");
+            if (Directory.Exists(Application.StartupPath + "\\Services"))
+            {
+                string[] dlls = Directory.GetFiles(Application.StartupPath + "\\Services", "*.dll");
 
-				foreach (string path in dlls)
-				{
-					Assembly dll = Assembly.LoadFrom(path);
-					Type[] types = dll.GetExportedTypes();
+                foreach (string path in dlls)
+                {
+                    Assembly dll = Assembly.LoadFrom(path);
+                    Type[] types = dll.GetExportedTypes();
 
-					foreach (Type type in types)
-					{
-						if (type.GetInterface("IService") != null)
-						{
-							IService srv = (IService)Activator.CreateInstance(type);
+                    foreach (Type type in types)
+                    {
+                        if (type.GetInterface("IService") != null)
+                        {
+                            IService srv = (IService)Activator.CreateInstance(type);
                             /** 20160413. Arrancar el Servicio PABX solo si está habilitado */
                             /** 20180208. Este servicio se sustituye por el de presencia....
                             if (srv.Name == "PabxItfService" && U5ki.NodeBox.Properties.Settings.Default.Pabx == false)
@@ -148,37 +152,37 @@ namespace U5ki.NodeBox
                              * */
                             /** 20181130. Control de servicos repetidos. */
                             //_Services.Add(srv);                            
-                            if (_Services.Keys.Contains(srv.Name)==false)
+                            if (_Services.Keys.Contains(srv.Name) == false)
                                 _Services[srv.Name] = srv;
-						}
-					}
-				}
-			}
+                        }
+                    }
+                }
+            }
 
             /** 20190408. En 259 esto da problemas. Reconsiderar en 2.5.10*/
-//            /// 20181130. Identificar el tipo de servidor de servicios.
-//            if (RadioService != null && CfgService != null && PhoneService == null && TifxService == null && PresenceService == null)
-//            {
-//                ServerType = ServicesServerTypes.Radio;
-//                ServicesHelpers.VersionsFileAdjust("RadioService", new List<string>() { "CfgService", "RdService", "RemoteControlService" });
-//        }
-//            else if (RadioService == null && CfgService == null && PhoneService != null && TifxService != null && PresenceService != null)
-//            {
-//                ServerType = ServicesServerTypes.Phone;
-//                ServicesHelpers.VersionsFileAdjust("PhoneService", new List<string>() { "TifxService", "PresenceService", "PhoneService" });
-//            }
-//#if PHONE_AND_CFG
-//            else if (RadioService == null && PhoneService != null && TifxService != null && PresenceService != null)
-//            {
-//                ServerType = ServicesServerTypes.Phone;
-//                ServicesHelpers.VersionsFileAdjust("PhoneServiceCfg", new List<string>() { "TifxService", "PresenceService", "PhoneService", "CfgService" });
-//            }
-//#endif
-//            else
-//            {
-//                ServerType = ServicesServerTypes.Mixed;
-//                ServicesHelpers.VersionsFileAdjust("Nodebox", null);
-//            }
+            //            /// 20181130. Identificar el tipo de servidor de servicios.
+            //            if (RadioService != null && CfgService != null && PhoneService == null && TifxService == null && PresenceService == null)
+            //            {
+            //                ServerType = ServicesServerTypes.Radio;
+            //                ServicesHelpers.VersionsFileAdjust("RadioService", new List<string>() { "CfgService", "RdService", "RemoteControlService" });
+            //        }
+            //            else if (RadioService == null && CfgService == null && PhoneService != null && TifxService != null && PresenceService != null)
+            //            {
+            //                ServerType = ServicesServerTypes.Phone;
+            //                ServicesHelpers.VersionsFileAdjust("PhoneService", new List<string>() { "TifxService", "PresenceService", "PhoneService" });
+            //            }
+            //#if PHONE_AND_CFG
+            //            else if (RadioService == null && PhoneService != null && TifxService != null && PresenceService != null)
+            //            {
+            //                ServerType = ServicesServerTypes.Phone;
+            //                ServicesHelpers.VersionsFileAdjust("PhoneServiceCfg", new List<string>() { "TifxService", "PresenceService", "PhoneService", "CfgService" });
+            //            }
+            //#endif
+            //            else
+            //            {
+            //                ServerType = ServicesServerTypes.Mixed;
+            //                ServicesHelpers.VersionsFileAdjust("Nodebox", null);
+            //            }
 
             // VersionsFileAdjust();
         }
@@ -188,31 +192,31 @@ namespace U5ki.NodeBox
         /// <param name="args"></param>
         public static bool bConsole = false;
         static bool mcast_running = false;
-		public static void Run(string[] args)
-		{
-			try
-			{
+        public static void Run(string[] args)
+        {
+            try
+            {
                 // Sincronizacion con MCAST
                 mcast_running = Utilities.StartSync.ProcessRunningSync("u5ki.mcast", 20);
-                
+
                 NodeBoxSrv server = new NodeBoxSrv();
 
-				if ((args.Length == 1) && (args[0] == "-start"))
-				{
-					using (ServiceController sc = new ServiceController(server.ServiceName))
-					{
-						sc.Start();
-					}
-				}
-				if ((args.Length == 1) && (args[0] == "-stop"))
-				{
-					using (ServiceController sc = new ServiceController(server.ServiceName))
-					{
-						sc.Stop();
-					}
-				}
-				else if ((args.Length == 1) && (args[0] == "-console"))
-				{
+                if ((args.Length == 1) && (args[0] == "-start"))
+                {
+                    using (ServiceController sc = new ServiceController(server.ServiceName))
+                    {
+                        sc.Start();
+                    }
+                }
+                if ((args.Length == 1) && (args[0] == "-stop"))
+                {
+                    using (ServiceController sc = new ServiceController(server.ServiceName))
+                    {
+                        sc.Stop();
+                    }
+                }
+                else if ((args.Length == 1) && (args[0] == "-console"))
+                {
                     bConsole = true;
 #if DEBUG
                     Console.WriteLine("Pulse ENTER para Iniciar...");
@@ -220,50 +224,50 @@ namespace U5ki.NodeBox
 #endif
                     do
                     {
-					    server.ServiceMain();
+                        server.ServiceMain();
                     } while (Console.ReadKey().Key != ConsoleKey.Escape);
                 }
-				else if (args.Length == 0)
-				{
-					ServiceBase.Run(server);
-				}
-			}
-			catch (Exception e)
-			{
+                else if (args.Length == 0)
+                {
+                    ServiceBase.Run(server);
+                }
+            }
+            catch (Exception e)
+            {
                 _Logger.ExceptionManager("ERROR arrancando nodo", e);
-			}
-		}
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="args"></param>
 		protected override void OnStart(string[] args)
-		{
+        {
             _ServiceMainTh = new Thread(ServiceMain);
             _ServiceMainTh.IsBackground = true;
-			_ServiceMainTh.Start();
+            _ServiceMainTh.Start();
 
-			base.OnStart(args);
-		}
+            base.OnStart(args);
+        }
         /// <summary>
         /// 
         /// </summary>
 		protected override void OnStop()
-		{
-			_EndEvent.Set();
-			if (_ServiceMainTh != null)
-			{
-				_ServiceMainTh.Join();
-			}
+        {
+            _EndEvent.Set();
+            if (_ServiceMainTh != null)
+            {
+                _ServiceMainTh.Join();
+            }
 
-			base.OnStop();
-		}
+            base.OnStop();
+        }
 
-		#region Private Members
+        #region Private Members
         /// <summary>
         /// 
         /// </summary>
-		// static Logger _Logger = LogManager.GetCurrentClassLogger();
+        // static Logger _Logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Para los LOG'S...
         /// </summary>
@@ -288,7 +292,7 @@ namespace U5ki.NodeBox
         HistProc _histproc = null;  // new HistProc();
 #endif
         /// <summary>
-        /// 
+        /// BORRAR
         /// </summary>
         NbxWebServer _webServer = new NbxWebServer();
 
@@ -298,14 +302,14 @@ namespace U5ki.NodeBox
         /// <param name="sender"></param>
         /// <param name="e"></param>
 		void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
+        {
             Logger log = LogManager.GetLogger("UnHandledException");
-			try
-			{
+            try
+            {
                 log.Fatal("OnUnhandledException event [{0},{1}]", e.ExceptionObject, e.IsTerminating);
-				if (e.ExceptionObject is Exception)
-				{
-                    Exception x = (Exception )e.ExceptionObject;
+                if (e.ExceptionObject is Exception)
+                {
+                    Exception x = (Exception)e.ExceptionObject;
                     // _Logger.ExceptionManager("UnHandledException", e);
                     log.Fatal("Excepcion: {0}", x.Message);
                     log.Fatal("Source   : {0}", x.Source);
@@ -319,27 +323,27 @@ namespace U5ki.NodeBox
                         log.Fatal("           Tipo:    : {0}", i.GetType().FullName);
                         log.Fatal("           Stack    : {0}", i.StackTrace);
                     }
-				}
-                else 
+                }
+                else
                 {
                 }
-			}
-			catch (Exception) 
-            { 
+            }
+            catch (Exception)
+            {
             }
             /** */
             log.Fatal("Saliendo de aplicacion");
             System.Environment.Exit(0);
-		}
+        }
 
         /// <summary>
         /// 
         /// </summary>
         int _cntRun = 0;
         void ServiceMain()
-		{
-			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-			Environment.CurrentDirectory = Path.GetDirectoryName(Application.ExecutablePath);
+        {
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+            Environment.CurrentDirectory = Path.GetDirectoryName(Application.ExecutablePath);
 
             _Logger.InfoManager("Iniciando Arranque.");
             if (!mcast_running)
@@ -369,7 +373,7 @@ namespace U5ki.NodeBox
                 }
 #endif
                 _Logger.InfoManager(CTranslate.translateResource("Iniciado"), true);
-                
+
             }
             catch (Exception x)
             {
@@ -402,13 +406,13 @@ namespace U5ki.NodeBox
                             break;
 
                         case ConsoleKey.S:          // Cambiar a Slave.
-                            string err="";
+                            string err = "";
                             RadioService.Commander(ServiceCommands.SrvDbg, "S", ref err);
                             break;
 
                         case ConsoleKey.M:
-                            string err1="";
-                            RadioService.Commander(ServiceCommands.SrvDbg, "M", ref err1);                            
+                            string err1 = "";
+                            RadioService.Commander(ServiceCommands.SrvDbg, "M", ref err1);
                             break;
 #endif
                         case ConsoleKey.Spacebar:
@@ -422,7 +426,7 @@ namespace U5ki.NodeBox
 
                 if (_isNetworkOnline == true)
                 {
-                /** 20180309. Arranque del Sip AGENT y del Servicio WEB ... */
+                    /** 20180309. Arranque del Sip AGENT y del Servicio WEB ... */
                     if (SipAgentStarted == false)
                     {
                         SipAgentStart();
@@ -439,7 +443,7 @@ namespace U5ki.NodeBox
                     Presencia();
 
                     /** 20170614. Query IGMP cada x minutos si habilitado y master */
-                    IgmpQuery();              
+                    IgmpQuery();
                 }
                 else
                 {
@@ -483,21 +487,21 @@ namespace U5ki.NodeBox
                 _histproc = null;
 #endif
                 if (WebServerStarted == true)
-                WebServerStop();
+                    WebServerStop();
 
                 ///** 20180208. Inicializa el SipAgent para que pueda se utilizado por diferentes servicios */
                 //SipAgent.End();
                 if (SipAgentStarted == true)
-                SipAgentStop();
-                
+                    SipAgentStop();
+
                 /** */
-                _Logger.InfoManager(String.Format("Nodo detenido {0}.",++_cntRun));
+                _Logger.InfoManager(String.Format("Nodo detenido {0}.", ++_cntRun));
             }
             catch (Exception x)
             {
                 _Logger.ExceptionManager("Excepcion en Finalizacion.", x);
             }
-		}
+        }
 
         /// <summary>
         /// 
@@ -539,11 +543,11 @@ namespace U5ki.NodeBox
                     //nbxLocalSocket.Send(msg, msg.Length, dst);
 
                     /** 20181130. Cambio el formato a TXT/JSON */
-                    using (Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) )
+                    using (Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
                     {
-                    IPEndPoint dst = new IPEndPoint(IPAddress.Parse(settings.HistServer), settings.PuertoPresencia);
+                        IPEndPoint dst = new IPEndPoint(IPAddress.Parse(settings.HistServer), settings.PuertoPresencia);
                         var data = new
-                    {
+                        {
                             Machine = Environment.MachineName,
                             ServerType = ServerType.ToString(),
                             GlobalMaster = GlobalMasterState.ToString(),
@@ -554,10 +558,10 @@ namespace U5ki.NodeBox
                             PresenceService = ServiceMasterStateByValue(PresenceService).ToString(),
                             WebPort = settings.PuertoControlRemoto,
                             TimeStamp = DateTime.Now
-                    };
+                        };
 
                         sock.SendTo(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(data)), dst);
-                }
+                    }
                 }
                 catch (Exception x)
                 {
@@ -585,7 +589,7 @@ namespace U5ki.NodeBox
         }
 
         /// <summary>
-        /// 
+        /// BORRAR
         /// </summary>
         /// <param name="cmd"></param>
         /// <param name="data"></param>
@@ -628,43 +632,43 @@ namespace U5ki.NodeBox
                         var stdGlobal = new
                         {
                             cfg_activa = cfgInfo,
-	                        sw_version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-	                        type = ServerType.ToString(),
-	                        level = GlobalMasterState.ToString(),
-	                        rad = new  
+                            sw_version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                            type = ServerType.ToString(),
+                            level = GlobalMasterState.ToString(),
+                            rad = new
                             {
                                 std = ServiceStatusByValue(RadioService).ToString(),
                                 level = ServiceMasterStateByValue(RadioService).ToString()
                             },
-	                        mn  = new  
-                        {
+                            mn = new
+                            {
                                 std = mnInfo,
                                 level = ServiceMasterStateByValue(RadioService).ToString()
                             },
-	                        cfg = new  
+                            cfg = new
                             {
                                 std = ServiceStatusByValue(CfgService).ToString(),
                                 level = ServiceMasterStateByValue(CfgService).ToString()
                             },
-	                        ifx = new  
-                        {
+                            ifx = new
+                            {
                                 std = ServiceStatusByValue(TifxService).ToString(),
                                 level = ServiceMasterStateByValue(TifxService).ToString()
                             },
-	                        pre = new  
+                            pre = new
                             {
                                 std = ServiceStatusByValue(PresenceService).ToString(),
                                 level = ServiceMasterStateByValue(PresenceService).ToString()
                             },
-	                        pho = new  
-                        {
+                            pho = new
+                            {
                                 std = ServiceStatusByValue(PhoneService).ToString(),
                                 level = ServiceMasterStateByValue(PhoneService).ToString()
                             }
                         };
 
                         return stdGlobal;
-            }
+                    }
 
                 case CmdSupervision.cmdCfgLst:                      // Lista de Preconfiguraciones.
                     {
@@ -935,6 +939,30 @@ namespace U5ki.NodeBox
                     }
                     break;
 
+                /** 20200224 Gestion 1+1 */
+                case CmdSupervision.cmdRdUnoMasUnoData:
+                    {
+                        IService rad = RadioService;
+                        if (rad != null && rad.Master == true)
+                        {
+                            var rddata = new List<object>();
+                            if (rad.DataGet(ServiceCommands.RdUnoMasUnoData, ref rddata) == true)
+                            {
+                                return rddata;
+                            }
+                        }
+                        return new List<object>();
+                    }
+                case CmdSupervision.cmdRdUnoMasUnoSelect:
+                    if (RadioService != null && RadioService.Master == true)
+                    {
+                        string err = string.Empty;
+                        if (RadioService.Commander(ServiceCommands.RdUnoMasUnoActivate, (string)data, ref err) == true)
+                            return new nbxResData() { res = "OnWebServerCommand: Operacion Ejecutada..." };
+                        throw new Exception("OnWebServerCommand: Error en cmdRdUnoMasUnoSelect");
+                    }
+                    break;
+
             }
             return new nbxResData() { res = "OnWebServerCommand: Operacion no Implementada." };
         }
@@ -983,7 +1011,7 @@ namespace U5ki.NodeBox
 
 #if _NETWORK_SUP_
         /** Presencia RED... */
-        bool _isNetworkOnline=false;
+        bool _isNetworkOnline = false;
         protected void SetNetworkSupervision()
         {
 #if _NETWORK_SUP_POLLING_
@@ -1001,8 +1029,8 @@ namespace U5ki.NodeBox
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void NetworkChange_NetworkAvailabilityChanged(object sender, NetworkAvailabilityEventArgs e)
-        {    
-            _isNetworkOnline  = e.IsAvailable;
+        {
+            _isNetworkOnline = e.IsAvailable;
             _Logger.InfoManager(String.Format(CTranslate.translateResource("Supervisión de red. _isNetworkOnline={0}"), _isNetworkOnline), true);
         }
 
@@ -1015,7 +1043,7 @@ namespace U5ki.NodeBox
         Random rnd = new Random();
         int _control_errores = 1;
 #endif
-        void NetworkStatusPolling(bool inicial=true)
+        void NetworkStatusPolling(bool inicial = true)
         {
 #if _SIM_ERRORES_RED_
             if (_control_errores>0 && --_control_errores <= 0)
@@ -1037,7 +1065,7 @@ namespace U5ki.NodeBox
                 _stdNetwork = System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
             }
 
-             if (_last != _stdNetwork)
+            if (_last != _stdNetwork)
             {
                 if (_stdNetwork == true)
                 {
@@ -1098,7 +1126,7 @@ namespace U5ki.NodeBox
                 _Logger.ExceptionManager(String.Format("NodeBOX: Excepcion Parando Servicio {0}...", srv.Name), x);
             }
         }
-		#endregion
+        #endregion
 
         /// <summary>
         /// 
@@ -1126,7 +1154,7 @@ namespace U5ki.NodeBox
         protected ServiceMasterStates ServiceMasterStateByValue(IService service)
         {
             return service == null || service.Status != ServiceStatus.Running ? ServiceMasterStates.Error :
-                service.Master==true ? ServiceMasterStates.Master : ServiceMasterStates.Slave;
+                service.Master == true ? ServiceMasterStates.Master : ServiceMasterStates.Slave;
         }
 
         /// <summary>
@@ -1137,8 +1165,8 @@ namespace U5ki.NodeBox
             get
             {
                 return ServiceByName("Cd40RdService");
-                    }
-                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -1155,12 +1183,12 @@ namespace U5ki.NodeBox
         /// 
         /// </summary>
         protected IService PhoneService
-                {
+        {
             get
-                    {
+            {
                 return ServiceByName("PhoneService");
-                    }
-                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -1170,8 +1198,8 @@ namespace U5ki.NodeBox
             get
             {
                 return ServiceByName("Cd40TifxService");
-                    }
-                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -1185,9 +1213,9 @@ namespace U5ki.NodeBox
         }
 
         protected ServiceMasterStates GlobalMasterState
-                {
+        {
             get
-                    {
+            {
                 List<ServiceMasterStates> RadioServerStates = new List<ServiceMasterStates>()
                 {
                     ServiceMasterStateByValue(RadioService),
@@ -1200,8 +1228,8 @@ namespace U5ki.NodeBox
                     ServiceMasterStateByValue(PresenceService)
                 };
 
-                int RadioServerServicesInMaster = RadioServerStates.Where(s => s== ServiceMasterStates.Master).ToList().Count;
-                int RadioServerServicesInSlave = RadioServerStates.Where(s => s== ServiceMasterStates.Slave).ToList().Count;
+                int RadioServerServicesInMaster = RadioServerStates.Where(s => s == ServiceMasterStates.Master).ToList().Count;
+                int RadioServerServicesInSlave = RadioServerStates.Where(s => s == ServiceMasterStates.Slave).ToList().Count;
                 int PhoneServerServicesInMaster = PhoneServerStates.Where(s => s == ServiceMasterStates.Master).ToList().Count;
                 int PhoneServerServicesInSlave = PhoneServerStates.Where(s => s == ServiceMasterStates.Slave).ToList().Count;
 
@@ -1209,7 +1237,7 @@ namespace U5ki.NodeBox
                 {
                     case ServicesServerTypes.Radio:
                         return RadioServerServicesInMaster == RadioServerStates.Count ? ServiceMasterStates.Master :
-                            RadioServerServicesInSlave  == RadioServerStates.Count ? ServiceMasterStates.Slave : ServiceMasterStates.Error;
+                            RadioServerServicesInSlave == RadioServerStates.Count ? ServiceMasterStates.Slave : ServiceMasterStates.Error;
 
                     case ServicesServerTypes.Phone:
                         return PhoneServerServicesInMaster == PhoneServerStates.Count ? ServiceMasterStates.Master :
@@ -1221,9 +1249,9 @@ namespace U5ki.NodeBox
 
                     default:
                         return ServiceMasterStates.Error;
-                    }
                 }
             }
+        }
 
         /// <summary>
         /// Obtiene el Interfaz de Red a partir de la IP.
@@ -1276,10 +1304,10 @@ namespace U5ki.NodeBox
                     sipPort, 128);
                 if (ServerType != ServicesServerTypes.Phone)
                 {
-                SipAgent.ReceiveFromRemote(
-                    U5ki.NodeBox.Properties.Settings.Default.IpPrincipal,
-                    U5ki.NodeBox.Properties.Settings.Default.ListenIp,
-                    U5ki.NodeBox.Properties.Settings.Default.ListenPort);
+                    SipAgent.ReceiveFromRemote(
+                        U5ki.NodeBox.Properties.Settings.Default.IpPrincipal,
+                        U5ki.NodeBox.Properties.Settings.Default.ListenIp,
+                        U5ki.NodeBox.Properties.Settings.Default.ListenPort);
                 }
                 SipAgent.Start();
                 SipAgentStarted = true;
@@ -1287,7 +1315,7 @@ namespace U5ki.NodeBox
             catch (Exception x)
             {
                 LogManager.GetCurrentClassLogger().Error("SipAgentStart Exception", x);
-            }            
+            }
         }
         protected void SipAgentStop()
         {
@@ -1307,6 +1335,8 @@ namespace U5ki.NodeBox
             }
         }
 
+        /** 2020024. Nuevo Servidor WEB */
+        WebServer.U5kNbxWebApp WebAppServer = new WebServer.U5kNbxWebApp();
         /** 20180309. Para poder supervisar el estado del WEB SERVER */
         protected bool WebServerStarted = false;
         protected void WebServerStart()
@@ -1316,9 +1346,13 @@ namespace U5ki.NodeBox
                 if (U5ki.NodeBox.Properties.Settings.Default.ControlRemoto == true)
                 {
                     _Logger.InfoManager("Iniciando Web Server.");
-
+#if OLD_WEB_SERVER
                     _webServer.WebSrvCommand += OnWebServerCommand;
                     _webServer.Start(U5ki.NodeBox.Properties.Settings.Default.PuertoControlRemoto);
+#else
+                    WebAppServer.Start(() => RadioService, () => CfgService, () => TifxService, () => PresenceService);
+#endif
+
                     WebServerStarted = true;
                 }
                 else
@@ -1339,8 +1373,12 @@ namespace U5ki.NodeBox
                 {
                     /** */
                     _Logger.InfoManager("Deteniendo WebServer.");
+#if OLD_WEB_SERVER
                     _webServer.WebSrvCommand -= OnWebServerCommand;
                     _webServer.Dispose();
+#else
+                    WebAppServer.Stop();
+#endif
                 }
             }
             catch (Exception x)

@@ -490,6 +490,7 @@ namespace U5ki.NodeBox
         const string rest_url_tlf_tifxinfo = "tifxinfo";
         const string rest_url_versiones = "versiones";
         const string rest_url_hf = "rdhf";
+        const string rest_url_unomasuno = "rd11";
         const string rest_url_presence = "ps";
         const string rest_url_radio_debug = "rdservice";
 
@@ -737,6 +738,10 @@ namespace U5ki.NodeBox
                         case rest_url_hf:
                             processTxHFGet(request, response, sb);
                             break;
+                        /** 20200224. Datos 1+1*/
+                        case rest_url_unomasuno:
+                            processRdUnoMasUnoGet(request, response, sb);
+                            break;
 
                         case rest_url_presence:
                             processPresenceDataGet(request, response, sb);
@@ -790,6 +795,11 @@ namespace U5ki.NodeBox
             else if (request.Url.LocalPath.StartsWith("/" + rest_url_hf))
             {
                 processTxHfRelease(request, response, sb);
+            }
+            /** 20200224. Mando Uno Mas Uno*/
+            else if (request.Url.LocalPath.StartsWith("/"+ rest_url_unomasuno))
+            {
+                processRdUnoMasUnoActivate(request, response, sb);
             }
             else
             {
@@ -1231,6 +1241,11 @@ namespace U5ki.NodeBox
                 sb.Append(JsonConvert.SerializeObject(resultado));
             }
         }
+        /** 20200224. Mando 1+1 */
+        void processRdUnoMasUnoActivate(HttpListenerRequest request, HttpListenerResponse response, StringBuilder sb)
+        {
+
+        }
 
         /// <summary>
         /// 
@@ -1267,6 +1282,16 @@ namespace U5ki.NodeBox
             if (WebSrvCommand != null)
             {
                 List<GlobalTypes.txHF> txhf = (List<GlobalTypes.txHF>)WebSrvCommand(CmdSupervision.cmdHFGet, null);
+                response.ContentType = "application/json";
+                sb.Append(JsonConvert.SerializeObject(txhf));
+            }
+        }
+
+        private void processRdUnoMasUnoGet(HttpListenerRequest request, HttpListenerResponse response, StringBuilder sb)
+        {
+            if (WebSrvCommand != null)
+            {
+                List<GlobalTypes.txHF> txhf = (List<GlobalTypes.txHF>)WebSrvCommand(CmdSupervision.cmdRdUnoMasUnoData, null);
                 response.ContentType = "application/json";
                 sb.Append(JsonConvert.SerializeObject(txhf));
             }
