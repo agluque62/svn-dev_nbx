@@ -191,7 +191,16 @@ namespace U5ki.CfgService
             return false;
         }
         /** Fin de la Modificacion */
-
+        public object AllDataGet()
+        {
+            return new
+            {
+                std = Status.ToString(),
+                level = Status != ServiceStatus.Running ? "Error" : Master == true ? "Master" : "Slave",
+                cfg_activa = _Master == false ? "El servicio no esta en modo MASTER" : 
+                    _LastCfg != null ? _LastCfg.Version : "No hay ninguna configuracion cargada...",
+            };
+        }
 
         /// <summary>
         /// 

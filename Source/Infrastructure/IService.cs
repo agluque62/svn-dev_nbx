@@ -35,6 +35,8 @@ namespace U5ki.Infrastructure
         RdMNGearAssign,             //  Asignar Equipo.
         RdMNGearUnassing,           //  Desasignar Equipo.
         RdMNValidationTick,         //  Configura el valor del tick de validacion del pool.
+        RdUnoMasUnoData,            // 20200224. AGL. Datos de Servicios Radio en Uno mas Uno.
+        RdUnoMasUnoActivate,
 
         TifxDataGet,
 
@@ -65,5 +67,7 @@ namespace U5ki.Infrastructure
         /** 20170217. AGL. Nueva interfaz de comandos. Orientada a estructuras definidas en 'Infraestructure' */
         bool DataGet(ServiceCommands cmd, ref List<Object> rsp);
         /** Fin de la Modificacion */
+        /** 20200224 Todos los datos */
+        object AllDataGet();
 	}
 }

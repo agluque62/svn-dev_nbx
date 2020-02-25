@@ -1617,6 +1617,7 @@ namespace U5ki.RdService
         {
             get
             { return _RdRs; }
+            set { _RdRs = value; }
         }
         /// <summary>
         /// 

@@ -18,6 +18,8 @@ using System.Runtime.InteropServices;
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+[assembly: InternalsVisibleTo("U5ki.NodeBox")]
+
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("651a4c34-8773-40f4-aa0e-0649c00bd44e")]

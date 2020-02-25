@@ -74,6 +74,32 @@ namespace U5ki.TifxService
 
             return false;
         }
+        public object AllDataGet()
+        {
+            return new
+            {
+                std = Status.ToString(),
+                level = Status != ServiceStatus.Running ? "Error" : Master == true ? "Master" : "Slave",
+                data = from gw in _LastGwInfo.Values
+                       select new
+                       {
+                           id = gw.GwId,
+                           ip = gw.GwIp,
+                           tp = gw.Type,
+                           ver = gw.Version,
+                           res = from res in gw.Resources
+                                 select new
+                                 {
+                                     id = res.RsId,
+                                     dep = GetResourceDep(res), // ;GetGwResourceIpInfo(res, gw.GwIp),
+                                     prio = res.Priority,
+                                     std = res.State,
+                                     tp = res.Type,
+                                     ver = res.Version
+                                 }
+                       }
+            };
+        }
 
         /** */
         private string JData

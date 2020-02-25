@@ -12,6 +12,7 @@ namespace U5ki.RdService
     public class RdResourcePair : BaseCode, IRdResource, IDisposable
     {
         RdResource _ActiveResource;
+        public RdResource ActiveResource { get => _ActiveResource; }
         RdResource _StandbyResource;
         string _ID = "";
         public RdResourcePair(RdResource ActiveResource, RdResource StandbyResource, List<Node> nodes)

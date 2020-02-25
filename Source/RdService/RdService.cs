@@ -22,11 +22,31 @@ using Utilities;
 using U5ki.Infrastructure.Code;
 using U5ki.RdService.Helpers;
 using U5ki.Enums;
+using System.Runtime.CompilerServices;
 using U5ki.RdService;
 using Translate;
 
 namespace U5ki.RdService
 {
+    /// <summary>
+    /// 20200224. AGL
+    /// Clase Estática para extensiones de clases...
+    /// </summary>
+    static public class RdExtensions
+    {
+        private static readonly ConditionalWeakTable<RdResource, RdResourcePair> _pairs = new ConditionalWeakTable<RdResource, RdResourcePair>();
+        public static void SetContainerPair(this RdResource @this, RdResourcePair pair)
+        {
+            _pairs.Remove(@this);
+            _pairs.Add(@this, pair);
+        }
+        public static RdResourcePair GetContainerPair(this RdResource @this)
+        {
+            RdResourcePair pair;
+            if (_pairs.TryGetValue(@this, out pair)) return pair;
+            return default(RdResourcePair);
+        }
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -226,6 +246,10 @@ namespace U5ki.RdService
 #endif
                         return true;
 
+                    /** 20200224. Mando 1+1 */
+                    case ServiceCommands.RdUnoMasUnoActivate:
+                        return SetData(ServiceCommands.RdUnoMasUnoActivate, par);
+
                     /** 20160928. AGL. Estado del Gestror para la Pagina WEB del NODEBOX. */
                     case ServiceCommands.RdMNStatus:
                         return MNStatus(par, ref err, resp);
@@ -303,6 +327,9 @@ namespace U5ki.RdService
                                         local_rsp.Add(data);
                                     }
                                 }
+                                local_rsp = local_rsp
+                                    .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
+                                    .ThenBy(o => ((GlobalTypes.radioSessionData)o).frec).ToList();
                             }
                             retorno = true;
                             break;
@@ -352,6 +379,23 @@ namespace U5ki.RdService
                                     });
                                 }
                             }
+                            retorno = true;
+                            break;
+
+                        case ServiceCommands.RdUnoMasUnoData:
+                            var UnoMasUnoFreqs = MSResources.Select(r => new
+                                {
+                                    fr = r.Frecuency,
+                                    id = r.ID,
+                                    site = r.Site,
+                                    tx = r.isTx ? 1 : 0,
+                                    ab = 0,
+                                    sel = r.GetContainerPair().ActiveResource.Uri1 == r.Uri1 ? 1 : 0,
+                                    ses = r.Connected ? 1 : 0,
+                                    uri = r.Uri1
+                                })
+                                .ToList();
+                            UnoMasUnoFreqs.ForEach(item => local_rsp.Add(item));
                             retorno = true;
                             break;
 
@@ -454,26 +498,105 @@ namespace U5ki.RdService
             sync.WaitOne(10000);
             return retorno;
         }
+        /** 20200225. Estado de cada módulo adicional de Radio */
+        bool MNRadioModule = false;
+        bool HFRadioModule = false;
+        bool MSRadioModule = false;
+        public object AllDataGet()
+        {
+            var level = Status != ServiceStatus.Running ? "Error" : Master == true ? "Master" : "Slave";
+            return new
+            {
+                std = Status.ToString(),
+                level,
+                modules = new[]
+                        {
+                            new
+                            {
+                                id="M+N",
+                                enable = MNRadioModule ? 1 : 0,
+                                std = MNRadioModule ? Status.ToString() : "",
+                                level = MNRadioModule ? level : ""
+                            },
+                            new
+                            {
+                                id="HF",
+                                enable = HFRadioModule ? 1 : 0,
+                                std = HFRadioModule ? Status.ToString() : "",
+                                level = HFRadioModule ? level : ""
+                            },
+                            new
+                            {
+                                id="1+1",
+                                enable = MSRadioModule ? 1 : 0,
+                                std = MSRadioModule ? Status.ToString() : "",
+                                level = MSRadioModule ? level : ""
+                            }
+                        }
+            };
+        }
+        public IEnumerable<RdResource> MSResources
+        {
+            get
+            {
+                var ret = Frecuencies.Values
+                                .Where(f => f.RdRs.Values.Where(r => r is RdResourcePair).ToList().Count > 0)   // Son Frecuencias 1+1 las que tienen algun RdResourcePair
+                                .SelectMany(f => f.RdRs.Values)
+                                .Where(r => r is RdResourcePair)        // De todos los recursos selecciono los pareados.
+                                .SelectMany(rp =>
+                                {
+                                    var resources = (rp as RdResourcePair).GetListResources();
+                                    resources.ForEach(r => r.SetContainerPair((rp as RdResourcePair)));
+                                    return resources;                   // Por cada pareado selecciona ambos componentes y marca su container...
+                                });
+                return ret;
+            }
+        }
 
         public bool SetData(ServiceCommands cmd, object data)
         {
-            try
+            ManualResetEvent sync = new ManualResetEvent(false);
+            bool retorno = false;
+            _EventQueue.Enqueue("DataSet", () =>
             {
-                switch (cmd)
+                try
                 {
-                    case ServiceCommands.RdHFLiberaEquipo:
-                        if (data is GlobalTypes.txHF)
-                        {
-                            return _gestorHF.LiberaEquipo(((GlobalTypes.txHF)data).id);
-                        }
-                        throw new Exception(String.Format("El objeto {0} no es del tipo esperado (txHF)",data));
+                    switch (cmd)
+                    {
+                        case ServiceCommands.RdHFLiberaEquipo:
+                            if (data is GlobalTypes.txHF)
+                            {
+                                retorno = _gestorHF.LiberaEquipo(((GlobalTypes.txHF)data).id);
+                            }
+                            else
+                            {
+                                throw new Exception(String.Format("El objeto {0} no es del tipo esperado (txHF)", data));
+                            }
+                            break;
+                        case ServiceCommands.RdUnoMasUnoActivate:
+                            if (data is string)
+                            {
+                                string err = default(string);
+                                retorno = ActivateResource(data as string, ref err);
+                            }
+                            else
+                            {
+                                throw new Exception(String.Format("El objeto {0} no es del tipo esperado (string)", data));
+                            }
+                            break;
+                    }
                 }
-            }
-            catch (Exception x)
-            {
-                ExceptionManage<RdService>("SetData", x, "On SetData Exception: " + x.Message, false);
-            }
-            return false;
+                catch (Exception x)
+                {
+                    ExceptionManage<RdService>("SetData", x, "On SetData Exception: " + x.Message, false);
+                }
+                finally
+                {
+                    sync.Set();
+                }
+            });
+            sync.WaitOne(10000);
+            return retorno;
         }
 
         /** Fin de la Modificacion */
@@ -1320,6 +1443,7 @@ namespace U5ki.RdService
             /** 20161219. AGL. Comprobar que no es la misma config, generada por una entrada 'merge' de otro NBX. */
             if (LastVersion == cfg.Version)
                 return;
+
             LastVersion = cfg.Version;
             LogInfo<RdService>(String.Format("Procesando nueva configuracion ({0})", cfg.Version), U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO,
                 "RdService", CTranslate.translateResource("Procesando nueva configuración ( " + cfg.Version + " )"));
@@ -1477,6 +1601,11 @@ namespace U5ki.RdService
 
                 MNManager.StartConfig();
 #endif
+                /** 20200225. Estado de cada módulo adicional de Radio */
+                MNRadioModule = cfg.Nodes.Count() > 0;
+                HFRadioModule = cfg.PoolHf.Count() > 0;
+                MSRadioModule = MSResources.Count() > 0;
+
             }
             catch (Exception ex)
             {
