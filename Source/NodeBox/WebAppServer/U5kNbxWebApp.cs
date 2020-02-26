@@ -16,13 +16,38 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 using U5ki.Infrastructure;
+using Utilities;
 
 namespace U5ki.NodeBox.WebServer
 {
     class U5kNbxWebApp : WebAppServer
     {
-        const string rest_url_radio_gestormn_asigna = "/gestormn/assign";
+        class SystemUsers
+        {
+            class SystemUserInfo
+            {
+                public string id { get; set; }
+                public string pwd { get; set; }
+                public int prf { get; set; }
+            }
+            static public bool Authenticate(string user, string pwd)
+            {
+                if (user == "root" && pwd == "#ncc#")
+                    return true;
+                try
+                {
+                    var page = "http://" + Properties.Settings.Default.HistServer + ":8090/db/systemusers";
+                    var data = HttpHelper.Get(page).Result;
+                    var users = JsonConvert.DeserializeObject<List<SystemUserInfo>>(data);
 
+                    return users?.Where(u => u.id == user && u.pwd == pwd && u.prf == 3).Count() == 1;
+                }
+                catch(Exception )
+                {
+                    return false;
+                }
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -34,19 +59,19 @@ namespace U5ki.NodeBox.WebServer
         /// <summary>
         /// 
         /// </summary>
-        public void Start(Func<IService> radioService, Func<IService> cfgService, Func<IService> tifxService, Func<IService> presenceService)
+        public void Start(Func<string, IService> serviceByName)
         {
-            RadioService = radioService;
-            CfgService = cfgService;
-            TifxService = tifxService;
-            PresenceService = presenceService;
+            AuthenticateUser = (user, pwd) => SystemUsers.Authenticate(user, pwd);
+
+            ServiceByName = serviceByName;
             try
             {
                 Dictionary<string, wasRestCallBack> cfg = new Dictionary<string, wasRestCallBack>()
                 {
                     {"/inci", RestListInci},                // GET
                     {"/std", RestStd},                      // GET
-                    {"/preconf",RestPreconf},               // GET, PUT, POST, DELETE
+                    {"/preconf",RestPreconf},               // GET, PUT, POST
+                    {"/preconf/*",RestPreconf},             // DELETE
                     {"/lconfig-ext",RestConfig},            // GET, POST
                     {"/tifxinfo",RestTifxInfo},             // GET
                     {"/ps",RestPresenceInfo},               // GET
@@ -107,10 +132,10 @@ namespace U5ki.NodeBox.WebServer
             {
                 context.Response.ContentType = "application/json";
                 
-                var CfgData = ServiceData(CfgService());
-                var TifData = ServiceData(TifxService());
-                var PreData = ServiceData(PresenceService());
-                var RadData = ServiceData(RadioService());
+                var CfgData = ServiceData(CfgService);
+                var TifData = ServiceData(TifxService);
+                var PreData = ServiceData(PresenceService);
+                var RadData = ServiceData(RadioService);
 
                 sb.Append(JsonConvert.SerializeObject(new
                 {
@@ -175,12 +200,12 @@ namespace U5ki.NodeBox.WebServer
                 /** Payload { fecha: "", nombre: cfg_name }*/
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
-                    dynamic cfg = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(cfg, "nombre"))
+                    var cfg = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
+                    if (JObjectPropertyExist(cfg, "nombre"))
                     {
-                        var cfg_name = cfg?.nombre as string;
+                        var cfg_name = (string)cfg["nombre"];
                         string error = default;
-                        var success = CfgService?.Invoke()?.Commander(ServiceCommands.SetDefaultCfg, cfg_name, ref error) ?? false;
+                        var success = CfgService?.Commander(ServiceCommands.SetDefaultCfg, cfg_name, ref error) ?? false;
                         if (success)
                         {
                             context.Response.StatusCode = 200;
@@ -206,12 +231,12 @@ namespace U5ki.NodeBox.WebServer
                 /** Payload { fecha: "", nombre: cfg_name }*/
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
-                    dynamic cfg = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(cfg, "nombre"))
+                    var cfg = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
+                    if (JObjectPropertyExist(cfg, "nombre"))
                     {
-                        var cfg_name = cfg?.nombre as string;
+                        var cfg_name = (string)cfg["nombre"];
                         string error = default;
-                        var success = CfgService?.Invoke()?.Commander(ServiceCommands.LoadDefaultCfg, cfg_name, ref error) ?? false;
+                        var success = CfgService?.Commander(ServiceCommands.LoadDefaultCfg, cfg_name, ref error) ?? false;
                         if (success)
                         {
                             context.Response.StatusCode = 200;
@@ -234,32 +259,19 @@ namespace U5ki.NodeBox.WebServer
             else if (context.Request.HttpMethod == "DELETE")
             {
                 /** Borrar una preconfiguracion */
-                /** Payload { fecha: "", nombre: cfg_name }*/
-                using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
+                string cfg_name = context.Request.Url.LocalPath.Split('/')[2];
+                string error = default;
+                var success = CfgService?.Commander(ServiceCommands.DelDefaultCfg, cfg_name, ref error) ?? false;
+                if (success)
                 {
-                    dynamic cfg = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(cfg, "nombre"))
-                    {
-                        var cfg_name = cfg?.nombre as string;
-                        string error = default;
-                        var success = CfgService?.Invoke()?.Commander(ServiceCommands.DelDefaultCfg, cfg_name, ref error) ?? false;
-                        if (success)
-                        {
-                            context.Response.StatusCode = 200;
-                            sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada... " + error }));
-                            // TODO Generar el Historico...
-                        }
-                        else
-                        {
-                            context.Response.StatusCode = 404;
-                            sb.Append(JsonConvert.SerializeObject(new { res = "CFG Not Found... " + error }));
-                        }
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 400;
-                        sb.Append(JsonConvert.SerializeObject(new { res = "Bad Request..." }));
-                    }
+                    context.Response.StatusCode = 200;
+                    sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada... " + error }));
+                    // TODO Generar el Historico...
+                }
+                else
+                {
+                    context.Response.StatusCode = 404;
+                    sb.Append(JsonConvert.SerializeObject(new { res = "CFG Not Found... " + error }));
                 }
             }
             else
@@ -284,7 +296,7 @@ namespace U5ki.NodeBox.WebServer
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(data, "fichero"))
+                    if (JObjectPropertyExist(data, "fichero"))
                     {
                         var file_data = data?.nombre as string;
                         File.WriteAllText(fileName, file_data);
@@ -311,10 +323,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if ((TifxService?.Invoke()?.Master ?? false) == true)
+                if ((TifxService?.Master ?? false) == true)
                 {
                     List<object> psdata = new List<object>();
-                    if (TifxService?.Invoke()?.DataGet(ServiceCommands.TifxDataGet, ref psdata) == true)
+                    if (TifxService?.DataGet(ServiceCommands.TifxDataGet, ref psdata) == true)
                     {                
                         context.Response.StatusCode = 200;
                         sb.Append(psdata[0]);
@@ -343,10 +355,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if ((PresenceService?.Invoke()?.Master ?? false) == true)
+                if ((PresenceService?.Master ?? false) == true)
                 {
                     List<object> psdata = new List<object>();
-                    if (PresenceService?.Invoke()?.DataGet(ServiceCommands.SrvDbg, ref psdata) == true)
+                    if (PresenceService?.DataGet(ServiceCommands.SrvDbg, ref psdata) == true)
                     {
                         context.Response.StatusCode = 200;
                         sb.Append(psdata[0]);
@@ -375,10 +387,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if (RadioService?.Invoke()?.Master == true)
+                if (RadioService?.Master == true)
                 {
                     List<object> psdata = new List<object>();
-                    if (RadioService?.Invoke()?.DataGet(ServiceCommands.SrvDbg, ref psdata) == true)
+                    if (RadioService?.DataGet(ServiceCommands.SrvDbg, ref psdata) == true)
                     {
                         context.Response.StatusCode = 200;
                         sb.Append(psdata[0]);
@@ -407,10 +419,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if (RadioService?.Invoke()?.Master == true)
+                if (RadioService?.Master == true)
                 {
                     List<object> sessions = new List<object>();
-                    if (RadioService?.Invoke()?.DataGet(ServiceCommands.RdSessions, ref sessions) == true)
+                    if (RadioService?.DataGet(ServiceCommands.RdSessions, ref sessions) == true)
                     {
                         context.Response.StatusCode = 200;
                         sb.Append(JsonConvert.SerializeObject( sessions ));
@@ -439,10 +451,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if (RadioService?.Invoke().Master == true)
+                if (RadioService?.Master == true)
                 {
                     List<object> hfdata = new List<object>();
-                    if (RadioService?.Invoke()?.DataGet(ServiceCommands.RdHFGetEquipos, ref hfdata) == true)
+                    if (RadioService?.DataGet(ServiceCommands.RdHFGetEquipos, ref hfdata) == true)
                     {
                         context.Response.StatusCode = 200;
                         sb.Append(JsonConvert.SerializeObject(hfdata));
@@ -465,11 +477,11 @@ namespace U5ki.NodeBox.WebServer
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(data, "id"))
+                    if (JObjectPropertyExist(data, "id"))
                     {
                         var idEquipo = data?.id as string;
                         string error = default;
-                        if (RadioService?.Invoke()?.Commander(ServiceCommands.RdHFLiberaEquipo, idEquipo, ref error) == true)
+                        if (RadioService?.Commander(ServiceCommands.RdHFLiberaEquipo, idEquipo, ref error) == true)
                         {
                             context.Response.StatusCode = 200;
                             sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada..." }));
@@ -499,10 +511,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if (RadioService?.Invoke()?.Master == true)
+                if (RadioService?.Master == true)
                 {
                     List<object> rd11data = new List<object>();
-                    if (RadioService?.Invoke()?.DataGet(ServiceCommands.RdUnoMasUnoData, ref rd11data) == true)
+                    if (RadioService?.DataGet(ServiceCommands.RdUnoMasUnoData, ref rd11data) == true)
                     {
                         context.Response.StatusCode = 200;
                         sb.Append(JsonConvert.SerializeObject(rd11data));
@@ -525,11 +537,11 @@ namespace U5ki.NodeBox.WebServer
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(data, "id"))
+                    if (JObjectPropertyExist(data, "id"))
                     {
                         var idEquipo = data?.id as string;
                         string error = default;
-                        if (RadioService?.Invoke()?.Commander(ServiceCommands.RdUnoMasUnoActivate, idEquipo, ref error) == true)
+                        if (RadioService?.Commander(ServiceCommands.RdUnoMasUnoActivate, idEquipo, ref error) == true)
                         {
                             context.Response.StatusCode = 200;
                             sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada..." }));
@@ -559,10 +571,10 @@ namespace U5ki.NodeBox.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
-                if (RadioService?.Invoke()?.Master == true)
+                if (RadioService?.Master == true)
                 {
                     List<object> rdmndata = new List<object>();
-                    if (RadioService?.Invoke()?.DataGet(ServiceCommands.RdMNGearListGet, ref rdmndata) == true)
+                    if (RadioService?.DataGet(ServiceCommands.RdMNGearListGet, ref rdmndata) == true)
                     {
                         context.Response.StatusCode = 200;
                         sb.Append(JsonConvert.SerializeObject(rdmndata));
@@ -582,7 +594,7 @@ namespace U5ki.NodeBox.WebServer
             else if (context.Request.HttpMethod == "DELETE")
             {
                 string error = default;
-                if (RadioService?.Invoke()?.Commander(ServiceCommands.RdMNReset, default, ref error) == true)
+                if (RadioService?.Commander(ServiceCommands.RdMNReset, default, ref error) == true)
                 {
                     context.Response.StatusCode = 200;
                     sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada..." }));
@@ -609,11 +621,11 @@ namespace U5ki.NodeBox.WebServer
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(data, "equ"))
+                    if (JObjectPropertyExist(data, "equ"))
                     {
                         var idEquipo = data?.equ as string;
                         string error = default;
-                        if (RadioService?.Invoke()?.Commander(ServiceCommands.RdMNGearToogle, idEquipo, ref error) == true)
+                        if (RadioService?.Commander(ServiceCommands.RdMNGearToogle, idEquipo, ref error) == true)
                         {
                             context.Response.StatusCode = 200;
                             sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada..." }));
@@ -647,12 +659,12 @@ namespace U5ki.NodeBox.WebServer
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                    if (DynamicPropertyExist(data, "equ") && DynamicPropertyExist(data, "frec") && DynamicPropertyExist(data, "cmd"))
+                    if (JObjectPropertyExist(data, "equ") && JObjectPropertyExist(data, "frec") && JObjectPropertyExist(data, "cmd"))
                     {
                         var idEquipo = data?.equ as string;
                         string error = data?.frec as string;
                         var cmd = (int)data?.cmd == 1 ? ServiceCommands.RdMNGearAssign : ServiceCommands.RdMNGearUnassing;
-                        if (RadioService?.Invoke()?.Commander(cmd, idEquipo, ref error) == true)
+                        if (RadioService?.Commander(cmd, idEquipo, ref error) == true)
                         {
                             context.Response.StatusCode = 200;
                             sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada..." }));
@@ -692,22 +704,25 @@ namespace U5ki.NodeBox.WebServer
             }
         }
 
-        protected Func<IService> RadioService = null;
-        protected Func<IService> CfgService = null;
-        protected Func<IService> PhoneService = null;
-        protected Func<IService> TifxService = null;
-        protected Func<IService> PresenceService = null;
+        protected IService RadioService { get => ServiceByName?.Invoke(ServiceNames.RadioService); }
+        protected IService CfgService  { get => ServiceByName?.Invoke(ServiceNames.CfgService);}
+        protected IService PhoneService { get => null; }
+        protected IService TifxService { get => ServiceByName?.Invoke(ServiceNames.TifxService); }
+        protected IService PresenceService { get => ServiceByName?.Invoke(ServiceNames.PresenceService); }
+
+        protected Func<string, IService> ServiceByName = null;
         protected dynamic ServiceData(IService service)
         {
             return service?.AllDataGet();
         }
-        protected bool DynamicPropertyExist(dynamic obj, string name)
+        protected bool JObjectPropertyExist(JObject obj, string prop)
         {
-            if (obj == null)
-                return false;
-            else if (obj is ExpandoObject)
-                return ((IDictionary<string, object>)obj).ContainsKey(name);
-            return obj.GetType().GetProperty(name) != null;
+            //if (obj == null)
+            //    return false;
+            //else if (obj is ExpandoObject)
+            //    return ((IDictionary<string, object>)obj).ContainsKey(name);
+            //return obj.GetType().GetProperty(name) != null;
+            return obj != null && obj[prop] != null;
         }
     }
 

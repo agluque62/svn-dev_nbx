@@ -11,8 +11,7 @@ using U5ki.Infrastructure;
 using NLog;
 
 namespace U5ki.NodeBox.WebServer 
-{
-    class WebAppServer : BaseCode
+{   class WebAppServer : BaseCode
     {
         /// <summary>
         /// 
@@ -72,6 +71,15 @@ namespace U5ki.NodeBox.WebServer
                 _cfgRest = cfg;
                 _listener = new HttpListener();
                 _listener.Prefixes.Add("http://*:" + port.ToString() + "/");
+
+                /** Configurar la Autentificacion */
+                _listener.AuthenticationSchemes = AuthenticationSchemes.Basic | AuthenticationSchemes.Anonymous;
+                _listener.AuthenticationSchemeSelectorDelegate = request =>
+                {
+                    /** Todas las operaciones No GET se consideran inseguras... Habra que autentificarse */
+                    return request.HttpMethod == "GET" ? AuthenticationSchemes.Anonymous : AuthenticationSchemes.Basic;
+                };
+
                 _listener.Start();
                 _listener.BeginGetContext(new AsyncCallback(GetContextCallback), null);
             }
@@ -115,46 +123,49 @@ namespace U5ki.NodeBox.WebServer
 
                 try
                 {
-                    string url = context.Request.Url.LocalPath;
-                    if (Enable )
+                    if (Authenticated(context))
                     {
-                        if (url == "/") context.Response.Redirect(DefaultUrl);
-                        else
+                        string url = context.Request.Url.LocalPath;
+                        if (Enable)
                         {
-                            wasRestCallBack cb = FindRest(url);
-                            if (cb != null)
-                            {
-                                StringBuilder sb = new System.Text.StringBuilder();
-                                cb(context, sb);
-                                context.Response.ContentType = FileContentType(".json");
-                                Render(Encode(sb.ToString()), context.Response);
-                            }
+                            if (url == "/") context.Response.Redirect(DefaultUrl);
                             else
                             {
-                                url = DefaultDir + url;
-                                if (url.Length > 1 && File.Exists(url.Substring(1)))
+                                wasRestCallBack cb = FindRest(url);
+                                if (cb != null)
                                 {
-                                    /** Es un fichero lo envio... */
-                                    string file = url.Substring(1);
-                                    string ext = Path.GetExtension(file).ToLowerInvariant();
-
-                                    context.Response.ContentType = FileContentType(ext);
-                                    ProcessFile(context.Response, file);
+                                    StringBuilder sb = new System.Text.StringBuilder();
+                                    cb(context, sb);
+                                    context.Response.ContentType = FileContentType(".json");
+                                    Render(Encode(sb.ToString()), context.Response);
                                 }
                                 else
                                 {
-                                    context.Response.StatusCode = 404;
+                                    url = DefaultDir + url;
+                                    if (url.Length > 1 && File.Exists(url.Substring(1)))
+                                    {
+                                        /** Es un fichero lo envio... */
+                                        string file = url.Substring(1);
+                                        string ext = Path.GetExtension(file).ToLowerInvariant();
+
+                                        context.Response.ContentType = FileContentType(ext);
+                                        ProcessFile(context.Response, file);
+                                    }
+                                    else
+                                    {
+                                        context.Response.StatusCode = 404;
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        // Render(Encode(DisableCause), context.Response);
-                        // context.Response.StatusCode = 503;
-                        // context.Response.Redirect("/noserver.html");
-                        context.Response.ContentType = FileContentType(".html");
-                        ProcessFile(context.Response, (DefaultDir + "/disabled.html").Substring(1), "{{cause}}", DisableCause);
+                        else
+                        {
+                            // Render(Encode(DisableCause), context.Response);
+                            // context.Response.StatusCode = 503;
+                            // context.Response.Redirect("/noserver.html");
+                            context.Response.ContentType = FileContentType(".html");
+                            ProcessFile(context.Response, (DefaultDir + "/disabled.html").Substring(1), "{{cause}}", DisableCause);
+                        }
                     }
                 }
                 catch (Exception x)
@@ -310,6 +321,47 @@ namespace U5ki.NodeBox.WebServer
         }
 
         #endregion
+
+        #region Autenticacion
+        bool MustAuthenticate = true;
+        DateTime SessionExpiredAt = DateTime.Now;
+        private bool Authenticated(HttpListenerContext context)
+        {
+            /** Es una peticion que el Selector ha determinado como 'segura' y no requiere autentificarse */
+            if (context.User == null)
+            {
+                return true;
+            }
+            else
+            {
+                if (/*!MustAuthenticate*/ DateTime.Now < SessionExpiredAt)
+                {
+                    HttpListenerBasicIdentity identity = (HttpListenerBasicIdentity)context.User.Identity;
+                    if (AuthenticateUser?.Invoke(identity?.Name,identity?.Password)==true)
+                    {
+                        MustAuthenticate = true;
+                        SessionExpiredAt = DateTime.Now;
+                        return true;
+                    }
+                }
+
+                MustAuthenticate = false;
+                SessionExpiredAt = DateTime.Now + TimeSpan.FromMinutes(1);
+                /** Operador no autentificado. Presenta peticion de Login / Password. */
+                /** Para presentar la pantalla de peticion LOGIN / PASSWORD... */
+                context.Response.StatusCode = 401;
+                context.Response.AddHeader("WWW-Authenticate",
+                    "Basic Realm=\"My WebDAV Server\""); // show login dialog
+                byte[] message = new UTF8Encoding().GetBytes("Access denied");
+                context.Response.ContentLength64 = message.Length;
+                context.Response.OutputStream.Write(message, 0, message.Length);
+                context.Response.Close();
+
+                return false;
+            }
+        }
+        protected Func<string, string, bool> AuthenticateUser = null;
+        #endregion Autentificacion
 
         #region Testing
         private void logrequest(HttpListenerContext context)

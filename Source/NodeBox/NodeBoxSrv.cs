@@ -28,6 +28,13 @@ using Translate;
 
 namespace U5ki.NodeBox
 {
+    public static class ServiceNames
+    {
+        public const string RadioService = "Cd40RdService";
+        public const string CfgService = "Cd40ConfigService";
+        public const string TifxService = "Cd40TifxService";
+        public const string PresenceService = "PresenceServer";
+    }
     /// <summary>
     /// BORRAR
     /// </summary>
@@ -1350,7 +1357,7 @@ namespace U5ki.NodeBox
                     _webServer.WebSrvCommand += OnWebServerCommand;
                     _webServer.Start(U5ki.NodeBox.Properties.Settings.Default.PuertoControlRemoto);
 #else
-                    WebAppServer.Start(() => RadioService, () => CfgService, () => TifxService, () => PresenceService);
+                    WebAppServer.Start((name)=>ServiceByName(name));
 #endif
 
                     WebServerStarted = true;

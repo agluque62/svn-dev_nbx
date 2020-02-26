@@ -13,7 +13,7 @@ angular
                 return remoteGet(rest_url_preconf);
             }
             , preconf_delete: function (name) {
-                return remoteDel(rest_url_preconf + "/" + name);
+                return remoteDel(rest_url_preconf + "/" + name );
             }
             , preconf_activate: function (fecha, name) {
                 return remotePost(rest_url_preconf, { fecha: fecha, nombre: name });
@@ -101,7 +101,7 @@ angular
         }
 
         //
-        function remoteDel(url) {
+        function remoteDel(url, data) {
             return $http.delete(normalizeUrl(url));
         }
 

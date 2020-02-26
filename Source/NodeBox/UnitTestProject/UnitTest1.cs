@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Windows.Forms;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using U5ki.NodeBox;
 using Utilities;
 
@@ -86,6 +89,22 @@ namespace UnitTestProject
         {
             ///** Test Mixed */
             ServicesHelpers.VersionsFileAdjust("Nodebox", null);
+        }
+    }
+
+    [TestClass]
+    public class JsonTests
+    {
+        [TestMethod]
+        public void JobjectTest()
+        {
+            string json = "[{\"nombre\": \"arturo\", \"entero\": 22 }]";
+
+            var json_object = JsonConvert.DeserializeObject(json) as JObject;
+            
+            var json_array = JsonConvert.DeserializeObject(json) as JArray;
+
+
         }
     }
 
