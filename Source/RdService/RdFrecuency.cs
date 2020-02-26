@@ -1726,19 +1726,6 @@ namespace U5ki.RdService
                         break;
                     }
                 }
-                if ((_FrRs == null) && HasSIPSession())
-                {
-                    _FrRs = new RdSrvFrRs();
-                    //Actualizo datos del squelch que están en los recursos asociados de RX
-                    //IRdResource rdr = this.RdRs.Values.Where(r => r.isRx && (r.Squelch && r.new_params.rx_selected)).FirstOrDefault();
-                    if (rdRs.Squelch && rdRs.GetRxSelected() != null)
-                    {
-                        _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
-                        _FrRs.SqSite = rdRs.Site;
-                    }
-                    publish = true;
-                }
-
             }
             if (rdRs.isTx)
             {
@@ -1760,6 +1747,18 @@ namespace U5ki.RdService
                 IRdResource TxRsDefault = GetTxRsDefault();
                 if ((TxRsDefault != null) && (rdRs.Site == TxRsDefault.Site))
                     StartTimerTxDefault();
+            }
+
+            if ((_FrRs == null) && HasSIPSession())
+            {
+                _FrRs = new RdSrvFrRs();
+                //Actualizo datos del squelch que están en los recursos asociados de RX
+                if (rdRs.Squelch && rdRs.GetRxSelected() != null)
+                {
+                    _FrRs.Squelch = RdSrvFrRs.SquelchType.SquelchOnlyPort;
+                    _FrRs.SqSite = rdRs.Site;
+                }
+                publish = true;
             }
 
             // Para abortar el envio temporizado del ASPA
