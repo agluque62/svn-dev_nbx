@@ -58,6 +58,10 @@ angular.module("Uv5kinbx")
             inciPaginate();
         });
 
+        ctrl.logs = function () {
+            var win = window.open('/logs', '_blank');
+            win.focus();
+        };
         /** Funciones o servicios */
         function getInci() {
             $serv.inci_get().then(function (response) {

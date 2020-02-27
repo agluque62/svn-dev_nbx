@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 
 using U5ki.NodeBox;
 using Utilities;
@@ -14,20 +15,20 @@ namespace UnitTestProject
     [TestClass]
     public class NbxWebServerUnitTest
     {
-        NbxWebServer _webServer = new NbxWebServer("d:\\Datos\\Empresa\\_SharedPrj\\UlisesV5000i-trunk\\ulises-ta\\Sources\\Cd40\\Source\\NodeBox");
+        //NbxWebServer _webServer = new NbxWebServer("d:\\Datos\\Empresa\\_SharedPrj\\UlisesV5000i-trunk\\ulises-ta\\Sources\\Cd40\\Source\\NodeBox");
 
         [TestMethod]
         public void NbxWebServerTestMethod1()
         {
-            _webServer.WebSrvCommand += (cmd, datain) =>
-            {
-                return null;
-            };
-            _webServer.Start(14441);
+            //_webServer.WebSrvCommand += (cmd, datain) =>
+            //{
+            //    return null;
+            //};
+            //_webServer.Start(14441);
 
-            MessageBox.Show("WebServerArrancado");
+            //MessageBox.Show("WebServerArrancado");
 
-            _webServer.Dispose();
+            //_webServer.Dispose();
         }
     }
 
@@ -104,6 +105,22 @@ namespace UnitTestProject
             
             var json_array = JsonConvert.DeserializeObject(json) as JArray;
 
+
+        }
+
+        [TestMethod]
+        public void NLogTest()
+        {
+            NLog.LogManager.GetCurrentClassLogger().Info("Prueba....");
+
+            var config = NLog.LogManager.Configuration;
+            foreach(var target in config.AllTargets)
+            {
+                if (target.Name== "csvfile")
+                {
+                    var found = target;
+                }
+            }
 
         }
     }

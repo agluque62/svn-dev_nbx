@@ -18,6 +18,17 @@ using U5ki.Infrastructure;
 
 namespace U5ki.NodeBox
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class nbxEvent
+    {
+        public String fh { get; set; }
+        public String ser { get; set; }
+        public String ev { get; set; }
+        public String par { get; set; }
+    }
+
     public class HistProc : BaseCode
     {
         static Queue<nbxEvent> last_inci = new Queue<nbxEvent>();

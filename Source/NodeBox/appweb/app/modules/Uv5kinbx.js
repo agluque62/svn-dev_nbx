@@ -215,6 +215,7 @@ var rest_url_versiones = "/versiones";
 var rest_url_radio_hf = "/rdhf";
 var rest_url_radio_11 = "/rd11";
 var rest_url_ps = "/ps";
+var rest_url_logs = "/logs";
 
 /** */
 var roles = {

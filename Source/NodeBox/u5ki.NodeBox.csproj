@@ -137,8 +137,6 @@
     </Compile>
     <Compile Include="DbDirectAccess.cs" />
     <Compile Include="HistProc.cs" />
-    <Compile Include="nbxConfigFile.cs" />
-    <Compile Include="nbxWebAppServer.cs" />
     <Compile Include="NodeBoxInstaller.cs">
       <SubType>Component</SubType>
     </Compile>

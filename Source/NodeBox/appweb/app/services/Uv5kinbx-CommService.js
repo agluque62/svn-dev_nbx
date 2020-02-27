@@ -68,7 +68,7 @@ angular
                 return remoteGet(rest_url_tlf_pbxinfo);
             }
             , logs_get: function () {
-                return remoteGet("logs/logfile.txt");
+                return remoteGet(rest_url_logs);
             }
             , versiones_get: function () {
                 return remoteGet(rest_url_versiones);

@@ -2,6 +2,7 @@
 #define _NETWORK_SUP_POLLING_
 #define _HISTPROC_
 #define _NBX_SPLITTED_
+#define _NEW_WEB_SERVER_
 // #define _SIM_ERRORES_RED_
 using System;
 using System.IO;
@@ -35,6 +36,7 @@ namespace U5ki.NodeBox
         public const string TifxService = "Cd40TifxService";
         public const string PresenceService = "PresenceServer";
     }
+#if !_NEW_WEB_SERVER_
     /// <summary>
     /// BORRAR
     /// </summary>
@@ -68,6 +70,7 @@ namespace U5ki.NodeBox
         /** 20180625. AGL. Comandos DEBUG */
         cmdRdServiceDebugInfo,
     }
+#endif
 
     /// <summary>
     /// 20181130. Para identificar el tipo de servidor de servicios.
@@ -75,6 +78,7 @@ namespace U5ki.NodeBox
     public enum ServicesServerTypes { Mixed, Radio, Phone }
     public enum ServiceMasterStates { Master, Slave, Error }
 
+#if !_NEW_WEB_SERVER_
     /// <summary>
     /// BORRAR
     /// </summary>
@@ -82,6 +86,7 @@ namespace U5ki.NodeBox
     /// <param name="datain"></param>
     /// <returns></returns>
     public delegate object WebSrvCommandHandler(CmdSupervision cmd, object datain);
+#endif
 
     /// <summary>
     /// 
@@ -270,7 +275,7 @@ namespace U5ki.NodeBox
             base.OnStop();
         }
 
-        #region Private Members
+#region Private Members
         /// <summary>
         /// 
         /// </summary>
@@ -298,11 +303,12 @@ namespace U5ki.NodeBox
         /// </summary>
         HistProc _histproc = null;  // new HistProc();
 #endif
+#if !_NEW_WEB_SERVER_
         /// <summary>
         /// BORRAR
         /// </summary>
         NbxWebServer _webServer = new NbxWebServer();
-
+#endif
         /// <summary>
         /// 
         /// </summary>
@@ -408,7 +414,6 @@ namespace U5ki.NodeBox
 #if DEBUG
                         case ConsoleKey.T:          // Test...
                             {
-                                OnWebServerCommand(CmdSupervision.cmdTlfInfoGet, null);
                             }
                             break;
 
@@ -595,6 +600,7 @@ namespace U5ki.NodeBox
             }
         }
 
+#if !_NEW_WEB_SERVER_
         /// <summary>
         /// BORRAR
         /// </summary>
@@ -973,7 +979,7 @@ namespace U5ki.NodeBox
             }
             return new nbxResData() { res = "OnWebServerCommand: Operacion no Implementada." };
         }
-
+#endif
         /// <summary>
         /// Gestor de presencia pasivo.
         /// </summary>
@@ -1133,7 +1139,7 @@ namespace U5ki.NodeBox
                 _Logger.ExceptionManager(String.Format("NodeBOX: Excepcion Parando Servicio {0}...", srv.Name), x);
             }
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// 

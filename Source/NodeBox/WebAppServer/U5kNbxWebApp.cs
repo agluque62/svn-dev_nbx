@@ -55,7 +55,6 @@ namespace U5ki.NodeBox.WebServer
             : base("/appweb", "/index.html", false)
         {
         }
-
         /// <summary>
         /// 
         /// </summary>
@@ -76,6 +75,7 @@ namespace U5ki.NodeBox.WebServer
                     {"/tifxinfo",RestTifxInfo},             // GET
                     {"/ps",RestPresenceInfo},               // GET
                     {"/rdservice",RestRadioInfo},           // GET
+                    {"/rdservice/*",RestRadioInfo},         // GET
                     {"/rdsessions",RestRadioSessions},      // GET 
                     {"/rdhf",RestRadioHF},                  // GET, POST
                     {"/rd11",RestRadioUnoMasUno},           // GET, POST
@@ -83,6 +83,7 @@ namespace U5ki.NodeBox.WebServer
                     {"/gestormn/enable",RestRadioMNEnable}, // POST
                     {"/gestormn/assign",RestRadioMNAssign}, // POST
                     {"/versiones",RestVersiones},           // GET
+                    {"/logs", RestLogs },
                 };
 
                 base.Start(U5ki.NodeBox.Properties.Settings.Default.PuertoControlRemoto, cfg);
@@ -389,11 +390,12 @@ namespace U5ki.NodeBox.WebServer
             {
                 if (RadioService?.Master == true)
                 {
-                    List<object> psdata = new List<object>();
+                    string frec = context.Request.Url.LocalPath.Split('/').Count()>2 ? context.Request.Url.LocalPath.Split('/')[2] : null;
+                    List<object> psdata = new List<object>() { frec };
                     if (RadioService?.DataGet(ServiceCommands.SrvDbg, ref psdata) == true)
                     {
                         context.Response.StatusCode = 200;
-                        sb.Append(psdata[0]);
+                        sb.Append(JsonConvert.SerializeObject(psdata[0]));
                     }
                     else
                     {
@@ -704,6 +706,21 @@ namespace U5ki.NodeBox.WebServer
             }
         }
 
+        protected void RestLogs(HttpListenerContext context, StringBuilder sb)
+        {
+            context.Response.ContentType = "application/json";
+            if (context.Request.HttpMethod == "GET")
+            {
+                context.Response.StatusCode = 200;
+                ReadLog((logs) => { sb.Append(JsonConvert.SerializeObject(logs, Formatting.Indented));});                
+            }
+            else
+            {
+                context.Response.StatusCode = 404;
+                sb.Append(JsonConvert.SerializeObject(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }));
+            }
+        }
+
         protected IService RadioService { get => ServiceByName?.Invoke(ServiceNames.RadioService); }
         protected IService CfgService  { get => ServiceByName?.Invoke(ServiceNames.CfgService);}
         protected IService PhoneService { get => null; }
@@ -723,6 +740,13 @@ namespace U5ki.NodeBox.WebServer
             //    return ((IDictionary<string, object>)obj).ContainsKey(name);
             //return obj.GetType().GetProperty(name) != null;
             return obj != null && obj[prop] != null;
+        }
+
+        protected void ReadLog(Action<List<string>> delivery)
+        {
+            var file = "logs\\logfile.csv";
+            var logs = File.ReadLines(file).Select(l => l).OrderByDescending(l=>l).ToList();
+            delivery(logs);
         }
     }
 
