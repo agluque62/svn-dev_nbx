@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
@@ -488,6 +489,17 @@ namespace U5ki.PresenceService
             return new IPEndPoint(Ip, Port);
         }
 
-#endregion
+        public static string EndPointFrom(string input, int defaultPort=5060)
+        {
+            var ipPattern =  @"^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$";
+            string[] parts = input.Split(':');
+            string ip = parts[0];
+            string port = parts.Count() == 2 ? parts[1] : defaultPort.ToString();
+            if (Regex.IsMatch(ip, ipPattern, RegexOptions.IgnoreCase))
+                return ip + ":" + port;
+            return null;
+        }
+
+        #endregion
     }
 }

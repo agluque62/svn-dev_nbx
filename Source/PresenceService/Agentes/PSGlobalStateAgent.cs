@@ -10,7 +10,7 @@ using U5ki.PresenceService.Engines;
 
 namespace U5ki.PresenceService.Agentes
 {
-    class PSProxiesAgent : PSBaseAgent
+    public class PSProxiesAgent : PSBaseAgent
     {
         #region Helpers
 
@@ -52,7 +52,9 @@ namespace U5ki.PresenceService.Agentes
                 agents = (List<IAgent>)Cfg;
 
                 /** Genero la nueva lista de abonados */
-                List<PresenceServerResource> new_rsTable = agents.Select(ag =>
+                List<PresenceServerResource> new_rsTable = agents
+                    .Where(agent => agent.Type != AgentType.ForExternalResources)
+                    .Select(ag =>
                     new PresenceServerResource() 
                     {
                         Dependency = ag.DependencyName,

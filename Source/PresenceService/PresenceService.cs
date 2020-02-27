@@ -11,8 +11,9 @@ using System.Net.Sockets;
 using System.Net.NetworkInformation;
 
 using System.Diagnostics;
-
 using Newtonsoft.Json;
+
+using U5ki.PresenceService.Agentes;
 
 using U5ki.Infrastructure;
 using ProtoBuf;
@@ -60,19 +61,19 @@ namespace U5ki.PresenceService
             }
             return false;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        protected string JData
+
+        public object AllDataGet()
         {
-            get
+            return new
             {
-                var data = new
+                std = Status.ToString(),
+                level = Status != ServiceStatus.Running ? "Error" : Master == true ? "Master" : "Slave",
+                data = new
                 {
                     id = Name,
                     mode = Master ? "Master" : "Slave",
                     conf = LastVersion,
-                    proxies = from p in global_agent.RsTable
+                    proxies = from p in global_agent?.RsTable
                               select new
                               {
                                   id = p.Dependency,
@@ -119,6 +120,113 @@ namespace U5ki.PresenceService
                                                ver = s.version
                                            }
                                 },
+                    externals_res = from i in agents
+                                    where i.Type == Interfaces.AgentType.ForExternalResources
+                                    select new
+                                    {
+                                        id = i.DependencyName,
+                                        type = i.Type,
+                                        main = i.MainService,
+                                        connected = i.State == Interfaces.AgentStates.Connected,
+                                        endp = i.ProxyEndpoint?.ToString(),
+                                        pres = i.PresenceEndpoint?.ToString(),
+                                        res = from s in i.RsTable
+                                              select new
+                                              {
+                                                  id = s.name,
+                                                  uri = s.Uri,
+                                                  status = s.Status,
+                                                  ver = s.version
+                                              }
+                                    },
+                    PersistenceOfStates = from s in PresenceServerResource.PersistenceOfStates.LastStates
+                                          select new
+                                          {
+                                              res = s.Key,
+                                              std = s.Value
+                                          }
+
+                }
+            };
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        protected string JData
+        {
+            get
+            {
+                var data = new
+                {
+                    id = Name,
+                    mode = Master ? "Master" : "Slave",
+                    conf = LastVersion,
+                    proxies = from p in global_agent?.RsTable
+                              select new
+                              {
+                                  id = p.Dependency,
+                                  type = p.type,
+                                  endp = p.name,
+                                  status = p.Status,
+                                  ver = p.version
+                              },
+                    internals = from i in agents
+                                where i.Type == Interfaces.AgentType.ForInternalSub
+                                select new
+                                {
+                                    id = i.DependencyName,
+                                    type = i.Type,
+                                    main = i.MainService,
+                                    connected = i.State == Interfaces.AgentStates.Connected,
+                                    endp = i.ProxyEndpoint.ToString(),
+                                    pres = i.PresenceEndpoint != null ? i.PresenceEndpoint.ToString() : "none",
+                                    subs = from s in i.RsTable
+                                           select new
+                                           {
+                                               id = s.name,
+                                               uri = s.Uri,
+                                               status = s.Status,
+                                               ver = s.version
+                                           }
+                                },
+                    externals = from i in agents
+                                where i.Type == Interfaces.AgentType.ForExternalSub
+                                select new
+                                {
+                                    id = i.DependencyName,
+                                    type = i.Type,
+                                    main = i.MainService,
+                                    connected = i.State == Interfaces.AgentStates.Connected,
+                                    endp = i.ProxyEndpoint.ToString(),
+                                    pres = i.PresenceEndpoint != null ? i.PresenceEndpoint.ToString() : "none",
+                                    subs = from s in i.RsTable
+                                           select new
+                                           {
+                                               id = s.name,
+                                               uri = s.Uri,
+                                               status = s.Status,
+                                               ver = s.version
+                                           }
+                                },
+                    externals_res = from i in agents
+                                where i.Type == Interfaces.AgentType.ForExternalResources
+                                select new
+                                {
+                                    id = i.DependencyName,
+                                    type = i.Type,
+                                    main = i.MainService,
+                                    connected = i.State == Interfaces.AgentStates.Connected,
+                                    endp = i.ProxyEndpoint?.ToString(),
+                                    pres = i.PresenceEndpoint?.ToString(),
+                                    res = from s in i.RsTable
+                                           select new
+                                           {
+                                               id = s.name,
+                                               uri = s.Uri,
+                                               status = s.Status,
+                                               ver = s.version
+                                           }
+                                },
                     PersistenceOfStates = from s in PresenceServerResource.PersistenceOfStates.LastStates
                                           select new
                                           {
@@ -127,7 +235,7 @@ namespace U5ki.PresenceService
                                           }
 
                 };
-                return JsonConvert.SerializeObject(data);
+                return JsonConvert.SerializeObject(data, Formatting.Indented);
             }
         }
         /// <summary>
@@ -209,7 +317,7 @@ namespace U5ki.PresenceService
         protected string LastVersion { get; set; }
         /** Lista de Agentes de Presencia */
         protected List<Interfaces.IAgent> agents = new List<Interfaces.IAgent>();
-        protected Interfaces.IAgent global_agent = null;
+        protected Interfaces.IAgent global_agent = new PSProxiesAgent("");
         /** */
         InterProcessEvent _ipcService = null;
         /** */
@@ -345,6 +453,13 @@ namespace U5ki.PresenceService
                             e.agent.Name, e.ev, e.p1));
                         switch (e.ev)
                         {
+                            case Interfaces.AgentEvents.ResourceOptions:
+                                if (ServiceConfigured)
+                                {
+                                    e.retorno(PSHelper.ControlledSipAgent.SendOptionsMsg(e.p1));
+                                }
+                                break;
+
                             case Interfaces.AgentEvents.Ping:
                                 // PresenceServiceHelper.AsyncPing(e.p1, true, OnAsyncPingCompleted);
                                 if (ServiceConfigured)
@@ -453,7 +568,7 @@ namespace U5ki.PresenceService
                         agents.ForEach(agent =>
                         {
                             agent.PingResponse(from, callid,
-                                (code == 200 || code == 404) ? Interfaces.AgentStates.Connected : Interfaces.AgentStates.NotConnected);
+                                (code == 200 || code == 404) ? Interfaces.AgentStates.Connected : Interfaces.AgentStates.NotConnected, code);
                         });
                     }
                     smpAccesMain.Release();
@@ -637,6 +752,12 @@ namespace U5ki.PresenceService
                 });
             });
 
+            /** EXRES. Crear el Agente de Equipos Externos */
+            var extAgent = new Agentes.PSExternalResourcesAgent();
+            extAgent.Init(OnAgentEventOccurred, cfg);
+            extAgent.Start();
+            agents.Add(extAgent);
+
             /** Activar el Agente de Agentes */
             global_agent = new Agentes.PSProxiesAgent( ServiceSite);
             global_agent.Init(OnAgentEventOccurred, agents);
@@ -661,7 +782,7 @@ namespace U5ki.PresenceService
             /** Desactivar los Agentes */
             if (global_agent != null)
                 global_agent.Dispose();
-            global_agent = null;
+            global_agent = new PSProxiesAgent("");
 
             agents.ForEach(agent =>
             {
@@ -720,10 +841,14 @@ namespace U5ki.PresenceService
         /// </summary>
         protected Dictionary<string, bool> SendingControl = new Dictionary<string, bool>()
         {
-            {"PSBkkAgent",false},
-            {"PSExternalAgent", false},
-            {"PSProxiesAgent", false}
+            {typeof(PSBkkAgent).Name,false},
+            {typeof(PSExternalAgent).Name, false},
+            {typeof(PSProxiesAgent).Name, false},
+            /** EXRES Incluir el control de envio del agente de recursos externos de telefonía. */
+            {typeof(PSExternalResourcesAgent).Name, false},
         };
+
+
         private void FrameSenderTaskRoutine()
         {
             IPEndPoint mcastTifx = new IPEndPoint(
@@ -752,7 +877,7 @@ namespace U5ki.PresenceService
                     {
                         try
                         {
-                            if (SendingControl["PSBkkAgent"] == true)
+                            if (SendingControl[typeof(PSBkkAgent).Name] == true)
                             {
                                 /** Fusionar y Enviar Trama Internos...  Priorizando el activo y despues el PPAL ... */
                                 Interfaces.IAgent IntAgent =
@@ -768,10 +893,10 @@ namespace U5ki.PresenceService
                                     LogTrace<U5kPresService>(String.Format("FrameSenderTask Sending Internal Subs ({0})",
                                         ((Agentes.PSBaseAgent)IntAgent).rsCount));
                                 }
-                                SendingControl["PSBkkAgent"] = false;
+                                SendingControl[typeof(PSBkkAgent).Name] = false;
                             }
 
-                            if (SendingControl["PSExternalAgent"] == true)
+                            if (SendingControl[typeof(PSExternalAgent).Name] == true)
                             {
                                 /** Fusionar y Enviar Tramas Externos... */
                                 /** 1. Obtengo la lista, priorizando a los activos y despues principales */
@@ -801,16 +926,31 @@ namespace U5ki.PresenceService
                                     mtrama = ExtAgent.Frame;
                                     _udpClient.Send(mtrama, mtrama.Count(), mcastTifx);
                                 }
-                                SendingControl["PSExternalAgent"] = false;
+                                SendingControl[typeof(PSExternalAgent).Name] = false;
                             }
 
-                            if (SendingControl["PSProxiesAgent"] == true)
+                            if (SendingControl[typeof(PSProxiesAgent).Name] == true)
                             {
                                 PSHelper.LOGGER.Trace<U5kPresService>(String.Format("FrameSenderTask Sending Global Proxies ({0})", ((Agentes.PSBaseAgent)global_agent).rsCount));
                                 /** Enviar Trama Global */
                                 mtrama = global_agent.Frame;
                                 _udpClient.Send(mtrama, mtrama.Count(), mcastTifx);
-                                SendingControl["PSProxiesAgent"] = false;
+                                SendingControl[typeof(PSProxiesAgent).Name] = false;
+                            }
+                            /** EXRES Gestionar el envío de la informacion de recursos de telefonía externos */
+                            if (SendingControl[typeof(PSExternalResourcesAgent).Name] == true)
+                            {
+                                Interfaces.IAgent agent =
+                                    agents.Where(a => a.Type == Interfaces.AgentType.ForExternalResources)
+                                    .FirstOrDefault();
+                                if (agent != null)
+                                {
+                                    mtrama = agent.Frame;
+                                    _udpClient.Send(mtrama, mtrama.Count(), mcastTifx);
+                                    LogTrace<U5kPresService>(String.Format("FrameSenderTask Sending External Resources ({0})",
+                                        ((Agentes.PSBaseAgent)agent).rsCount));
+                                }
+                                SendingControl[typeof(PSExternalResourcesAgent).Name] = false;
                             }
                         }
                         catch (Exception x)
@@ -830,9 +970,11 @@ namespace U5ki.PresenceService
                 /** Control de puesta en hora (SYNC NTP) hacia atras... */
                 if (elapsed < TimeSpan.Zero || elapsed >= tick)
                 {
-                    SendingControl["PSBkkAgent"] = true;
-                    SendingControl["PSExternalAgent"] = true;
-                    SendingControl["PSProxiesAgent"] = true;
+                    SendingControl[typeof(PSBkkAgent).Name] = true;
+                    SendingControl[typeof(PSProxiesAgent).Name] = true;
+                    SendingControl[typeof(PSProxiesAgent).Name] = true;
+                    /** EXRES Activar el Envio de la información de recursos externos de telefonía */
+                    SendingControl[typeof(PSExternalResourcesAgent).Name] = true;
                     last = DateTime.Now;
                 }
             }

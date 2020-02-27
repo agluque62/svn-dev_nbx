@@ -12,7 +12,7 @@ using U5ki.Infrastructure;
 
 namespace U5ki.PresenceService.Agentes
 {
-    class PSExternalAgent : PSBaseAgent
+    public class PSExternalAgent : PSBaseAgent
     {
         /** Para notificar cambios en la trama agregada... */
         public static int GlobalVersion { get; set; }

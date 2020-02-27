@@ -51,6 +51,8 @@ namespace U5ki.PresenceService
             prio_cpipl = 0;
             trafficCounter = 0;
             time = 0;
+
+            FailedPollCount = 0;
         }
 
         public PresenceServerResource(PresenceServerResource other)
@@ -63,6 +65,7 @@ namespace U5ki.PresenceService
             prio_cpipl = other.prio_cpipl;
             trafficCounter = other.trafficCounter;
             time = other.time;
+            FailedPollCount = other.FailedPollCount;
         }
 
         /// <summary>
@@ -187,5 +190,18 @@ namespace U5ki.PresenceService
             public static Dictionary<string, RsStatus> LastStates { get { return last_states; } }
         }
 
+        Int64 ConsecutiveFailedPollLimit = 2;
+        Int64 FailedPollCount { get; set; }
+        public bool ProcessResult(bool success)
+        {
+            if (success)
+            {
+                FailedPollCount = 0;
+                return true;
+            }
+            FailedPollCount++;
+            return (FailedPollCount >= ConsecutiveFailedPollLimit) ? true : false;
+        }
     }
+
 }

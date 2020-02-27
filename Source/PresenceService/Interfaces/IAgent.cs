@@ -7,8 +7,8 @@ using System.Net;
 
 namespace U5ki.PresenceService.Interfaces
 {
-    public enum AgentType { Gw = 1, ForInternalSub = 5, ForExternalSub = 3, ForProxies = 4 }
-    public enum AgentEvents { Active, Inactive, Refresh, Ping, SubscribeUser, UnsubscribeUser, LogException }
+    public enum AgentType { Gw = 1, ForInternalSub = 5, ForExternalSub = 3, ForProxies = 4, ForExternalResources=6 }
+    public enum AgentEvents { Active, Inactive, Refresh, Ping, SubscribeUser, UnsubscribeUser, LogException, ResourceOptions }
     public enum AgentStates { NotConnected, Connected };
     public class AgentEventArgs : EventArgs
     {
@@ -17,7 +17,7 @@ namespace U5ki.PresenceService.Interfaces
         public string p1;
         public Exception x;
         /***/
-        public object retorno;
+        public Action<object> retorno;
     }
     public interface IAgent : IDisposable
     {
@@ -37,7 +37,7 @@ namespace U5ki.PresenceService.Interfaces
         void Init(EventHandler<AgentEventArgs> OnEventOccurred, Object cfg);
         void Start();
         byte[] Frame { get; }
-        void PingResponse(string ipfrom, string callid, AgentStates res);
+        void PingResponse(string ipfrom, string callid, AgentStates res, int code=200);
         void PresenceEventOcurred(string sipuriUser, bool available);
     }
 }

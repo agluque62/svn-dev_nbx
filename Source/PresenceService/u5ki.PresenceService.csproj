@@ -101,6 +101,7 @@
     <Compile Include="Agentes\PSBaseAgent.cs" />
     <Compile Include="Agentes\PSBkkAgent.cs" />
     <Compile Include="Agentes\PSExternalAgent.cs" />
+    <Compile Include="Agentes\PSExternalResourcesAgent.cs" />
     <Compile Include="Agentes\PSGlobalStateAgent.cs" />
     <Compile Include="BinaryResource.cs" />
     <Compile Include="Engines\BkkEngine.cs" />
