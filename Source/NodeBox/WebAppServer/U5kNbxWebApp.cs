@@ -296,10 +296,10 @@ namespace U5ki.NodeBox.WebServer
                 /** Payload { fichero: "xml..." }*/
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
-                    dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
+                    var data = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
                     if (JObjectPropertyExist(data, "fichero"))
                     {
-                        var file_data = data?.nombre as string;
+                        var file_data = (string)data["fichero"];
                         File.WriteAllText(fileName, file_data);
                        
                         context.Response.StatusCode = 200;
@@ -478,10 +478,10 @@ namespace U5ki.NodeBox.WebServer
                 /** Payload { id: "", ... }*/
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
-                    dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
+                    var data = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
                     if (JObjectPropertyExist(data, "id"))
                     {
-                        var idEquipo = data?.id as string;
+                        var idEquipo = (string)data["id"];
                         string error = default;
                         if (RadioService?.Commander(ServiceCommands.RdHFLiberaEquipo, idEquipo, ref error) == true)
                         {
@@ -538,10 +538,10 @@ namespace U5ki.NodeBox.WebServer
                 /** Payload { id: "", ... }*/
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
-                    dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
+                    var data = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
                     if (JObjectPropertyExist(data, "id"))
                     {
-                        var idEquipo = data?.id as string;
+                        var idEquipo = (string)data["id"];
                         string error = default;
                         if (RadioService?.Commander(ServiceCommands.RdUnoMasUnoActivate, idEquipo, ref error) == true)
                         {
@@ -551,7 +551,7 @@ namespace U5ki.NodeBox.WebServer
                         else
                         {
                             context.Response.StatusCode = 500;
-                            sb.Append(JsonConvert.SerializeObject(new { res = "Internal Error.. " + error }));
+                            sb.Append(JsonConvert.SerializeObject(new { res = "Internal Error: " + error }));
                         }
                     }
                     else

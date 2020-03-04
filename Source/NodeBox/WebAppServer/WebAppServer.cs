@@ -76,8 +76,8 @@ namespace U5ki.NodeBox.WebServer
                 _listener.AuthenticationSchemes = AuthenticationSchemes.Basic | AuthenticationSchemes.Anonymous;
                 _listener.AuthenticationSchemeSelectorDelegate = request =>
                 {
-                    /** Todas las operaciones No GET se consideran inseguras... Habra que autentificarse */
-                    return request.HttpMethod == "GET" ? AuthenticationSchemes.Anonymous : AuthenticationSchemes.Basic;
+                    /** Todas las operaciones No GET de Usuarios no ulises se consideran inseguras... Habra que autentificarse */
+                    return request.HttpMethod == "GET" || request.Headers["UlisesClient"]=="MTTO" ? AuthenticationSchemes.Anonymous : AuthenticationSchemes.Basic;
                 };
 
                 _listener.Start();

@@ -201,6 +201,8 @@ namespace U5ki.RdService
         /// </summary>
         public bool Commander(ServiceCommands cmd, string par, ref string err, List<string> resp = null)
         {
+            bool retorno = false;
+            string error = default;
             try
             {
                 switch (cmd)
@@ -214,7 +216,21 @@ namespace U5ki.RdService
                         return _gestorHF.EstadoEquipo(par, resp);
 
                     case ServiceCommands.RdHFLiberaEquipo:
-                        return _gestorHF.LiberaEquipo(par);
+                        if (_Master == false)
+                        {
+                            error = "Servicio en Modo Slave";
+                        }
+                        else
+                        {
+                            SetData(ServiceCommands.RdHFLiberaEquipo, par, (success, internal_error) =>
+                            {
+                                retorno = success;
+                                error = internal_error;
+                            });
+                        }
+                        err = error;
+                        return retorno;
+                        //return _gestorHF.LiberaEquipo(par);
 
                     // -------------------------------------------------------------
                     // NMManager
@@ -248,8 +264,20 @@ namespace U5ki.RdService
 
                     /** 20200224. Mando 1+1 */
                     case ServiceCommands.RdUnoMasUnoActivate:
-                        return SetData(ServiceCommands.RdUnoMasUnoActivate, par);
-
+                        if (_Master == false)
+                        {
+                            error = "Servicio en Modo Slave";
+                        }
+                        else
+                        {
+                            SetData(ServiceCommands.RdUnoMasUnoActivate, par, (success, internal_error) =>
+                             {
+                                 retorno = success;
+                                 error = internal_error;
+                             });
+                        }
+                        err = error;
+                        return retorno;
                     /** 20160928. AGL. Estado del Gestror para la Pagina WEB del NODEBOX. */
                     case ServiceCommands.RdMNStatus:
                         return MNStatus(par, ref err, resp);
@@ -553,10 +581,11 @@ namespace U5ki.RdService
             }
         }
 
-        public bool SetData(ServiceCommands cmd, object data)
+        public void SetData(ServiceCommands cmd, object data, Action<bool, string> reply)
         {
             ManualResetEvent sync = new ManualResetEvent(false);
             bool retorno = false;
+            string err = default(string);
             _EventQueue.Enqueue("DataSet", () =>
             {
                 try
@@ -576,7 +605,6 @@ namespace U5ki.RdService
                         case ServiceCommands.RdUnoMasUnoActivate:
                             if (data is string)
                             {
-                                string err = default(string);
                                 retorno = ActivateResource(data as string, ref err);
                             }
                             else
@@ -589,6 +617,7 @@ namespace U5ki.RdService
                 catch (Exception x)
                 {
                     ExceptionManage<RdService>("SetData", x, "On SetData Exception: " + x.Message, false);
+                    err = x.Message;
                 }
                 finally
                 {
@@ -596,7 +625,7 @@ namespace U5ki.RdService
                 }
             });
             sync.WaitOne(10000);
-            return retorno;
+            reply(retorno, err);
         }
 
         /** Fin de la Modificacion */
