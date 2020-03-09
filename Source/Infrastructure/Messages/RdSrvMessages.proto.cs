@@ -115,13 +115,13 @@ namespace U5ki.Infrastructure
       set { _RtxGroupOwner = value; }
     }
 
-    private string _SqlSite = "";
-    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name = @"_SqlSite", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private string _SqSite = "";
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"SqSite", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue("")]
     public string SqSite
     {
-        get { return _SqlSite; }
-        set { _SqlSite = value; }
+      get { return _SqSite; }
+      set { _SqSite = value; }
     }
 
     private string _ResourceId = "";
@@ -250,6 +250,47 @@ namespace U5ki.Infrastructure
     public global::System.Collections.Generic.List<string> nodes
     {
       get { return _nodes; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"MSTransmiterInfo")]
+  public partial class MSTransmiterInfo : global::ProtoBuf.IExtensible
+  {
+    public MSTransmiterInfo() {}
+    
+    private string _site;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"site", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string site
+    {
+      get { return _site; }
+      set { _site = value; }
+    }
+    private string _txres;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"txres", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string txres
+    {
+      get { return _txres; }
+      set { _txres = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"MSTransmittersStatus")]
+  public partial class MSTransmittersStatus : global::ProtoBuf.IExtensible
+  {
+    public MSTransmittersStatus() {}
+    
+    private readonly global::System.Collections.Generic.List<U5ki.Infrastructure.MSTransmiterInfo> _nodes_info = new global::System.Collections.Generic.List<U5ki.Infrastructure.MSTransmiterInfo>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"nodes_info", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<U5ki.Infrastructure.MSTransmiterInfo> nodes_info
+    {
+      get { return _nodes_info; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;
