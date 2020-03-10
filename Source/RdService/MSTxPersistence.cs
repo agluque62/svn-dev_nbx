@@ -16,10 +16,10 @@ namespace U5ki.RdService
 {
     static class LocalExtensions
     {
-        public static string ListToString (this MSTransmittersStatus @this)
+        public static string ListToString(this MSTransmittersStatus @this)
         {
-            var sb = new StringBuilder($"\nMSTransmittersStatus List, Entries {@this.nodes_info.Count()}");
-            @this.nodes_info.ForEach(node => sb.Append($"\n{node.txres}, on {node.site}."));
+            var sb = new StringBuilder($"\n\tMSTransmittersStatus List, Entries {@this.nodes_info.Count()}:");
+            @this.nodes_info.ForEach(node => sb.Append($"\n\t\t{node.txres}, on {node.site}."));
             return sb.ToString();
         }
     }
@@ -38,39 +38,6 @@ namespace U5ki.RdService
         /// <summary>
         /// Se supone que a esta rutina se llama en modo MASTER.
         /// </summary>
-        /// <param name="cfg"></param>
-        static public void ProcessNewConfig (Cd40Cfg cfg)
-        {
-            Log.Trace($"Procesando Nueva Configuracion {cfg.Version}");
-            DataAccess(() =>
-            {
-                try
-                {
-                    /** Leer los datos consolidados */
-                    var Info = ServicesHelpers.DeserializeObject<List<MSTransmiterInfo>>(File.ReadAllText(FileName));
-                    Status.nodes_info.Clear();
-                    Info.ForEach(i => Status.nodes_info.Add(i));
-                    Log.Trace($"File loaded. List Content {Status.ListToString()}");
-                }
-                catch (Exception x)
-                {
-                    Log.Error("Loading File Exception", x);
-                    Status.nodes_info.Clear();
-                }
-                /** Ajustar los datos a la nueva configuracion. */
-                var allRes = cfg.ConfiguracionUsuarios
-                    .SelectMany(u => u.RdLinks)
-                    .SelectMany(rdl => rdl.ListaRecursos)
-                    .GroupBy(r => r.IdRecurso)
-                    .First().ToList();
-                /** Borra de la lista aquellos que han sido eliminadas de configuracion */
-                Status.nodes_info.RemoveAll(n => NotInCfg(allRes, n));
-                Log.Trace($"List Fixed. List Content {Status.ListToString()}");
-            });
-        }
-        /// <summary>
-        /// Se supone que a esta rutina se llama en modo MASTER.
-        /// </summary>
         /// <param name="frec"></param>
         /// <param name="main"></param>
         /// <param name="standby"></param>
@@ -83,58 +50,121 @@ namespace U5ki.RdService
                 /** Borro los dos si estan */
                 Status.nodes_info?.RemoveAll(i => i.txres == main.ID || i.txres == standby.ID);
                 /** Añado el Main */
-                Status.nodes_info?.Add(new MSTransmiterInfo() { site = main.Site, txres = main.ID });
-                /** Publico los cambios */
-                RdRegRef?.SetValue<MSTransmittersStatus>(Identifiers.RdTopic, "MSTransmittersStatus", Status);
-                RdRegRef?.Publish();
-                Log.Trace($"Main Selected {main.ID}. Standby {standby.ID}. List Content {Status.ListToString()}");
+                Status.nodes_info?.Add(new MSTransmiterInfo() { site = main.Site ?? "none", txres = main.ID });
+                Log.Trace($"Main Selected {main.ID}. Standby {standby.ID}");
+
+                SaveAndPublish();
             });
             return res;
         }
-        static public bool IsMain(IRdResource resource, Action<bool> MainOrStandby)
+        static public bool IsMain(IRdResource resource)
         {
             Log.Trace($"Query for {resource.ID}");
+            string found = default;
             var res = DataAccess(() =>
             {
-                var found = Status.nodes_info.Where(i => i.site == resource.Site && i.txres == resource.ID)
+                found = Status.nodes_info.Where(i => i.site == resource.Site && i.txres == resource.ID)
                     .ToList()
                     .Count() > 0 ? "Main" : "StandBy";
-                
-                Log.Trace($"Resource {resource.ID} is {found}. List Content {Status.ListToString()}");
-                MainOrStandby(found == "Main");
+
+                Log.Trace($"Resource {resource.ID} is {found}. {Status.ListToString()}");
             });
-            return res;
+            return res ? found == "Main" : false;
+        }
+        /// <summary>
+        /// Se supone que a esta rutina se llama en modo MASTER.
+        /// </summary>
+        /// <param name="cfg"></param>
+        static void ProcessNewConfig(Cd40Cfg cfg)
+        {
+            Log.Trace($"Procesando Nueva Configuracion {cfg.Version}");
+            try
+            {
+                /** Leer los datos consolidados */
+                var Info = ServicesHelpers.DeserializeObject<List<MSTransmiterInfo>>(File.ReadAllText(FileName));
+                Status.nodes_info.Clear();
+                Info.ForEach(i => Status.nodes_info.Add(i));
+                Log.Trace($"File loaded. {Status.ListToString()}");
+            }
+            catch (Exception x)
+            {
+                Log.Error("Loading File Exception", x);
+                Status.nodes_info.Clear();
+            }
+            /** Ajustar los datos a la nueva configuracion. */
+            var allRes = cfg.ConfiguracionUsuarios
+                .SelectMany(u => u.RdLinks)
+                .SelectMany(l => l.ListaRecursos)
+                .GroupBy(r => r.IdRecurso)
+                .Select(g => g.First())
+                .Where(r => r.Tipo == 1 || r.Tipo == 2)
+                .ToList();
+
+            /** Borra de la lista aquellos que han sido eliminadas de configuracion */
+            Status.nodes_info.RemoveAll(n => NotInCfg(allRes, n));
+            Log.Trace($"List Fixed. {Status.ListToString()}");
+
+            SaveAndPublish();
         }
         static void OnResourceChanged(object sender, RsChangeInfo e)
         {
-            if (e.Type == Identifiers.TypeId(typeof(MSTransmittersStatus)))
+            if (e.Type == Identifiers.TypeId(typeof(Cd40Cfg)) && e.Content != null)
             {
-                if (e.Content != null)
+                try
                 {
-                    try
+                    Log.Trace($"OnResourceChanged Cd40Cfg Event Received.");
+                    MemoryStream ms = new MemoryStream(Tools.Decompress(e.Content));
+                    var cfg = Serializer.Deserialize<Cd40Cfg>(ms);
+                    DataAccess(() =>
                     {
-                        Log.Trace($"OnResourceChanged Event Received.");
-                        MemoryStream ms = new MemoryStream(e.Content);
-                        MSTransmittersStatus MSNodesInfo = Serializer.Deserialize<MSTransmittersStatus>(ms);
-                        Log.Trace($"OnResourceChanged Event Received. Data {MSNodesInfo.ListToString()}");
-                        DataAccess(() =>
-                        {
-                            try
-                            {
-                                File.WriteAllText(FileName, ServicesHelpers.SerializeObject(MSNodesInfo.nodes_info));
-                                Log.Trace($"OnResourceChanged Event Received. Saved to {FileName}");
-                            }
-                            catch (Exception x)
-                            {
-                                Log.Error("Writing File Exception", x);
-                            }
-                        });
-                    }
-                    catch (Exception x)
-                    {
-                        Log.Error("Deserializing Data Exception", x);
-                    }
+                        ProcessNewConfig(cfg);
+                    });
                 }
+                catch (Exception x)
+                {
+                    Log.Error("Deserializing Data Exception", x);
+                }
+            }
+            else if (e.Type == Identifiers.TypeId(typeof(MSTransmittersStatus)) && e.Content != null)
+            {
+                try
+                {
+                    Log.Trace($"OnResourceChanged MSTransmittersStatus Event Received.");
+                    MemoryStream ms = new MemoryStream(e.Content);
+                    MSTransmittersStatus MSNodesInfo = Serializer.Deserialize<MSTransmittersStatus>(ms);
+                    Log.Trace($"OnResourceChanged Event Received. {MSNodesInfo.ListToString()}");
+                    DataAccess(() =>
+                    {
+                        try
+                        {
+                            File.WriteAllText(FileName, ServicesHelpers.SerializeObject(MSNodesInfo.nodes_info));
+                            Log.Trace($"OnResourceChanged Event Received. Saved to {FileName}");
+                        }
+                        catch (Exception x)
+                        {
+                            Log.Error("Writing File Exception", x);
+                        }
+                    });
+                }
+                catch (Exception x)
+                {
+                    Log.Error("Deserializing Data Exception", x);
+                }
+            }
+        }
+        static void SaveAndPublish()
+        {
+            /** Publico los cambios */
+            try
+            {
+                RdRegRef?.SetValue<MSTransmittersStatus>(Identifiers.RdTopic, "MSTransmittersStatus", Status);
+                RdRegRef?.Publish();
+                File.WriteAllText(FileName, ServicesHelpers.SerializeObject(Status.nodes_info));
+                Log.Trace($"Data Saved and Published. {Status.ListToString()}");
+            }
+            catch (Exception x)
+            {
+                Log.Error("Writing File or Publishing data Exception", x);
             }
         }
         static bool DataAccess(Action invoke)

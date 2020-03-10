@@ -118,6 +118,7 @@
     <Compile Include="Globals\Enums.cs" />
     <Compile Include="IRdResource.cs" />
     <Compile Include="MN\MNManager.cs" />
+    <Compile Include="MSTxPersistence.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

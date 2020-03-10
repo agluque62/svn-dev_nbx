@@ -437,9 +437,11 @@ namespace U5ki.RdService
 #endif
             //_Registry.Join(Identifiers.RdMasterTopic, Identifiers.RdTopic);
             _Registry.Join(Identifiers.RdTopic, Identifiers.CfgTopic, Identifiers.TopTopic, Identifiers.RdMasterTopic);
-		}
+            /** 20200310. Inicializa el control de la Persistencia */
+            MSTxPersistence.Init(_Registry);
+        }
 
-		#endregion
+        #endregion
 
     }
 }
