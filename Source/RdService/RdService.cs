@@ -425,6 +425,7 @@ namespace U5ki.RdService
                                     ses = r.Connected ? 1 : 0,
                                     uri = r.Uri1
                                 })
+                                .OrderBy(r=>r.fr).ThenBy(r=>r.id)
                                 .ToList();
                             UnoMasUnoFreqs.ForEach(item => local_rsp.Add(item));
                             retorno = true;
