@@ -1323,6 +1323,24 @@ namespace U5ki.Infrastructure
       get { return _EnableEventPttSq; }
       set { _EnableEventPttSq = value; }
     }
+
+    private string _IdRedundancyPair = "";
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"IdRedundancyPair", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string RedundanciaIdPareja
+    {
+      get { return _IdRedundancyPair; }
+      set { _IdRedundancyPair = value; }
+    }
+
+    private string _Rol = "";
+    [global::ProtoBuf.ProtoMember(14, IsRequired = false, Name=@"Rol", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string RedundanciaRol
+    {
+      get { return _Rol; }
+      set { _Rol = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

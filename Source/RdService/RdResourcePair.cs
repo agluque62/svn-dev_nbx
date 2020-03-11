@@ -11,23 +11,55 @@ namespace U5ki.RdService
 {
     public class RdResourcePair : BaseCode, IRdResource, IDisposable
     {
-        RdResource _ActiveResource;
-        public RdResource ActiveResource { get => _ActiveResource; }
-        RdResource _StandbyResource;
-        string _ID = "";
+        private RdResource _ActiveResource = null;
+        public RdResource ActiveResource
+        {
+            get { return _ActiveResource; }
+            set { _ActiveResource = value; }
+        }
+
+        private RdResource _StandbyResource = null;
+        public RdResource StandbyResource
+        {
+            get { return _StandbyResource; }
+            set { _StandbyResource = value; }
+        }
+        public string _ID
+        { get; set; } = "";
+
+        public RdResourcePair(string id)
+        {
+            _ID = id;
+        }
+
         public RdResourcePair(RdResource ActiveResource, RdResource StandbyResource, List<Node> nodes)
         {
-            List<string> ids = new List<string>();
-            ids.Add(ActiveResource.ID);
-            ids.Add(StandbyResource.ID);
-            ids.Sort();
-            foreach (string id in ids)
-                _ID = String.Concat(id);
+            //List<string> ids = new List<string>();
+            //ids.Add(ActiveResource.ID);
+            //ids.Add(StandbyResource.ID);
+            //ids.Sort();
+            //foreach (string id in ids)
+            //    _ID = String.Concat(id);
             _ActiveResource = ActiveResource;
             StandbyResource.TxMute = true;
             _StandbyResource = StandbyResource;
             //NodeSet(NodeParse(node));
         }
+
+        public void SetActive(RdResource activeResource)
+        {
+            _ActiveResource = activeResource;
+        }
+        public void SetStandby(RdResource standbyResource)
+        {
+            _StandbyResource = standbyResource;
+            StandbyResource.TxMute = true;
+        }
+        public bool Isconfigured()
+        {
+            return (_ActiveResource != null && _StandbyResource != null);
+        }
+
         #region IRdResource Members
         public RdRsType Type
         { get { return _ActiveResource.Type; } }
@@ -196,7 +228,8 @@ namespace U5ki.RdService
                         Switch();
                 }
             }
-            else return false;
+            else 
+                return false;
             resChange.HandleChangeInCallState(sipCallId, stateInfo);
             return true;
         }

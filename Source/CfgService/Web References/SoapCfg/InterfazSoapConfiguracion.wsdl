@@ -138,6 +138,8 @@
           <s:element minOccurs="1" maxOccurs="1" name="GrsDelay" type="s:int" />
           <s:element minOccurs="1" maxOccurs="1" name="OffSetFrequency" type="s:int" />
           <s:element minOccurs="1" maxOccurs="1" name="EnableEventPttSq" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="RedundanciaIdPareja" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RedundanciaRol" type="s:string" />
         </s:sequence>
       </s:complexType>
       <s:complexType name="ArrayOfInt">
@@ -320,6 +322,26 @@
             <s:sequence>
               <s:element minOccurs="0" maxOccurs="1" name="IdAgrupacion" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="IdSistema" type="s:string" />
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Internos">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:Tablas">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="IdSistema" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdSectorizacion" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdNucleo" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdSector" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="IdDestino" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="IdPrefijo" type="s:unsignedInt" />
+              <s:element minOccurs="1" maxOccurs="1" name="PosHMI" type="s:unsignedInt" />
+              <s:element minOccurs="1" maxOccurs="1" name="Prioridad" type="s:unsignedInt" />
+              <s:element minOccurs="0" maxOccurs="1" name="OrigenR2" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="PrioridadSIP" type="s:unsignedInt" />
+              <s:element minOccurs="0" maxOccurs="1" name="TipoAcceso" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="Literal" type="s:string" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -593,26 +615,6 @@
           </s:extension>
         </s:complexContent>
       </s:complexType>
-      <s:complexType name="Internos">
-        <s:complexContent mixed="false">
-          <s:extension base="tns:Tablas">
-            <s:sequence>
-              <s:element minOccurs="0" maxOccurs="1" name="IdSistema" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="IdSectorizacion" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="IdNucleo" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="IdSector" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="IdDestino" type="s:string" />
-              <s:element minOccurs="1" maxOccurs="1" name="IdPrefijo" type="s:unsignedInt" />
-              <s:element minOccurs="1" maxOccurs="1" name="PosHMI" type="s:unsignedInt" />
-              <s:element minOccurs="1" maxOccurs="1" name="Prioridad" type="s:unsignedInt" />
-              <s:element minOccurs="0" maxOccurs="1" name="OrigenR2" type="s:string" />
-              <s:element minOccurs="1" maxOccurs="1" name="PrioridadSIP" type="s:unsignedInt" />
-              <s:element minOccurs="0" maxOccurs="1" name="TipoAcceso" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="Literal" type="s:string" />
-            </s:sequence>
-          </s:extension>
-        </s:complexContent>
-      </s:complexType>
       <s:complexType name="GruposTelefonia">
         <s:complexContent mixed="false">
           <s:extension base="tns:Tablas">
@@ -702,7 +704,6 @@
               <s:element minOccurs="0" maxOccurs="1" name="ModoTransmision" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="EmplazamientoDefecto" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="TiempoVueltaADefecto" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="PorcentajeRSSI" type="s:string" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -784,6 +785,7 @@
               <s:element minOccurs="0" maxOccurs="1" name="IdEquipo" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="IdTifX" type="s:string" />
               <s:element minOccurs="1" maxOccurs="1" name="PuertoSip" type="s:unsignedInt" />
+              <s:element minOccurs="0" maxOccurs="1" name="IpRed1" type="s:string" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -841,8 +843,6 @@
               <s:element minOccurs="1" maxOccurs="1" name="TamRTP" type="s:unsignedInt" />
               <s:element minOccurs="1" maxOccurs="1" name="Codec" type="s:unsignedInt" />
               <s:element minOccurs="1" maxOccurs="1" name="GrabacionEd137" type="s:boolean" />
-              <s:element minOccurs="1" maxOccurs="1" name="isuperv_options" type="s:unsignedByte" />
-              <s:element minOccurs="1" maxOccurs="1" name="itm_superv_options" type="s:unsignedInt" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -856,6 +856,8 @@
               <s:element minOccurs="1" maxOccurs="1" name="IdPrefijo" type="s:unsignedInt" />
               <s:element minOccurs="1" maxOccurs="1" name="TipoDestino" type="s:unsignedInt" />
               <s:element minOccurs="0" maxOccurs="1" name="IdDestino" type="s:string" />
+              <s:element minOccurs="1" maxOccurs="1" name="isuperv_options" type="s:unsignedInt" />
+              <s:element minOccurs="1" maxOccurs="1" name="itm_superv_options" type="s:unsignedInt" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -935,8 +937,6 @@
               <s:element minOccurs="0" maxOccurs="1" name="IdTroncal" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="IdRed" type="s:string" />
               <s:element minOccurs="1" maxOccurs="1" name="TReleaseBL" type="s:unsignedInt" />
-              <s:element minOccurs="1" maxOccurs="1" name="isuperv_options" type="s:unsignedByte" />
-              <s:element minOccurs="1" maxOccurs="1" name="itm_superv_options" type="s:unsignedInt" />
               <s:element minOccurs="1" maxOccurs="1" name="iDetCallerId" type="s:unsignedByte" />
               <s:element minOccurs="1" maxOccurs="1" name="iTmCallerId" type="s:unsignedInt" />
               <s:element minOccurs="1" maxOccurs="1" name="iDetInversionPol" type="s:unsignedByte" />
@@ -1050,6 +1050,8 @@
               <s:element minOccurs="1" maxOccurs="1" name="OffSetFrequency" type="s:int" />
               <s:element minOccurs="1" maxOccurs="1" name="EnableEventPttSq" type="s:boolean" />
               <s:element minOccurs="1" maxOccurs="1" name="Metodos_bss_idmetodos_bss" type="s:int" />
+              <s:element minOccurs="0" maxOccurs="1" name="RedundanciaRol" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="RedundanciaIdPareja" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="idTIFX" type="s:string" />
               <s:element minOccurs="1" maxOccurs="1" name="DestRad_tipoFrec" type="s:unsignedInt" />
             </s:sequence>
@@ -1157,8 +1159,6 @@
               <s:element minOccurs="0" maxOccurs="1" name="IdSistema" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="IdSector" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="IdNucleo" type="s:string" />
-              <s:element minOccurs="0" maxOccurs="1" name="IdRecursoPref" type="s:string" />
-              <s:element minOccurs="1" maxOccurs="1" name="TipoRecursoPref" nillable="true" type="s:unsignedInt" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -1170,7 +1170,6 @@
               <s:element minOccurs="0" maxOccurs="1" name="IdRed" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="IdSistema" type="s:string" />
               <s:element minOccurs="1" maxOccurs="1" name="Prefijo" type="s:unsignedInt" />
-              <s:element minOccurs="1" maxOccurs="1" name="bPrefijoMayor" type="s:boolean" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -1867,20 +1866,6 @@
           <s:enumeration value="Hz" />
         </s:restriction>
       </s:simpleType>
-      <s:element name="GetCfgProxy">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="id_sistema" type="s:string" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="GetCfgProxyResponse">
-        <s:complexType>
-          <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetCfgProxyResult" type="tns:ArrayOfAsignacionUsuariosTV" />
-          </s:sequence>
-        </s:complexType>
-      </s:element>
       <s:element name="string" nillable="true" type="s:string" />
       <s:element name="EstadoCluster" type="tns:EstadoCluster" />
       <s:element name="ArrayOfCfgEnlaceExterno" nillable="true" type="tns:ArrayOfCfgEnlaceExterno" />
@@ -2041,12 +2026,6 @@
   <wsdl:message name="GetPoolNMElementsSoapOut">
     <wsdl:part name="parameters" element="tns:GetPoolNMElementsResponse" />
   </wsdl:message>
-  <wsdl:message name="GetCfgProxySoapIn">
-    <wsdl:part name="parameters" element="tns:GetCfgProxy" />
-  </wsdl:message>
-  <wsdl:message name="GetCfgProxySoapOut">
-    <wsdl:part name="parameters" element="tns:GetCfgProxyResponse" />
-  </wsdl:message>
   <wsdl:message name="GetVersionConfiguracion_XMLHttpPostIn">
     <wsdl:part name="id_sistema" type="s:string" />
   </wsdl:message>
@@ -2182,12 +2161,6 @@
   <wsdl:message name="GetPoolNMElementsHttpPostOut">
     <wsdl:part name="Body" element="tns:ArrayOfNode" />
   </wsdl:message>
-  <wsdl:message name="GetCfgProxyHttpPostIn">
-    <wsdl:part name="id_sistema" type="s:string" />
-  </wsdl:message>
-  <wsdl:message name="GetCfgProxyHttpPostOut">
-    <wsdl:part name="Body" element="tns:ArrayOfAsignacionUsuariosTV" />
-  </wsdl:message>
   <wsdl:portType name="InterfazSOAPConfiguracionSoap">
     <wsdl:operation name="GetVersionConfiguracion_XML">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Pasándole el identificador de sistema, devuelve la versión de la configuración activa registrada en la base de datos</wsdl:documentation>
@@ -2304,11 +2277,6 @@
       <wsdl:input message="tns:GetPoolNMElementsSoapIn" />
       <wsdl:output message="tns:GetPoolNMElementsSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="GetCfgProxy">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Pasándole el identificador del sistema devuelve datos de operadores del SCV y de telefonía IP para el proxy.</wsdl:documentation>
-      <wsdl:input message="tns:GetCfgProxySoapIn" />
-      <wsdl:output message="tns:GetCfgProxySoapOut" />
-    </wsdl:operation>
   </wsdl:portType>
   <wsdl:portType name="InterfazSOAPConfiguracionHttpPost">
     <wsdl:operation name="GetVersionConfiguracion_XML">
@@ -2420,11 +2388,6 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Configuración relativa a los equipos N+M</wsdl:documentation>
       <wsdl:input message="tns:GetPoolNMElementsHttpPostIn" />
       <wsdl:output message="tns:GetPoolNMElementsHttpPostOut" />
-    </wsdl:operation>
-    <wsdl:operation name="GetCfgProxy">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Pasándole el identificador del sistema devuelve datos de operadores del SCV y de telefonía IP para el proxy.</wsdl:documentation>
-      <wsdl:input message="tns:GetCfgProxyHttpPostIn" />
-      <wsdl:output message="tns:GetCfgProxyHttpPostOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="InterfazSOAPConfiguracionSoap" type="tns:InterfazSOAPConfiguracionSoap">
@@ -2629,15 +2592,6 @@
     </wsdl:operation>
     <wsdl:operation name="GetPoolNMElements">
       <soap:operation soapAction="http://CD40.es/GetPoolNMElements" style="document" />
-      <wsdl:input>
-        <soap:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetCfgProxy">
-      <soap:operation soapAction="http://CD40.es/GetCfgProxy" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -2855,15 +2809,6 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="GetCfgProxy">
-      <soap12:operation soapAction="http://CD40.es/GetCfgProxy" style="document" />
-      <wsdl:input>
-        <soap12:body use="literal" />
-      </wsdl:input>
-      <wsdl:output>
-        <soap12:body use="literal" />
-      </wsdl:output>
-    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="InterfazSOAPConfiguracionHttpPost" type="tns:InterfazSOAPConfiguracionHttpPost">
     <http:binding verb="POST" />
@@ -3056,15 +3001,6 @@
     </wsdl:operation>
     <wsdl:operation name="GetPoolNMElements">
       <http:operation location="/GetPoolNMElements" />
-      <wsdl:input>
-        <mime:content type="application/x-www-form-urlencoded" />
-      </wsdl:input>
-      <wsdl:output>
-        <mime:mimeXml part="Body" />
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="GetCfgProxy">
-      <http:operation location="/GetCfgProxy" />
       <wsdl:input>
         <mime:content type="application/x-www-form-urlencoded" />
       </wsdl:input>

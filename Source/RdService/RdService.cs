@@ -317,42 +317,45 @@ namespace U5ki.RdService
                             {
                                 foreach (RdFrecuency frec in Frecuencies.Values)
                                 {
-                                    foreach (RdResource rdr in frec.RdRs.Values)
+                                    foreach (IRdResource irdr in frec.RdRs.Values)
                                     {
-                                        GlobalTypes.radioSessionData data = new GlobalTypes.radioSessionData()
+                                        foreach (RdResource rdr in irdr.GetListResources())
                                         {
-                                            frec = frec.Frecuency,
-                                            // Tipo de Frecuencia 0: Normal, 1: 1+1, 2: FD, 3: EM
-                                            ftipo = (int)frec.GetParam.FrequencyType,
-                                            // Prioridad de session, 0: Normal, 1: Emergencia
-                                            prio = frec.GetParam.Priority == CORESIP_Priority.CORESIP_PR_NORMAL ? 0
-                                                : frec.GetParam.Priority == CORESIP_Priority.CORESIP_PR_EMERGENCY ? 1 : 2,
-                                            // Metodo de Calculo CLD. 0: Relativo, 1: Absoluto
-                                            fp_climax_mc = (int)frec.GetParam.CLDCalculateMethod,
-                                            // Ventana BSS
-                                            fp_bss_win = frec.GetParam.BssWindows,
-                                            // Estado Frecuencia. 0: No Disponible. 1: Disponible, 2: Degradada.
-                                            fstd = (int)frec.Status,
-                                            // Emplazamiento Seleccionado y QIDX del seleccionado...
-                                            selected_site = frec.SelectedSite,
-                                            selected_site_qidx = frec.SelectedSiteQidx,
-                                            /** 20180618. Funcion Transmisor seleccionado */
-                                            selected_tx = frec.SelectedTxSiteString,
+                                            GlobalTypes.radioSessionData data = new GlobalTypes.radioSessionData()
+                                            {
+                                                frec = frec.Frecuency,
+                                                // Tipo de Frecuencia 0: Normal, 1: 1+1, 2: FD, 3: EM
+                                                ftipo = (int)frec.GetParam.FrequencyType,
+                                                // Prioridad de session, 0: Normal, 1: Emergencia
+                                                prio = frec.GetParam.Priority == CORESIP_Priority.CORESIP_PR_NORMAL ? 0
+                                                    : frec.GetParam.Priority == CORESIP_Priority.CORESIP_PR_EMERGENCY ? 1 : 2,
+                                                // Metodo de Calculo CLD. 0: Relativo, 1: Absoluto
+                                                fp_climax_mc = (int)frec.GetParam.CLDCalculateMethod,
+                                                // Ventana BSS
+                                                fp_bss_win = frec.GetParam.BssWindows,
+                                                // Estado Frecuencia. 0: No Disponible. 1: Disponible, 2: Degradada.
+                                                fstd = (int)frec.Status,
+                                                // Emplazamiento Seleccionado y QIDX del seleccionado...
+                                                selected_site = frec.SelectedSite,
+                                                selected_site_qidx = frec.SelectedSiteQidx,
+                                                /** 20180618. Funcion Transmisor seleccionado */
+                                                selected_tx = frec.SelectedTxSiteString,
 
-                                            uri = rdr.Uri1,
-                                            tipo = rdr.Type.ToString(),
-                                            std = rdr.Connected ? 1 : 0,
+                                                uri = rdr.Uri1,
+                                                tipo = rdr.Type.ToString(),
+                                                std = rdr.Connected ? 1 : 0,
 
-                                            tx_rtp = rdr.new_params.tx_rtp_port,
-                                            tx_cld = rdr.new_params.tx_cld,
-                                            tx_owd = rdr.new_params.tx_owd,
-                                            rx_rtp = rdr.new_params.rx_rtp_port,
-                                            rx_qidx = rdr.new_params.rx_qidx,
-                                            /** 20170807. */
-                                            site = rdr.new_params.site
-                                        };
+                                                tx_rtp = rdr.new_params.tx_rtp_port,
+                                                tx_cld = rdr.new_params.tx_cld,
+                                                tx_owd = rdr.new_params.tx_owd,
+                                                rx_rtp = rdr.new_params.rx_rtp_port,
+                                                rx_qidx = rdr.new_params.rx_qidx,
+                                                /** 20170807. */
+                                                site = rdr.new_params.site
+                                            };
 
-                                        local_rsp.Add(data);
+                                            local_rsp.Add(data);
+                                        }
                                     }
                                 }
                                 local_rsp = local_rsp
@@ -1619,12 +1622,12 @@ namespace U5ki.RdService
                     rdFr.Dispose();
                 //JOI 201709 NEWRDRP INI
                 foreach (RdFrecuency rdfy in Frecuencies.Values)
-                    foreach (RdResource rdrsc in rdfy.RdRs.Values)
+                    foreach (IRdResource irdrsc in rdfy.RdRs.Values)
                     {
-                        _RdRParam[rdrsc.ID] = rdrsc.new_params; 
+                        foreach (RdResource rdRes in irdrsc.GetListResources())
+                            _RdRParam[rdRes.ID] = rdRes.new_params;
                     }
 				
-	
 #if !DEBUG1
                 MNManager.UpdatePool(cfg);
 
@@ -1638,7 +1641,7 @@ namespace U5ki.RdService
             }
             catch (Exception ex)
             {
-                ExceptionManage<RdService>("Config", ex, "Excepcion no esperada process new config. ERROR: " + ex.Message);
+                ExceptionManage<RdService>("Config", ex, "Excepcion no esperada process new config. ERROR: " + ex.StackTrace);
             }
             finally
             {

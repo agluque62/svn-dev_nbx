@@ -594,6 +594,8 @@ namespace U5ki.CfgService
             //cfg.CldSupervision = soapCfg.CldSupervisionTime;
             cfg.OffSetFrequency = soapCfg.OffSetFrequency;
             cfg.EnableEventPttSq = soapCfg.EnableEventPttSq;
+            cfg.RedundanciaRol = soapCfg.RedundanciaRol;
+            cfg.RedundanciaIdPareja = soapCfg.RedundanciaIdPareja;
 		}
 
         /// <summary>

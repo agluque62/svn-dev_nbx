@@ -327,6 +327,8 @@ message CfgRecursoEnlaceExterno
     optional int32 GrsDelay = 10;
 	optional int32 OffSetFrequency = 11;
 	optional bool EnableEventPttSq = 12;
+	optional string IdRedundancyPair = 13;
+	optional string Rol = 14;
 }
 
 message CfgEnlaceExterno
