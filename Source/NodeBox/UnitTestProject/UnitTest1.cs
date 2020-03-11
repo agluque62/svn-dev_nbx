@@ -121,7 +121,18 @@ namespace UnitTestProject
                     var found = target;
                 }
             }
-
+        }
+        [TestMethod]
+        public void NLogFilterTest()
+        {
+            LogManager.GetLogger("U5ki.Infrastructure.SipAgent").Debug("Log Debug de Prueba");
+            LogManager.GetLogger("OtroLogger").Debug("Log Debug de Prueba"); 
+            LogManager.GetLogger("U5ki.Infrastructure.SipAgent").Error("Log Error de Prueba");
+            LogManager.GetLogger("OtroLogger").Info("Log Info de Prueba");
+            LogManager.GetLogger("U5ki.Infrastructure.SipAgent").Warn("Log Warn de Prueba");
+            LogManager.GetLogger("OtroLogger").Error("Log Error de Prueba");
+            LogManager.GetLogger("U5ki.Infrastructure.SipAgent").Info("Log Info de Prueba");
+            LogManager.GetLogger("OtroLogger").Warn("Log Warn de Prueba");
         }
     }
 
