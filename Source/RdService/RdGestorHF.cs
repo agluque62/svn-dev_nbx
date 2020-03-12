@@ -105,7 +105,7 @@ namespace U5ki.RdService
                 else
                     hflog.Error(msg, inci, "HFM", usuario, idEquipo, Frecuencia, msg);
                 
-#if DEBUG
+#if DEBUG1
                 TestHist();
 #endif
                 return msg;

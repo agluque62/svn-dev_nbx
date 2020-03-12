@@ -1,4 +1,5 @@
 ﻿//#define _WITH_EVENTQUEUE_
+//#define _ACTIVATE_EXRES_
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -120,6 +121,7 @@ namespace U5ki.PresenceService
                                                ver = s.version
                                            }
                                 },
+#if _ACTIVATE_EXRES_
                     externals_res = from i in agents
                                     where i.Type == Interfaces.AgentType.ForExternalResources
                                     select new
@@ -139,6 +141,7 @@ namespace U5ki.PresenceService
                                                   ver = s.version
                                               }
                                     },
+#endif
                     PersistenceOfStates = from s in PresenceServerResource.PersistenceOfStates.LastStates
                                           select new
                                           {
@@ -208,6 +211,7 @@ namespace U5ki.PresenceService
                                                ver = s.version
                                            }
                                 },
+#if _ACTIVATE_EXRES_
                     externals_res = from i in agents
                                 where i.Type == Interfaces.AgentType.ForExternalResources
                                 select new
@@ -227,6 +231,7 @@ namespace U5ki.PresenceService
                                                ver = s.version
                                            }
                                 },
+#endif
                     PersistenceOfStates = from s in PresenceServerResource.PersistenceOfStates.LastStates
                                           select new
                                           {
@@ -311,7 +316,7 @@ namespace U5ki.PresenceService
             }
         }
 
-        #endregion
+#endregion
 
         /** Para evitar reconfiguraciones ociosas... */
         protected string LastVersion { get; set; }
@@ -752,12 +757,13 @@ namespace U5ki.PresenceService
                 });
             });
 
+#if _ACTIVATE_EXRES_
             /** EXRES. Crear el Agente de Equipos Externos */
             var extAgent = new Agentes.PSExternalResourcesAgent();
             extAgent.Init(OnAgentEventOccurred, cfg);
             extAgent.Start();
             agents.Add(extAgent);
-
+#endif
             /** Activar el Agente de Agentes */
             global_agent = new Agentes.PSProxiesAgent( ServiceSite);
             global_agent.Init(OnAgentEventOccurred, agents);
@@ -844,8 +850,10 @@ namespace U5ki.PresenceService
             {typeof(PSBkkAgent).Name,false},
             {typeof(PSExternalAgent).Name, false},
             {typeof(PSProxiesAgent).Name, false},
+#if _ACTIVATE_EXRES_
             /** EXRES Incluir el control de envio del agente de recursos externos de telefonía. */
             {typeof(PSExternalResourcesAgent).Name, false},
+#endif
         };
 
 
@@ -937,6 +945,7 @@ namespace U5ki.PresenceService
                                 _udpClient.Send(mtrama, mtrama.Count(), mcastTifx);
                                 SendingControl[typeof(PSProxiesAgent).Name] = false;
                             }
+#if _ACTIVATE_EXRES_
                             /** EXRES Gestionar el envío de la informacion de recursos de telefonía externos */
                             if (SendingControl[typeof(PSExternalResourcesAgent).Name] == true)
                             {
@@ -952,6 +961,7 @@ namespace U5ki.PresenceService
                                 }
                                 SendingControl[typeof(PSExternalResourcesAgent).Name] = false;
                             }
+#endif
                         }
                         catch (Exception x)
                         {
@@ -973,8 +983,10 @@ namespace U5ki.PresenceService
                     SendingControl[typeof(PSBkkAgent).Name] = true;
                     SendingControl[typeof(PSProxiesAgent).Name] = true;
                     SendingControl[typeof(PSProxiesAgent).Name] = true;
+#if _ACTIVATE_EXRES_
                     /** EXRES Activar el Envio de la información de recursos externos de telefonía */
                     SendingControl[typeof(PSExternalResourcesAgent).Name] = true;
+#endif
                     last = DateTime.Now;
                 }
             }
