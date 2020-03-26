@@ -74,7 +74,7 @@
       <HintPath>..\..\packages\NLog.3.1.0.0\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>..\..\..\TFT\HMI\Lib\protobuf-net.dll</HintPath>
+      <HintPath>..\..\Lib\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -102,17 +102,13 @@
     <Compile Include="SipAgent\SipAgentNet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Utilities\Utilities.csproj">
+    <ProjectReference Include="..\..\Utilities\Utilities.csproj">
       <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Infrastructure\u5ki.Infrastructure.csproj">
       <Project>{bbae4626-c51c-4946-acd1-832e92d73d8b}</Project>
       <Name>u5ki.Infrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeBox\u5ki.NodeBox.csproj">
-      <Project>{7bc5a180-21c5-4a4a-a131-6bdf65d4287a}</Project>
-      <Name>u5ki.NodeBox</Name>
     </ProjectReference>
     <ProjectReference Include="..\Translate\Translate.csproj">
       <Project>{eaab8d4e-306e-417f-892f-13ad6642b883}</Project>
