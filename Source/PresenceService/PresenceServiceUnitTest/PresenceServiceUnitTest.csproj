@@ -92,10 +92,6 @@
     <Compile Include="SimulatedProxiesScenarioTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Utilities\Utilities.csproj">
-      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
-      <Name>Utilities</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Cd40.TifxService\u5ki.TifxService.csproj">
       <Project>{54e3301a-22db-4097-92d9-eb03646b6e47}</Project>
       <Name>u5ki.TifxService</Name>

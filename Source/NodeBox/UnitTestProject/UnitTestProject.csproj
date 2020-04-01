@@ -97,10 +97,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Utilities\Utilities.csproj">
-      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
-      <Name>Utilities</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Infrastructure\u5ki.Infrastructure.csproj">
       <Project>{bbae4626-c51c-4946-acd1-832e92d73d8b}</Project>
       <Name>u5ki.Infrastructure</Name>

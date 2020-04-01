@@ -97,10 +97,6 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Utilities\Utilities.csproj">
-      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
-      <Name>Utilities</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CfgService\u5ki.CfgService.csproj">
       <Project>{d446f2f3-e170-4a91-b5a4-2c02668f27f8}</Project>
       <Name>u5ki.CfgService</Name>
