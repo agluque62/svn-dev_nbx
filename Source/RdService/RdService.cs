@@ -83,7 +83,7 @@ namespace U5ki.RdService
             }
         }
         /// <summary>
-        /// 
+        /// TODO. Explicar.
         /// </summary>
         private IDictionary<string, RdFrecuency> _frecuenciesReserved;
         private IDictionary<string, RdFrecuency> FrecuenciesReserved
@@ -96,7 +96,7 @@ namespace U5ki.RdService
             }
         }
         /// <summary>
-        /// 
+        /// Referencias a los puertos pjmedia donde se reciben los audios de transmisión de los PICTS
         /// </summary>
         private Dictionary<string, int> _SndRxPorts = new Dictionary<string, int>();
         private static EventQueue _EventQueue = new EventQueue();
@@ -106,6 +106,7 @@ namespace U5ki.RdService
         }
         /// <summary>
         /// Asociones Usuarios/Frecuencias asignadas.
+        /// TODO.
         /// </summary>
         private Dictionary<KeyValuePair<string, string>, RdFrecuency> _UsrFreq = new Dictionary<KeyValuePair<string, string>, RdFrecuency>();
 
@@ -116,7 +117,6 @@ namespace U5ki.RdService
             get
             { return _RdRParam; }
         }
-
         public RdResource.NewRdResourceParams RdRParamGet(String rdRParamId)
         {
             if (_RdRParam.ContainsKey(rdRParamId))
@@ -567,6 +567,9 @@ namespace U5ki.RdService
                         }
             };
         }
+        /// <summary>
+        /// Obtiene la lista de recursos radio que pertenecen a pares 1+1
+        /// </summary>
         public IEnumerable<RdResource> MSResources
         {
             get
@@ -1463,11 +1466,13 @@ namespace U5ki.RdService
         /// 
         /// </summary>
         private String LastVersion { get; set; }
+        public Cd40Cfg Cfg { get => _Cfg; set => _Cfg = value; }
+
         /// <summary>
         /// Procesado de la Configuracion. 
         /// </summary>
 #if DEBUG
-		public void ProcessNewConfig(Cd40Cfg cfg)
+        public void ProcessNewConfig(Cd40Cfg cfg)
 #else
         private void ProcessNewConfig(Cd40Cfg cfg)
 #endif
