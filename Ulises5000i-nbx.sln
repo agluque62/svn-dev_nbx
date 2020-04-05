@@ -60,7 +60,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Source\Test\Test.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ulises5000I-Setup-CustomActions", "Setup\Ulises5000I-Setup-CustomActions\Ulises5000I-Setup-CustomActions.csproj", "{83350A9D-B360-4AAD-91E3-E77C4E029E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSnmpLib", "sharpsnmplib\SharpSnmpLib\SharpSnmpLib.csproj", "{286DE6DB-8F95-4BD4-86A2-86488D2E0EE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSnmpLib", "..\tft\sharpsnmplib\SharpSnmpLib\SharpSnmpLib\SharpSnmpLib.csproj", "{286DE6DB-8F95-4BD4-86A2-86488D2E0EE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationHFTest", "Source\OperationHFTest\OperationHFTest.csproj", "{D8974265-5B5A-4C1B-97E5-864279867156}"
 EndProject
@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtEquSim", "Tools\ExtEquSi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RdServiceTests", "Source\RdService\RdServiceTests\RdServiceTests.csproj", "{E5987F9D-F8F4-40BB-92B0-A849EC801A20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "..\svn-dev_utilities\Utilities.csproj", "{822F500D-ADB8-4BB1-8A1C-E9FEAFF369B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "..\utilities\Utilities.csproj", "{822F500D-ADB8-4BB1-8A1C-E9FEAFF369B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

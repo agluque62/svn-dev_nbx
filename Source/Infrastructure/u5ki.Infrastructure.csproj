@@ -197,11 +197,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\svn-dev_utilities\Utilities.csproj">
+    <ProjectReference Include="..\..\..\utilities\Utilities.csproj">
       <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\sharpsnmplib\SharpSnmpLib\SharpSnmpLib.csproj">
+    <ProjectReference Include="..\..\..\tft\sharpsnmplib\SharpSnmpLib\SharpSnmpLib\SharpSnmpLib.csproj">
       <Project>{286de6db-8f95-4bd4-86a2-86488d2e0ee1}</Project>
       <Name>SharpSnmpLib</Name>
     </ProjectReference>
