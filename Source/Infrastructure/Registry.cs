@@ -905,7 +905,7 @@ namespace U5ki.Infrastructure
 										RsChangeInfo change = new RsChangeInfo(msg.From, topicChanges.Topic, rs.Type, rs.Id, rs.Content);
 										ResourceChanged(this, change);
 
-                                        _Logger.Debug("RES-CHG => {4} FROM {0}. {1}: {3}", msg.From, topicChanges.Topic, rs.Type, rs.Id, rs.Content == null ? "null" : "VAL");
+                                        _Logger.Trace("RES-CHG => {4} FROM {0}. {1}: {3}", msg.From, topicChanges.Topic, rs.Type, rs.Id, rs.Content == null ? "null" : "VAL");
 
 										if (rs.Content != null)
 										{

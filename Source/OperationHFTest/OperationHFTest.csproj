@@ -116,7 +116,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TFT\SharpSnmpLib\sharpsnmplib\SharpSnmpLib\SharpSnmpLib\SharpSnmpLib.csproj">
+    <ProjectReference Include="..\..\..\TFT\SharpSnmpLib\sharpsnmplib\SharpSnmpLib\SharpSnmpLib.csproj">
       <Project>{286de6db-8f95-4bd4-86a2-86488d2e0ee1}</Project>
       <Name>SharpSnmpLib</Name>
     </ProjectReference>

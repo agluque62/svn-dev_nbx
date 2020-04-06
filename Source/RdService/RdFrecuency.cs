@@ -324,46 +324,78 @@ namespace U5ki.RdService
             bool hayCambiosEnFrecuencia = ResetNewParams(cfg);
 
             Dictionary<string, IRdResource> rdRsToRemove = new Dictionary<string, IRdResource>(_RdRs);
+            Dictionary<string, IRdResource> rdRsSimpleToRemove = _RdRs.Where(x => x.Value.GetType().Equals(typeof(RdResource))).ToDictionary(x => x.Key, x => x.Value);
+            Dictionary<string, IRdResource> rdRsPairToRemove = _RdRs.Where(x => x.Value.GetType().Equals(typeof(RdResourcePair))).ToDictionary(x => x.Key, x => x.Value);
             _RdRs.Clear();
 
-            //Creación de parejas de redundancia 1 + 1, si las hay
-            List<RdResourcePair> pairs = new List<RdResourcePair>();
+            //Creación de parejas de redundancia 1 + 1, si las hay con los datos de configuracion
+            List<RdResourcePair> newPairs = new List<RdResourcePair>();
             foreach (CfgRecursoEnlaceExterno rsCfg in cfg.ListaRecursos.Where(x => String.IsNullOrEmpty(x.RedundanciaIdPareja) == false))
             {
-                if (pairs.FindIndex(x => x.ID.Equals(rsCfg.RedundanciaIdPareja)) == -1)
-                    pairs.Add(new RdResourcePair(rsCfg.RedundanciaIdPareja));
+                if (selectedRs.ContainsKey(rsCfg.IdRecurso))
+                {
+                    RdResourcePair foundPair = newPairs.FirstOrDefault(x => x.ID.Equals(rsCfg.RedundanciaIdPareja));
+                    string[] rdUri = RsUri(rsCfg.IdRecurso, sysCfg);
+                    RdResource res = new RdResource(rsCfg.IdRecurso, rdUri[0], rdUri[1], (RdRsType)rsCfg.Tipo, cfg.Literal, rsCfg.IdEmplazamiento, selectedRs[rsCfg.IdRecurso], new_params, rsCfg, false);
+                    rdRsToRemove.Remove(res.Uri1.ToUpper() + (int)res.Type);
+                    if (foundPair == null)
+                    {
+                        foundPair = new RdResourcePair(rsCfg.RedundanciaIdPareja);
+                        newPairs.Add(foundPair);
+                    }
+
+                    if (rsCfg.RedundanciaRol.Equals("P"))
+                        foundPair.SetActive(res);
+                    else if (rsCfg.RedundanciaRol.Equals("R"))
+                        foundPair.SetStandby(res);
+                    else
+                        LogInfo<RdFrecuency>(String.Format("Excepcion Wrong configuration {0}",res.ID));                    
+                }
             }
-
-            //foreach (CfgRecursoEnlaceExterno rsCfg in cfg.ListaRecursos)
-            //{
-            //    if (selectedRs.ContainsKey(rsCfg.IdRecurso))
-            //    {
-            //        RdResource resourceFound = null;
-            //        RdResourcePair pairFound = null;
-            //        bool hayCambiosEnRecurso = false;
-
-            //        foreach (IRdResource iRes in rdRsToRemove.Values)
-            //        {
-            //            if (iRes.ID.Equals(rsCfg.RedundanciaIdPareja))
-            //                pairFound = (RdResourcePair)iRes;
-            //            resourceFound = iRes.GetListResources().First(x => x.ID.Equals(rsCfg.IdRecurso));
-            //            if (resourceFound != null)
-            //            {
-            //                hayCambiosEnRecurso = CompareResources(ref resourceFound, rsCfg, hayCambiosEnFrecuencia);
-            //                break;
-            //            }
-            //        }
-
-            //    }
-            //}
 
             try
             {
-                foreach (CfgRecursoEnlaceExterno rsCfg in cfg.ListaRecursos)
+                foreach(RdResourcePair newPair in newPairs)
+                {
+                    KeyValuePair <string,IRdResource> found = rdRsPairToRemove.FirstOrDefault(x => x.Value.ID.Equals(newPair.ID));
+                    string rsKey = newPair.Uri1.ToUpper() + (int)newPair.Type;
+                    IRdResource res;
+                    if (found.Value != null)
+                    {
+                        if (EqualPairResources((RdResourcePair)found.Value, newPair))
+                        {
+                            res = (RdResourcePair)found.Value;
+                            rsKey = found.Key;
+                         }
+                        else
+                        {
+                            res = newPair;
+                            res.Connect();
+                        }
+                        rdRsPairToRemove.Remove(found.Key);
+                        //rdRsToRemove.Remove(found.Key);
+                    }
+                    else
+                    {
+                        res = newPair;
+                        res.Connect();
+                    }
+                    _RdRs[rsKey] = res;
+                }
+
+            }
+            catch (Exception exc)
+            {
+                LogError<RdFrecuency>(String.Format("Excepcion ", exc.StackTrace));
+            }
+
+            try
+            {
+                foreach (CfgRecursoEnlaceExterno rsCfg in cfg.ListaRecursos.Where(x => String.IsNullOrEmpty(x.RedundanciaIdPareja) == true))
                 {
                     if (selectedRs.ContainsKey(rsCfg.IdRecurso))
                     {
-                        RdResource singleRdRs = null;
+                        IRdResource rdRs = null;
                         string[] rdUri = RsUri(rsCfg.IdRecurso, sysCfg);
 
                         if (rdUri.Length == 0)
@@ -377,28 +409,16 @@ namespace U5ki.RdService
                             //20180724 #3603
                             string rsKeyOld = "";
                             bool hayCambiosEnSip = false;
-                            foreach (IRdResource iRes in rdRsToRemove.Values)
+                            if (RdRs.TryGetValue(rsCfg.IdRecurso, out IRdResource res))
                             {
-                                foreach (RdResource resource in iRes.GetListResources())
-                                {
-                                    if (resource.ID == rsCfg.IdRecurso)
-                                        if (resource.Uri1.Equals(rdUri[0]) == false)
-                                        {
-                                            hayCambiosEnSip = true;
-                                            break;
-                                        }
-                                }
+                                if (res.MasterMN)
+                                    if (rdUri[0] != res.Uri1)
+                                    {
+                                        rsKeyOld = res.Uri1;
+                                        hayCambiosEnSip = true;
+                                        break;
+                                    }
                             }
-                            //if (RdRs.TryGetValue(rsCfg.IdRecurso, out IRdResource res))
-                            //{
-                            //    //if (res.MasterMN)
-                            //        if (rdUri[0] != res.Uri1)
-                            //        {
-                            //            rsKeyOld = res.Uri1;
-                            //            hayCambiosEnSip = true;
-                            //            break;
-                            //        }
-                            //}
                             string rsKey;
                             if (hayCambiosEnSip)
                             {
@@ -411,8 +431,7 @@ namespace U5ki.RdService
                             //20180724  #3603 FIN
                             //string rsKey = rdUri[0].ToUpper() + rsCfg.Tipo;
 
-                            IRdResource existingRdRs;
-                            if (rdRsToRemove.TryGetValue(rsKey, out existingRdRs))
+                            if (rdRsToRemove.TryGetValue(rsKey, out rdRs))
                             {
                                 rdRsToRemove.Remove(rsKey);
                             }
@@ -423,83 +442,52 @@ namespace U5ki.RdService
                                 foreach (KeyValuePair<string, IRdResource> rdRsPair in rdRsToRemove)
                                     if ((rsCfg.IdRecurso == rdRsPair.Value.ID) && rdRsPair.Value.ReplacedMN)
                                     {
-                                        rdUri[0] = ((RdResource)rdRsPair.Value).Uri1;
-                                        rdUri[1] = ((RdResource)rdRsPair.Value).Uri2;
+                                        rdUri[0] = rdRsPair.Value.Uri1;
+                                        rdUri[1] = rdRsPair.Value.Uri2;
                                         rdRsToRemove.Remove(rdRsPair.Key);
                                         rsKey = rdRsPair.Key;
-                                        singleRdRs = (RdResource)rdRsPair.Value;
+                                        rdRs = rdRsPair.Value;
                                         break;
                                     }
                             }
-                            if (existingRdRs != null)
+                            if (rdRs != null)
                             {
                                 // JCAM 20170406.
                                 // Si hay cambios en los parámetros de la frecuencia, se debe resetear las sesiones establecidas
                                 // con los recursos asociados para que esos cambios tengan efecto
-                                // if (hayCambiosEnFrecuencia)
+                                // if (hayCambios)
                                 //20180724  #3603
                                 if (hayCambiosEnFrecuencia || hayCambiosEnSip)
                                 {
                                     hayCambiosEnSip = false; //#3603
-                                    if (existingRdRs.Connected)
-                                        RemoveSipCall(singleRdRs);
-                                    existingRdRs.Dispose();
-                                    bool isReplacedMNTemp = existingRdRs.ReplacedMN;
-                                    bool isMasterMNTemp = existingRdRs.MasterMN;
-                                    singleRdRs = new RdResource(rsCfg.IdRecurso, rdUri[0], rdUri[1], (RdRsType)rsCfg.Tipo, cfg.Literal, rsCfg.IdEmplazamiento, selectedRs[rsCfg.IdRecurso], new_params, rsCfg);  //EDU 20170223 // JCAM 20170313                            }
-                                    singleRdRs.ReplacedMN = isReplacedMNTemp;
-                                    singleRdRs.MasterMN = isMasterMNTemp;//#3603
+                                    if (rdRs.Connected)
+                                        RemoveSipCall(rdRs);
+                                    rdRs.Dispose();
+                                    bool isReplacedMNTemp = rdRs.ReplacedMN;
+                                    bool isMasterMNTemp = rdRs.MasterMN;
+                                    rdRs = new RdResource(rsCfg.IdRecurso, rdUri[0], rdUri[1], (RdRsType)rsCfg.Tipo, cfg.Literal, rsCfg.IdEmplazamiento, selectedRs[rsCfg.IdRecurso], new_params, rsCfg);  //EDU 20170223 // JCAM 20170313                            }
+                                    rdRs.ReplacedMN = isReplacedMNTemp;
+                                    rdRs.MasterMN = isMasterMNTemp;//#3603
                                 }
                                 else
                                 {
                                     // Hay cambios pero no requieren reinicio de sesion, 
                                     // pero si hay que actualizar los datos:
                                     // -el emplazamiento
-                                    existingRdRs.Site = rsCfg.IdEmplazamiento;
+                                    rdRs.Site = rsCfg.IdEmplazamiento;
                                 }
                             }
                             else
                             {
-                                singleRdRs = new RdResource(rsCfg.IdRecurso, rdUri[0], rdUri[1], (RdRsType)rsCfg.Tipo, cfg.Literal, rsCfg.IdEmplazamiento, selectedRs[rsCfg.IdRecurso], new_params, rsCfg);  //EDU 20170223 // JCAM 20170313
-
+                                rdRs = new RdResource(rsCfg.IdRecurso, rdUri[0], rdUri[1], (RdRsType)rsCfg.Tipo, cfg.Literal, rsCfg.IdEmplazamiento, selectedRs[rsCfg.IdRecurso], new_params, rsCfg);  //EDU 20170223 // JCAM 20170313
                                 if ((cfg.TipoFrecuencia == Tipo_Frecuencia.FD) && (cfg.ModoTransmision == Tipo_ModoTransmision.UltimoReceptor))
-                                    singleRdRs.TxMute = true;
+                                    rdRs.TxMute = true;
                             }
+
                             //if (!rdRs.Connected && rdRs.Selected)
                             //    ChangeSite();
-                            //Not changed resources
-                            if (singleRdRs == null)
-                            {
-                                if (existingRdRs.GetType().Equals(typeof(RdResourcePair)))
-                                {
-                                    if (rsCfg.RedundanciaRol.Equals("P"))
-                                        _RdRs[rsKey] = existingRdRs;
-                                }
-                                else
-                                    _RdRs[rsKey] = existingRdRs;
-                            }
-                            //New resources
-                            else
-                            {
-                                if (String.IsNullOrEmpty(rsCfg.RedundanciaIdPareja) == false)
-                                {
-                                    RdResourcePair rdPair = pairs.Find(x => x.ID.Equals(rsCfg.RedundanciaIdPareja));
-                                    if (rdPair != null)
-                                    {
-                                        if (rsCfg.RedundanciaRol.Equals("P"))
-                                        {
-                                            rdPair.SetActive(singleRdRs);
-                                            _RdRs[rsKey] = rdPair;
-                                        }
-                                        else if (rsCfg.RedundanciaRol.Equals("R"))
-                                            rdPair.SetStandby(singleRdRs);
-                                    }
-                                    else
-                                        LogError<RdFrecuency>(String.Format("Error al configurar un par 1+1 ", rsCfg.IdRecurso));
-                                }
-                                else
-                                    _RdRs[rsKey] = singleRdRs;
-                            }
+
+                            _RdRs[rsKey] = rdRs;
                         }
                     }
                     else
@@ -1084,7 +1072,7 @@ namespace U5ki.RdService
                                 }
 
 
-                                if (rdRs.Squelch)
+                                if (simpleRes.Squelch)
                                 {
                                     //Este caso es de SQ no provocado por PTT propio (avion u otro SCV).
                                     if ((_CurrentSrcPtt == null) && (info.PttId == 0))
@@ -1473,14 +1461,80 @@ namespace U5ki.RdService
         /// devuleve el recurso cambiado o el existente.
         /// Si no hay cambios que afecten al sip, permite no cortar la sesion.
         /// </summary>
-        /// <param name="exisitingResource"></param>
+        /// <param name="existingResource"></param>
         /// <param name="rsCfg"></param>
         /// <param name="reinicioSip">true si es necesario un reinicio de sesion por cambios en la frecuencia</param>
         /// <returns>true si el recurso ha cambiado</returns>
-        private bool CompareResources(ref RdResource exisitingResource, CfgRecursoEnlaceExterno rsCfg, bool reinicioSip)
+        private bool CompareResources(ref RdResource existingRdRs, CfgRecursoEnlaceExterno rsCfg, bool reinicioSip, string uri1, string uri2, bool selectedState)
         {
-            return false;
+            bool hayCambios = existingRdRs.Type != (RdRsType)rsCfg.Tipo ||
+                  existingRdRs.Uri1.Equals(uri1) == false ||
+                  existingRdRs.Uri2.Equals(uri2) == false ||
+                  existingRdRs.Frecuency != _Frecuency;
+            if (reinicioSip || hayCambios)
+            {
+                if (existingRdRs.Connected)
+                    RemoveSipCall(existingRdRs);
+                existingRdRs.Dispose();
+                bool isReplacedMNTemp = existingRdRs.ReplacedMN;
+                bool isMasterMNTemp = existingRdRs.MasterMN;
+                existingRdRs = new RdResource(rsCfg.IdRecurso, uri1, uri2, (RdRsType)rsCfg.Tipo, _Frecuency, rsCfg.IdEmplazamiento, selectedState, new_params, rsCfg);
+                existingRdRs.ReplacedMN = isReplacedMNTemp;
+                existingRdRs.MasterMN = isMasterMNTemp;//#3603
+            }
+
+            existingRdRs.Site = rsCfg.IdEmplazamiento;
+            return (reinicioSip || hayCambios);
         }
+        /// <summary>
+        /// Compara dos recursos y devuelve si son iguales.
+        /// </summary>
+        /// <param name="existingResource"></param>
+        /// <param name="newRdRs"></param>
+        /// <returns>true si los recursos son iguales</returns>
+        private bool EqualResources(RdResource existingRdRs, RdResource newRdRs)
+        {
+            bool hayCambios = existingRdRs.Type != newRdRs.Type ||
+                  existingRdRs.Uri1.Equals(newRdRs.Uri1) == false ||
+                  existingRdRs.Uri2.Equals(newRdRs.Uri2) == false ||
+                  existingRdRs.Frecuency != newRdRs.Frecuency;
+           return !hayCambios;
+        }
+        /// <summary>
+        /// Compara dos recursos y devuelve si son iguales.
+        /// </summary>
+        /// <param name="existingResource"></param>
+        /// <param name="newRdRs"></param>
+        /// <returns>true si la pareja de recursos son iguales</returns>
+        private bool EqualPairResources(RdResourcePair existingRdRs, RdResourcePair newRdRs)
+        {
+            bool equal = false;
+            List<RdResource> existingList = existingRdRs.GetListResources();
+            List<RdResource> newList = newRdRs.GetListResources();
+            foreach(RdResource rs in newList)
+            {
+                RdResource foundRs = existingList.First(x => x.ID.Equals(rs.ID));
+                equal = foundRs == null ? false : EqualResources(rs, foundRs);
+                if (!equal)
+                    break;
+                //if (foundRs != null)
+                //{
+                //    if (CompareResources(rs, foundRs) == true)
+                //    {
+                //        hayCambios = true;
+                //        break;
+                //    }
+                //}
+                //else
+                //{
+                //    hayCambios = true;
+                //    break;
+                //}
+            }
+            return equal;
+        }
+
+
         private bool ChangeSite()
         {
             bool changed = false;
@@ -1789,12 +1843,6 @@ namespace U5ki.RdService
         /// <param name="rsId"></param>
         /// <param name="sysCfg"></param>
         /// <returns></returns>
-        //private string RsUri(string rsId, ConfiguracionSistema sysCfg)
-        //{
-        //    string ip = sysCfg.GetGwRsIp(rsId);
-        //    return (ip != null) ? string.Format("<sip:{0}@{1}>", rsId, ip) : null;
-        //}
-
         private string[] RsUri(string rsId, ConfiguracionSistema sysCfg)
         {
             string[] rsUri = new string[2];

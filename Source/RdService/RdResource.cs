@@ -283,7 +283,7 @@ namespace U5ki.RdService
         /// <param name="uri2"></param>
         /// <param name="type"></param>
         /// <param name="frecuency"></param>
-        public RdResource(string id, string uri1, string uri2, RdRsType type, string frecuency, string site, bool selected, RdFrecuency.NewRdFrequencyParams newFreqParams, CfgRecursoEnlaceExterno rs)
+        public RdResource(string id, string uri1, string uri2, RdRsType type, string frecuency, string site, bool selected, RdFrecuency.NewRdFrequencyParams newFreqParams, CfgRecursoEnlaceExterno rs, bool connect = true)
         {
             _Id = id;
             _Uri1 = seturi(uri1);
@@ -301,8 +301,8 @@ namespace U5ki.RdService
             _LastUri = _Uri1;
             _ToCheck = false;
              SetNewRdResourceParams(rs);
-                            
-            Connect();
+            if (connect)                
+                Connect();
         }
 
         /// <summary>
@@ -523,7 +523,7 @@ namespace U5ki.RdService
 			return true;
 		}
 
-
+        
         public bool ActivateResource(string IdResource)
         {
             throw new NotImplementedException();

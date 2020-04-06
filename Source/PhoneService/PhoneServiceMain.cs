@@ -49,7 +49,10 @@ namespace u5ki.PhoneService
             }
             return false;
         }
-
+        public object AllDataGet()
+        {
+            throw new NotImplementedException();
+        }
         public void Start()
         {
             if (smpAccesMain.Acquire())

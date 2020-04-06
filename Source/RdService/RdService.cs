@@ -73,7 +73,11 @@ namespace U5ki.RdService
         /// 
         /// </summary>
         private IDictionary<string, RdFrecuency> _frecuencies;
+#if DEBUG
+        public IDictionary<string, RdFrecuency> Frecuencies
+#else
         private IDictionary<string, RdFrecuency> Frecuencies
+#endif
         {
             get
             {
@@ -193,6 +197,9 @@ namespace U5ki.RdService
         public bool Master
         {
             get { return _Master; }
+#if DEBUG
+            set {_Master = value;}
+#endif
         }
 
         /// <summary>
@@ -357,6 +364,9 @@ namespace U5ki.RdService
                                             local_rsp.Add(data);
                                         }
                                     }
+                                local_rsp = local_rsp
+                                    .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
+                                    .ThenBy(o => ((GlobalTypes.radioSessionData)o).frec).ToList();
                                 }
                                 local_rsp = local_rsp
                                     .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
