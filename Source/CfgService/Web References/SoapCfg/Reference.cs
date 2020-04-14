@@ -834,24 +834,26 @@ namespace U5ki.CfgService.SoapCfg {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://CD40.es/GetPoolNMElements", RequestNamespace="http://CD40.es/", ResponseNamespace="http://CD40.es/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public Node[] GetPoolNMElements(string id_sistema) {
+        public Node[] GetPoolNMElements(string id_sistema, string tipo) {
             object[] results = this.Invoke("GetPoolNMElements", new object[] {
-                        id_sistema});
+                        id_sistema,
+                        tipo});
             return ((Node[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPoolNMElementsAsync(string id_sistema) {
-            this.GetPoolNMElementsAsync(id_sistema, null);
+        public void GetPoolNMElementsAsync(string id_sistema, string tipo) {
+            this.GetPoolNMElementsAsync(id_sistema, tipo, null);
         }
         
         /// <remarks/>
-        public void GetPoolNMElementsAsync(string id_sistema, object userState) {
+        public void GetPoolNMElementsAsync(string id_sistema, string tipo, object userState) {
             if ((this.GetPoolNMElementsOperationCompleted == null)) {
                 this.GetPoolNMElementsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPoolNMElementsOperationCompleted);
             }
             this.InvokeAsync("GetPoolNMElements", new object[] {
-                        id_sistema}, this.GetPoolNMElementsOperationCompleted, userState);
+                        id_sistema,
+                        tipo}, this.GetPoolNMElementsOperationCompleted, userState);
         }
         
         private void OnGetPoolNMElementsOperationCompleted(object arg) {
@@ -1079,9 +1081,9 @@ namespace U5ki.CfgService.SoapCfg {
         
         private Tipo_Canal tipoDeCanalField;
         
-        private Tipo_Formato_Trabajo formaDeTrabajoField;
+        private System.Nullable<Tipo_Formato_Trabajo> formaDeTrabajoField;
         
-        private int prioridadField;
+        private System.Nullable<int> prioridadField;
         
         private uint puertoField;
         
@@ -1150,7 +1152,8 @@ namespace U5ki.CfgService.SoapCfg {
         }
         
         /// <remarks/>
-        public Tipo_Formato_Trabajo FormaDeTrabajo {
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<Tipo_Formato_Trabajo> FormaDeTrabajo {
             get {
                 return this.formaDeTrabajoField;
             }
@@ -1160,7 +1163,8 @@ namespace U5ki.CfgService.SoapCfg {
         }
         
         /// <remarks/>
-        public int Prioridad {
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<int> Prioridad {
             get {
                 return this.prioridadField;
             }
@@ -5941,6 +5945,8 @@ namespace U5ki.CfgService.SoapCfg {
         
         private string tiempoVueltaADefectoField;
         
+        private string conRedundanciaField;
+        
         /// <remarks/>
         public int Fk_Metodosbss {
             get {
@@ -6149,6 +6155,16 @@ namespace U5ki.CfgService.SoapCfg {
             }
             set {
                 this.tiempoVueltaADefectoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ConRedundancia {
+            get {
+                return this.conRedundanciaField;
+            }
+            set {
+                this.conRedundanciaField = value;
             }
         }
     }

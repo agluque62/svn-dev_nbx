@@ -327,8 +327,8 @@ message CfgRecursoEnlaceExterno
     optional int32 GrsDelay = 10;
 	optional int32 OffSetFrequency = 11;
 	optional bool EnableEventPttSq = 12;
-	optional string IdRedundancyPair = 13;
-	optional string Rol = 14;
+	optional string RedundanciaIdPareja = 13;
+	optional string RedundanciaRol = 14;
 }
 
 message CfgEnlaceExterno
@@ -448,5 +448,6 @@ message Cd40Cfg
 	optional ConfiguracionSistema ConfiguracionGeneral = 2;
 	repeated ConfiguracionUsuario ConfiguracionUsuarios = 3;
 	repeated PoolHfElement PoolHf = 4;
-	repeated Node Nodes = 5;
+	repeated Node NodesMN = 5;
+	repeated Node NodesEE = 6;
 }

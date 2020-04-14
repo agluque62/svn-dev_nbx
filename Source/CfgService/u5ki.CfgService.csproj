@@ -49,7 +49,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -134,7 +134,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\utilities\Utilities.csproj">
+    <ProjectReference Include="..\..\..\Utilities\Utilities.csproj">
       <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
       <Name>Utilities</Name>
     </ProjectReference>

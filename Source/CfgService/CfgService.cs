@@ -340,6 +340,11 @@ namespace U5ki.CfgService
         /// </summary>
         private string _LastCfgFile = "u5ki.LastCfg.bin";
         private string _LastCfgFileJson = "u5ki.LastCfg.json";
+        /// <summary>
+        /// Tipo para consulta GetPoolNMElements
+        /// </summary>
+        private const string TYPE_POOL_NM = "0";
+        private const string TYPE_POOL_EE = "1";
 #if _LOCKING_
         private object _lock = new object();
 #endif
@@ -765,7 +770,7 @@ namespace U5ki.CfgService
                         }
                     }
 
-                    SoapCfg.Node[] nmPool = soapSrv.GetPoolNMElements(systemId);
+                    SoapCfg.Node[] nmPool = soapSrv.GetPoolNMElements(systemId, TYPE_POOL_NM);
                     if (nmPool != null)
                     {
                         foreach (SoapCfg.Node nmelement in nmPool)
@@ -774,6 +779,17 @@ namespace U5ki.CfgService
                             nmelement.ModeloEquipo = 1000;
 #endif
                             CfgTranslators.Translate(cfg, nmelement);
+                        }
+                    }
+                    SoapCfg.Node[] eePool = soapSrv.GetPoolNMElements(systemId, TYPE_POOL_EE);
+                    if (eePool != null)
+                    {
+                        foreach (SoapCfg.Node extElement in eePool)
+                        {
+#if DEBUG1
+                            nmelement.ModeloEquipo = 1000;
+#endif
+                            CfgTranslators.Translate(cfg, extElement, false);
                         }
                     }
                     try

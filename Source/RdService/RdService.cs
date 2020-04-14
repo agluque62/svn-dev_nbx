@@ -1653,7 +1653,7 @@ namespace U5ki.RdService
                 MNManager.StartConfig();
 #endif
                 /** 20200225. Estado de cada módulo adicional de Radio */
-                MNRadioModule = cfg.Nodes.Count() > 0;
+                MNRadioModule = cfg.NodesMN.Count() > 0;
                 HFRadioModule = cfg.PoolHf.Count() > 0;
                 MSRadioModule = MSResources.Count() > 0;
 

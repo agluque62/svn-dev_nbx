@@ -221,7 +221,7 @@ namespace U5ki.RdService.NM
                
                 // Gestionar los nodos recibidos.
                 //foreach (Node node in input.Nodes.OrderBy(e => e.Prioridad))
-                foreach (Node node in input.Nodes/*.OrderBy(e => e.Prioridad)*/)
+                foreach (Node node in input.NodesMN/*.OrderBy(e => e.Prioridad)*/)
                 {
                     NodeSet(
                         NodeParse(node));

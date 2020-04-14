@@ -1324,22 +1324,22 @@ namespace U5ki.Infrastructure
       set { _EnableEventPttSq = value; }
     }
 
-    private string _IdRedundancyPair = "";
-    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"IdRedundancyPair", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private string _RedundanciaIdPareja = "";
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"RedundanciaIdPareja", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue("")]
     public string RedundanciaIdPareja
     {
-      get { return _IdRedundancyPair; }
-      set { _IdRedundancyPair = value; }
+      get { return _RedundanciaIdPareja; }
+      set { _RedundanciaIdPareja = value; }
     }
 
-    private string _Rol = "";
-    [global::ProtoBuf.ProtoMember(14, IsRequired = false, Name=@"Rol", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    private string _RedundanciaRol = "";
+    [global::ProtoBuf.ProtoMember(14, IsRequired = false, Name=@"RedundanciaRol", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue("")]
     public string RedundanciaRol
     {
-      get { return _Rol; }
-      set { _Rol = value; }
+      get { return _RedundanciaRol; }
+      set { _RedundanciaRol = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -2104,11 +2104,18 @@ namespace U5ki.Infrastructure
       get { return _PoolHf; }
     }
   
-    private readonly global::System.Collections.Generic.List<U5ki.Infrastructure.Node> _Nodes = new global::System.Collections.Generic.List<U5ki.Infrastructure.Node>();
-    [global::ProtoBuf.ProtoMember(5, Name=@"Nodes", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<U5ki.Infrastructure.Node> Nodes
+    private readonly global::System.Collections.Generic.List<U5ki.Infrastructure.Node> _NodesMN = new global::System.Collections.Generic.List<U5ki.Infrastructure.Node>();
+    [global::ProtoBuf.ProtoMember(5, Name=@"NodesMN", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<U5ki.Infrastructure.Node> NodesMN
     {
-      get { return _Nodes; }
+      get { return _NodesMN; }
+    }
+  
+    private readonly global::System.Collections.Generic.List<U5ki.Infrastructure.Node> _NodesEE = new global::System.Collections.Generic.List<U5ki.Infrastructure.Node>();
+    [global::ProtoBuf.ProtoMember(6, Name=@"NodesEE", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<U5ki.Infrastructure.Node> NodesEE
+    {
+      get { return _NodesEE; }
     }
   
     private global::ProtoBuf.IExtension extensionObject;

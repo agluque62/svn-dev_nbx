@@ -682,7 +682,7 @@ namespace U5ki.CfgService
         /// </summary>
         /// <param name="cfg"></param>
         /// <param name="pool"></param>
-        public static void Translate(Cd40Cfg cfg, SoapCfg.Node nm)
+        public static void Translate(Cd40Cfg cfg, SoapCfg.Node nm, bool mn=true)
         {
             Node cfgNode = new Node();
             new DataHelper().CopyTo(nm, cfgNode);
@@ -716,8 +716,10 @@ namespace U5ki.CfgService
                     cfgNode.Frecs.Add(new HfRangoFrecuencias() { fmin = rango.FMin, fmax = rango.FMax });
                 }
             }
-
-            cfg.Nodes.Add(cfgNode);
+            if (mn)
+                cfg.NodesMN.Add(cfgNode);
+            else
+                cfg.NodesEE.Add(cfgNode);
         }
 	}
 }

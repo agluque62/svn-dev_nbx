@@ -704,6 +704,7 @@
               <s:element minOccurs="0" maxOccurs="1" name="ModoTransmision" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="EmplazamientoDefecto" type="s:string" />
               <s:element minOccurs="0" maxOccurs="1" name="TiempoVueltaADefecto" type="s:string" />
+              <s:element minOccurs="0" maxOccurs="1" name="ConRedundancia" type="s:string" />
             </s:sequence>
           </s:extension>
         </s:complexContent>
@@ -1758,6 +1759,7 @@
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="id_sistema" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tipo" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -1782,8 +1784,8 @@
               <s:element minOccurs="1" maxOccurs="1" name="TipoDeFrecuencia" type="tns:Tipo_Frecuencia" />
               <s:element minOccurs="0" maxOccurs="1" name="FrecuenciaPrincipal" type="s:string" />
               <s:element minOccurs="1" maxOccurs="1" name="TipoDeCanal" type="tns:Tipo_Canal" />
-              <s:element minOccurs="1" maxOccurs="1" name="FormaDeTrabajo" type="tns:Tipo_Formato_Trabajo" />
-              <s:element minOccurs="1" maxOccurs="1" name="Prioridad" type="s:int" />
+              <s:element minOccurs="1" maxOccurs="1" name="FormaDeTrabajo" nillable="true" type="tns:Tipo_Formato_Trabajo" />
+              <s:element minOccurs="1" maxOccurs="1" name="Prioridad" nillable="true" type="s:int" />
               <s:element minOccurs="1" maxOccurs="1" name="Puerto" type="s:unsignedInt" />
               <s:element minOccurs="1" maxOccurs="1" name="Offset" type="tns:GearCarrierOffStatus" />
               <s:element minOccurs="1" maxOccurs="1" name="Canalizacion" type="tns:GearChannelSpacings" />
@@ -2157,6 +2159,7 @@
   </wsdl:message>
   <wsdl:message name="GetPoolNMElementsHttpPostIn">
     <wsdl:part name="id_sistema" type="s:string" />
+    <wsdl:part name="tipo" type="s:string" />
   </wsdl:message>
   <wsdl:message name="GetPoolNMElementsHttpPostOut">
     <wsdl:part name="Body" element="tns:ArrayOfNode" />
@@ -2273,7 +2276,7 @@
       <wsdl:output message="tns:GetPoolHfElementSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetPoolNMElements">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Configuración relativa a los equipos N+M</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Configuración relativa a los equipos N+M (tipo=0) o Audio EE (tipo=1).</wsdl:documentation>
       <wsdl:input message="tns:GetPoolNMElementsSoapIn" />
       <wsdl:output message="tns:GetPoolNMElementsSoapOut" />
     </wsdl:operation>
@@ -2385,7 +2388,7 @@
       <wsdl:output message="tns:GetPoolHfElementHttpPostOut" />
     </wsdl:operation>
     <wsdl:operation name="GetPoolNMElements">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Configuración relativa a los equipos N+M</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Configuración relativa a los equipos N+M (tipo=0) o Audio EE (tipo=1).</wsdl:documentation>
       <wsdl:input message="tns:GetPoolNMElementsHttpPostIn" />
       <wsdl:output message="tns:GetPoolNMElementsHttpPostOut" />
     </wsdl:operation>
