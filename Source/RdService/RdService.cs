@@ -364,9 +364,9 @@ namespace U5ki.RdService
                                             local_rsp.Add(data);
                                         }
                                     }
-                                local_rsp = local_rsp
-                                    .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
-                                    .ThenBy(o => ((GlobalTypes.radioSessionData)o).frec).ToList();
+                                //local_rsp = local_rsp
+                                //    .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
+                                //    .ThenBy(o => ((GlobalTypes.radioSessionData)o).frec).ToList();
                                 }
                                 local_rsp = local_rsp
                                     .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)

@@ -71,8 +71,19 @@ namespace RadioServiceTest
             PrepareTest();
 
 
-            Task.Delay(TimeSpan.FromSeconds(60)).Wait();
+            Task.Delay(TimeSpan.FromSeconds(20)).Wait();
 
+            List<object> sessions = new List<object>();
+            if (service?.DataGet(ServiceCommands.RdSessions, ref sessions) == true)
+            {
+            }
+
+            if (service?.DataGet(ServiceCommands.RdUnoMasUnoData, ref sessions) == true)
+            {
+
+            }
+
+            Task.Delay(TimeSpan.FromSeconds(20)).Wait();
             DisposeTest();
         }
     }
