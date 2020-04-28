@@ -73,14 +73,15 @@ namespace RadioServiceTest
 
             Task.Delay(TimeSpan.FromSeconds(20)).Wait();
 
-            List<object> sessions = new List<object>();
-            if (service?.DataGet(ServiceCommands.RdSessions, ref sessions) == true)
+            List<object> dataList = new List<object>();
+            if (service?.DataGet(ServiceCommands.RdSessions, ref dataList) == true)
             {
+                File.WriteAllText("sessions.json", JsonConvert.SerializeObject(dataList, Formatting.Indented));
             }
 
-            if (service?.DataGet(ServiceCommands.RdUnoMasUnoData, ref sessions) == true)
+            if (service?.DataGet(ServiceCommands.RdUnoMasUnoData, ref dataList) == true)
             {
-
+                File.WriteAllText("unomasuno.json", JsonConvert.SerializeObject(dataList, Formatting.Indented));
             }
 
             Task.Delay(TimeSpan.FromSeconds(20)).Wait();
