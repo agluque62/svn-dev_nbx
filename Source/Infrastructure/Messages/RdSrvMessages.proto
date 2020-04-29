@@ -68,12 +68,13 @@ message MNDisabledNodes
 }
 
 // 20200305. Estado de Seleccion de Transmisores en NBX
-message MSTransmiterInfo
+message MSNodeInfo
 {
 	required string site=1;
-	required string txres=2;
+	required string res=2;
 }
-message MSTransmittersStatus
+message MSStatus
 {
-	repeated MSTransmiterInfo nodes_info=1;
+	repeated MSNodeInfo main_nodes=1;
+	repeated MSNodeInfo disabled_nodes=2;
 }
