@@ -271,20 +271,23 @@ namespace U5ki.RdService
 
                     /** 20200224. Mando 1+1 */
                     case ServiceCommands.RdUnoMasUnoActivate:
+                    case ServiceCommands.RdUnoMasUnoEnable:
+                    case ServiceCommands.RdUnoMasUnoDisable:
                         if (_Master == false)
                         {
                             error = "Servicio en Modo Slave";
                         }
                         else
                         {
-                            SetData(ServiceCommands.RdUnoMasUnoActivate, par, (success, internal_error) =>
-                             {
-                                 retorno = success;
-                                 error = internal_error;
-                             });
+                            SetData(cmd, par, (success, internal_error) =>
+                            {
+                                retorno = success;
+                                error = internal_error;
+                            });
                         }
                         err = error;
                         return retorno;
+
                     /** 20160928. AGL. Estado del Gestror para la Pagina WEB del NODEBOX. */
                     case ServiceCommands.RdMNStatus:
                         return MNStatus(par, ref err, resp);
@@ -430,7 +433,7 @@ namespace U5ki.RdService
                                     id = r.ID,
                                     site = r.Site,
                                     tx = r.isTx ? 1 : 0,
-                                    ab = 0,
+                                    ab = MSTxPersistence.IsNodeDisabled(r) ? 0 : 1,
                                     sel = r.GetContainerPair().ActiveResource.Uri1 == r.Uri1 ? 1 : 0,
                                     ses = r.Connected ? 1 : 0,
                                     uri = r.Uri1
@@ -620,9 +623,19 @@ namespace U5ki.RdService
                             }
                             break;
                         case ServiceCommands.RdUnoMasUnoActivate:
+                        case ServiceCommands.RdUnoMasUnoEnable:
+                        case ServiceCommands.RdUnoMasUnoDisable:
                             if (data is string)
                             {
-                                retorno = ActivateResource(data as string, ref err);
+                                if (cmd == ServiceCommands.RdUnoMasUnoActivate)
+                                {                                
+                                    retorno = ActivateResource(data as string, ref err);
+                                }
+                                else
+                                {
+                                    err = cmd == ServiceCommands.RdUnoMasUnoEnable ? "enable" : "disable";
+                                    retorno = EnableDisableResource(data as string, ref err);
+                                }
                             }
                             else
                             {
@@ -862,6 +875,30 @@ namespace U5ki.RdService
                 }
 
             LogInfo<RdService>("Equipo " + par + " no encontrado.", 
+                U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_ERROR, "RdService",
+                CTranslate.translateResource("Equipo " + par + " no encontrado."));
+            err = "Equipo " + par + " no puede ser conmutado.";
+            return false;
+        }
+        /// <summary>
+        /// 20200430. Para Activar, Desactivar Recursos (en principio en 1+1)
+        /// </summary>
+        /// <param name="par"></param>
+        /// <param name="err"></param>
+        /// <param name="resp"></param>
+        /// <returns></returns>
+        private bool EnableDisableResource(string par, ref string err, List<string> resp = null)
+        {
+            bool enable = err == "enable";
+            foreach (RdFrecuency freq in Frecuencies.Values)
+                if (freq.EnableDisableResource(par, enable))
+                {
+                    LogInfo<RdService>($"Equipo {par} Habilitado manualmente a {enable}",
+                        U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO, "RdService",
+                        CTranslate.translateResource($"Equipo {par} Habilitado manualmente a {enable}"));
+                    return true;
+                }
+            LogInfo<RdService>("Equipo " + par + " no encontrado.",
                 U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_ERROR, "RdService",
                 CTranslate.translateResource("Equipo " + par + " no encontrado."));
             err = "Equipo " + par + " no encontrado.";

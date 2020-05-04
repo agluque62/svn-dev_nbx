@@ -357,6 +357,8 @@ namespace U5ki.RdService
             {
                 foreach(RdResourcePair newPair in newPairs)
                 {
+                    newPair.SetActiveStandbyFromPersistence();
+
                     KeyValuePair <string,IRdResource> found = rdRsPairToRemove.FirstOrDefault(x => x.Value.ID.Equals(newPair.ID));
                     string rsKey = newPair.Uri1.ToUpper() + (int)newPair.Type;
                     IRdResource res;
@@ -1168,6 +1170,35 @@ namespace U5ki.RdService
                 if (res.GetType().Equals(typeof(RdResourcePair)))
                     if (res.ActivateResource(IdResource))
                         return true;
+            return false;
+        }
+        /// <summary>
+        /// 20200430. Para Activar, Desactivar Recursos (en principio en 1+1)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="enable"></param>
+        /// <returns></returns>
+        public bool EnableDisableResource(string id, bool enable)
+        {
+            foreach (IRdResource res in _RdRs.Values)
+            {
+                if (res.GetType().Equals(typeof(RdResourcePair)))
+                {
+                    var ids = res.ID.Split('#').Where(sid => sid == id).ToList();
+                    if (ids.Count > 0)
+                    {
+                        var rp = res as RdResourcePair;
+                        var sres = rp.ActiveResource.ID == id ? rp.ActiveResource : rp.StandbyResource;
+                        MSTxPersistence.DisableNode(sres, !enable);
+                        return true;
+                    }
+                }
+                else if (res.ID == id)
+                {
+                    MSTxPersistence.DisableNode(res, !enable);
+                    return true;
+                }
+            }
             return false;
         }
         /// <summary>

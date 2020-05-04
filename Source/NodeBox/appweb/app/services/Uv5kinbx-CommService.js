@@ -45,8 +45,11 @@ angular
             , radio_11_get: function () {
                 return remoteGet(rest_url_radio_11);
             }
-            , radio_11_select: function (data) {
-                return remotePost(rest_url_radio_11, data);
+            , radio_11_select: function (id) {
+                return remotePost(rest_url_radio_11, { id, command: "select" });
+            }
+            , radio_11_enable: function (id, enable) {
+                return remotePost(rest_url_radio_11, { id, command: enable });
             }
             , radio_gestormn_enable: function (data) {
                 return remotePost(rest_url_radio_gestormn_habilita, data);

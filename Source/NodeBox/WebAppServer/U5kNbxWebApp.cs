@@ -535,15 +535,29 @@ namespace U5ki.NodeBox.WebServer
             }
             else if (context.Request.HttpMethod == "POST")
             {
-                /** Payload { id: "", ... }*/
+                /** Payload { id: "", command: "" } */
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     var data = JsonConvert.DeserializeObject(reader.ReadToEnd()) as JObject;
-                    if (JObjectPropertyExist(data, "id"))
+                    if (JObjectPropertyExist(data, "id") && JObjectPropertyExist(data, "command"))
                     {
                         var idEquipo = (string)data["id"];
+                        var command = (string)data["command"];
                         string error = default;
-                        if (RadioService?.Commander(ServiceCommands.RdUnoMasUnoActivate, idEquipo, ref error) == true)
+                        bool? result = false;
+                        switch (command)
+                        {
+                            case "select":
+                                result = RadioService?.Commander(ServiceCommands.RdUnoMasUnoActivate, idEquipo, ref error);
+                                break;
+                            case "enable":
+                                result = RadioService?.Commander(ServiceCommands.RdUnoMasUnoEnable, idEquipo, ref error);
+                                break;
+                            case "disable":
+                                result = RadioService?.Commander(ServiceCommands.RdUnoMasUnoDisable, idEquipo, ref error);
+                                break;
+                        }
+                        if (result == true)
                         {
                             context.Response.StatusCode = 200;
                             sb.Append(JsonConvert.SerializeObject(new { res = "Operacion Realizada..." }));

@@ -563,11 +563,15 @@ angular.module("Uv5kinbx")
             return res;
         }
         ctrl.rdUnoMasUnoId = function (res) {
-            var retorno = "(" + (res.ab == 1 ? "A" : "B") + ") " + res.id;
+            var retorno =/* "(" + (res.ab == 1 ? "A" : "B") + ") " + */res.id;
             return StringCut(retorno, 24);
         };
         ctrl.rdUnoMasUnoIdClass = function (res) {
-            var retorno = res.ses == 0 ? "bg-danger" : "";
+            var retorno = res.ses == 0 ? "bg-danger" : "bg-success";
+            return retorno;
+        };
+        ctrl.rdUnoMasUnoRxIdClass = function (res) {
+            var retorno = res.ab == 0 ? "bg-secondary" : res.ses == 0 ? "bg-danger" : "bg-success";
             return retorno;
         };
         ctrl.rdUnoMasUnoTxDisabled = function (res) {
@@ -578,12 +582,35 @@ angular.module("Uv5kinbx")
                 var strQuestion = equ.id + $lserv.translate(" ¿Desea Seleccionar el equipo como Principal?");
                 alertify.confirm(strQuestion,
                     function () {
-                        $serv.radio_11_select(equ).then(function (response) {
+                        $serv.radio_11_select(equ.id).then(function (response) {
                             console.log("RD1+1 Post Response => ", response.data);
                             alertify.success($lserv.translate("Operacion Ejecutada."));
                         }, function (response) {
                                 console.log("RD1+1 Post Error => ", response);
-                                alertify.error($lserv.translate("Error: " + response.data));
+                                alertify.error($lserv.translate(response.data.res));
+                        });
+                    },
+                    function () {
+                        alertify.message($lserv.translate("Operacion Cancelada"));
+                    });
+            } else {
+                // Meter un Mensaje.
+            }
+        };
+        ctrl.rdUnoMasUnoEnable = function (equ) {
+            if ($lserv.RdModuleExist('1+1')) {
+                var enable = equ.ab == 0 ? "enable" : "disable";
+                var strOperation = enable == "enable" ? $lserv.translate(" ¿Desea Habilitar el equipo?") :
+                    $lserv.translate(" ¿Desea Deshabilitar el equipo?");
+                var strQuestion = equ.id + strOperation;
+                alertify.confirm(strQuestion,
+                    function () {
+                        $serv.radio_11_enable(equ.id, enable).then(function (response) {
+                            console.log("RD1+1 Post Response => ", response.data);
+                            alertify.success($lserv.translate("Operacion Ejecutada."));
+                        }, function (response) {
+                            console.log("RD1+1 Post Error => ", response);
+                            alertify.error($lserv.translate(response.data.res));
                         });
                     },
                     function () {

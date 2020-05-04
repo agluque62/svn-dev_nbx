@@ -481,9 +481,14 @@
                                                             <label class="btn btn-sm" ng-class="ctrl.rdUnoMasUnoIdClass(tx)" style="font-size:90%; padding-right:5px; margin-left:10px;">{{ctrl.rdUnoMasUnoId(tx)}}</label>
                                                         </div>
                                                         <div class="col-md-5" style="padding-left:5px; padding-right:5px;">
-                                                            <button class="btn btn-sm btn-default" style="font-size:90%; padding-right:5px;" 
+                                                            <!--<button class="btn btn-sm btn-info" style="font-size:90%; padding-right:5px;" 
                                                                     ng-click="ctrl.rdUnoMasUnoSelectMain(tx)" 
                                                                     ng-disabled="ctrl.rdUnoMasUnoTxDisabled(tx)"
+                                                                    ng-show="{{tx.sel==0}}">
+                                                                {{"Standby=>Sel"}}
+                                                            </button>-->
+                                                            <button class="btn btn-sm btn-info" style="font-size:90%; padding-right:5px;" 
+                                                                    ng-click="ctrl.rdUnoMasUnoSelectMain(tx)" 
                                                                     ng-show="{{tx.sel==0}}">
                                                                 {{"Standby=>Sel"}}
                                                             </button>
@@ -494,18 +499,18 @@
                                             </ul>
                                         </div>
                                         <div class="col-md-5">
+                                            <!--<label>{{site.rxs}}</label>-->
                                             <ul class="list-group">
                                                 <li class="list-group-item" ng-repeat="rx in site.rxs" style="padding:5px;">
                                                     <div class="row">
                                                         <div class="col-md-7" style="padding-left:5px; padding-right:5px; margin-left:0;">
-                                                            <label class="btn btn-sm" ng-class="ctrl.rdUnoMasUnoIdClass(rx)" style="font-size:90%; padding-right:5px; margin-left:10px;">{{ctrl.rdUnoMasUnoId(rx)}}</label>
+                                                            <label class="btn btn-sm" ng-class="ctrl.rdUnoMasUnoRxIdClass(rx)" style="font-size:90%; padding-right:5px; margin-left:10px;">{{ctrl.rdUnoMasUnoId(rx)}}</label>
                                                         </div>
                                                         <div class="col-md-5" style="padding-left:5px; padding-right:5px;">
-                                                            <!--<button class="btn btn-sm btn-default" style="font-size:90%; padding-right:5px;" ng-click="" ng-show="{{rx.sel==0}}">
-                                                            {{"Standby=>Sel"}}
-                                                        </button>-->
-                                                            <label class="btn btn-sm text-success" style="font-size:90%; padding-right:5px;" ng-show="{{rx.sel==0}}"><strong>Standby</strong></label>
-                                                            <label class="btn btn-sm text-success" style="font-size:90%; padding-right:5px;" ng-show="{{rx.sel==1}}"><strong>Main</strong></label>
+                                                            <button class="btn btn-sm btn-info" style="font-size:90%; padding-right:5px;" 
+                                                                    ng-click="ctrl.rdUnoMasUnoEnable(rx)">
+                                                                {{rx.ab==0 ? "Habilitar" : "Deshabilitar"}}
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </li>

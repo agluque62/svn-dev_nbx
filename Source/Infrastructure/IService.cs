@@ -37,6 +37,8 @@ namespace U5ki.Infrastructure
         RdMNValidationTick,         //  Configura el valor del tick de validacion del pool.
         RdUnoMasUnoData,            // 20200224. AGL. Datos de Servicios Radio en Uno mas Uno.
         RdUnoMasUnoActivate,
+        RdUnoMasUnoEnable,
+        RdUnoMasUnoDisable,
 
         TifxDataGet,
 

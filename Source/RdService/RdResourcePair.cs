@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
 using U5ki.Infrastructure;
 using U5ki.RdService.Gears;
 
@@ -32,6 +31,8 @@ namespace U5ki.RdService
             _ID = id;
         }
 
+        private System.Timers.Timer checkPairWhenNbxStarts_Timer = null;
+
         public RdResourcePair(RdResource ActiveResource, RdResource StandbyResource, List<Node> nodes)
         {
             //List<string> ids = new List<string>();
@@ -40,15 +41,35 @@ namespace U5ki.RdService
             //ids.Sort();
             //foreach (string id in ids)
             //    _ID = String.Concat(id);
+
+            checkPairWhenNbxStarts_Timer = null;
+
             _ActiveResource = ActiveResource;
             StandbyResource.TxMute = true;
             _StandbyResource = StandbyResource;
             //NodeSet(NodeParse(node));
+            _ActiveResource = ActiveResource;
+            MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+        }
+
+        public void SetActiveStandbyFromPersistence()
+        {
+            if (MSTxPersistence.IsMain(_ActiveResource) == false)
+            {
+                RdResource current_ActiveResource = _ActiveResource;
+                RdResource current_StandbyResource = _StandbyResource;
+
+                current_StandbyResource.TxMute = false;
+                _ActiveResource = current_StandbyResource;
+                current_ActiveResource.TxMute = true;
+                _StandbyResource = current_ActiveResource;
+            }            
         }
 
         public void SetActive(RdResource activeResource)
         {
             _ActiveResource = activeResource;
+            ActiveResource.TxMute = false;
         }
         public void SetStandby(RdResource standbyResource)
         {
@@ -58,7 +79,7 @@ namespace U5ki.RdService
         public bool Isconfigured()
         {
             return (_ActiveResource != null && _StandbyResource != null);
-        }
+        }        
 
         #region IRdResource Members
         public RdRsType Type
@@ -207,29 +228,67 @@ namespace U5ki.RdService
             list.Add(_StandbyResource);
             return list;
         }
+
+        private void OncheckPairWhenNbxStarts_Timer_Event(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            RdService.evQueueRd.Enqueue("RdResourcePair:OncheckPairWhenNbxStarts_Timer_Event", delegate ()
+            {
+                if (!_ActiveResource.Connected && _StandbyResource.Connected)
+                {
+                    Switch();
+                }                
+            });
+        }
+
         public bool HandleChangeInCallState(int sipCallId, CORESIP_CallStateInfo stateInfo)
         {
             RdResource resChange;
             if (_ActiveResource.SipCallId == sipCallId)
             {
-                resChange = _ActiveResource;
-                if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_DISCONNECTED)
-                {
-                    if (_StandbyResource.Connected)
-                        Switch();
-                }
+                resChange = _ActiveResource;                
             }
             else if (_StandbyResource.SipCallId == sipCallId)
             {
                 resChange = _StandbyResource;
-                if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED)
-                {
-                    if (_ActiveResource.Connected == false)
-                        Switch();
-                }
             }
             else 
                 return false;
+
+            if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED && checkPairWhenNbxStarts_Timer == null)
+            {
+                //The first session of the pair is established after Nodebox starts. Then checkPairWhenNbxStarts_Timer is started
+                //When it elapsed, then if only one of the session of the pair is established, then this is the main
+                checkPairWhenNbxStarts_Timer = new System.Timers.Timer();
+                checkPairWhenNbxStarts_Timer.Interval = 50;
+                checkPairWhenNbxStarts_Timer.AutoReset = false;
+                checkPairWhenNbxStarts_Timer.Elapsed += this.OncheckPairWhenNbxStarts_Timer_Event;
+                checkPairWhenNbxStarts_Timer.Enabled = true;
+            }
+
+            if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED)
+            {
+                if ((_ActiveResource.SipCallId == sipCallId && _StandbyResource.Connected) ||
+                    (_StandbyResource.SipCallId == sipCallId && _ActiveResource.Connected))
+                {
+                    if (checkPairWhenNbxStarts_Timer != null)
+                        checkPairWhenNbxStarts_Timer.Stop();
+
+                    //The pair is connected
+                    MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+                }
+            }
+            else if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_DISCONNECTED)
+            {
+                if (checkPairWhenNbxStarts_Timer != null && checkPairWhenNbxStarts_Timer.Enabled == false)
+                {
+                    if (resChange == _ActiveResource)
+                    {
+                        if (_StandbyResource.Connected)
+                            Switch();
+                    }
+                }
+            }
+
             resChange.HandleChangeInCallState(sipCallId, stateInfo);
             return true;
         }
@@ -242,15 +301,19 @@ namespace U5ki.RdService
         {
             if (_StandbyResource.ID == idResource)
             {
-                if (_StandbyResource.Connected) 
+#if !DEBUG
+                if (_StandbyResource.Connected)
+#endif
+                {
                     Switch();
-                return true;
+                    return true;
+                }
             }
             return false;
         }
 
-        #endregion
-        #region NodeManager
+#endregion
+#region NodeManager
         //public override string Name { get; }
         ///// <summary>
         ///// Recoge el Elapsed del timer del BaseManager, y lo utiliza para comprobar los nodos. 
@@ -278,10 +341,10 @@ namespace U5ki.RdService
         //{
         //    throw new NotImplementedException();
         //}
-        #endregion
+#endregion
         /// <summary>
         /// Método para conmutar activo y standby mediante tx mute
-        /// </summary>
+        /// </summary> 
         private void Switch()
         {
             RdResource temp = _ActiveResource;
@@ -289,6 +352,8 @@ namespace U5ki.RdService
             _ActiveResource.TxMute = temp.TxMute;
             temp.TxMute = true;
             _StandbyResource = temp;
+
+            MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
         }
     }
 }

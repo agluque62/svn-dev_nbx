@@ -139,7 +139,7 @@ namespace U5ki.RdService
                 .SelectMany(l => l.ListaRecursos)
                 .GroupBy(r => r.IdRecurso)
                 .Select(g => g.First())
-                .Where(r => r.Tipo == 1 || r.Tipo == 2)
+//                .Where(r => r.Tipo == 1 || r.Tipo == 2)
                 .ToList();
 
             /** Borra de las listas aquellos que han sido eliminadas de configuracion */
