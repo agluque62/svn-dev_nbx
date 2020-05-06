@@ -236,9 +236,15 @@ namespace U5ki.RdService
                 if (!_ActiveResource.Connected && _StandbyResource.Connected)
                 {
                     Switch();
-                }                
+                }
+                else
+                {
+                    MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+                }
             });
         }
+
+        private const double CHECK_PAIR_TIMEOUT = 250;
 
         public bool HandleChangeInCallState(int sipCallId, CORESIP_CallStateInfo stateInfo)
         {
@@ -259,7 +265,7 @@ namespace U5ki.RdService
                 //The first session of the pair is established after Nodebox starts. Then checkPairWhenNbxStarts_Timer is started
                 //When it elapsed, then if only one of the session of the pair is established, then this is the main
                 checkPairWhenNbxStarts_Timer = new System.Timers.Timer();
-                checkPairWhenNbxStarts_Timer.Interval = 50;
+                checkPairWhenNbxStarts_Timer.Interval = CHECK_PAIR_TIMEOUT;
                 checkPairWhenNbxStarts_Timer.AutoReset = false;
                 checkPairWhenNbxStarts_Timer.Elapsed += this.OncheckPairWhenNbxStarts_Timer_Event;
                 checkPairWhenNbxStarts_Timer.Enabled = true;
@@ -281,6 +287,7 @@ namespace U5ki.RdService
             {
                 if (checkPairWhenNbxStarts_Timer != null && checkPairWhenNbxStarts_Timer.Enabled == false)
                 {
+                    //The checkPairWhenNbxStarts_Timer finished
                     if (resChange == _ActiveResource)
                     {
                         if (_StandbyResource.Connected)
@@ -302,7 +309,7 @@ namespace U5ki.RdService
             if (_StandbyResource.ID == idResource)
             {
 #if !DEBUG
-                if (_StandbyResource.Connected)
+                if (_StandbyResource.Connected) 
 #endif
                 {
                     Switch();
@@ -312,8 +319,8 @@ namespace U5ki.RdService
             return false;
         }
 
-#endregion
-#region NodeManager
+        #endregion
+        #region NodeManager
         //public override string Name { get; }
         ///// <summary>
         ///// Recoge el Elapsed del timer del BaseManager, y lo utiliza para comprobar los nodos. 
@@ -341,7 +348,7 @@ namespace U5ki.RdService
         //{
         //    throw new NotImplementedException();
         //}
-#endregion
+        #endregion
         /// <summary>
         /// Método para conmutar activo y standby mediante tx mute
         /// </summary> 
