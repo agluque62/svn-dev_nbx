@@ -13,6 +13,7 @@ using U5ki.Infrastructure;
 using Utilities;
 using System.Runtime.CompilerServices;
 using Lextm.SharpSnmpLib.Pipeline;
+using System.Runtime.Remoting.Channels;
 
 namespace U5ki.RdService
 {
@@ -37,6 +38,12 @@ namespace U5ki.RdService
 
             RdRegRef?.SubscribeToTopic<MSStatus>(Identifiers.RdTopic);
             RdRegRef.ResourceChanged += OnResourceChanged;
+            RdRegRef.MasterStatusChanged += (wsender, master_status) =>
+            {
+                Log.Trace($"MasterStatusChanged => {master_status}");
+                Master = master_status;
+            };
+
             Log.Trace("Modulo Incializado.");
         }
         /// <summary>
@@ -49,6 +56,9 @@ namespace U5ki.RdService
         static public bool SelectMain(IRdResource main, IRdResource standby)
         {
             Log.Trace($"Selecting Main {main.ID}. Standby {standby.ID}");
+            
+            if (Master == false) return false;
+
             var res = DataAccess(() =>
             {
                 /** Borro los dos si estan */
@@ -78,6 +88,9 @@ namespace U5ki.RdService
         static public bool DisableNode(IRdResource resource, bool disable)
         {
             Log.Trace($"Disabling node {resource.ID} ==> {disable}");
+
+            if (Master == false) return false;
+            
             var res = DataAccess(() =>
             {
                 /** Lo borro de la lista */
@@ -156,12 +169,15 @@ namespace U5ki.RdService
                 try
                 {
                     Log.Trace($"OnResourceChanged Cd40Cfg Event Received.");
-                    MemoryStream ms = new MemoryStream(Tools.Decompress(e.Content));
-                    var cfg = Serializer.Deserialize<Cd40Cfg>(ms);
-                    DataAccess(() =>
+                    if (Master == true)
                     {
-                        ProcessNewConfig(cfg);
-                    });
+                        MemoryStream ms = new MemoryStream(Tools.Decompress(e.Content));
+                        var cfg = Serializer.Deserialize<Cd40Cfg>(ms);
+                        DataAccess(() =>
+                        {
+                            ProcessNewConfig(cfg);
+                        });
+                    }
                 }
                 catch (Exception x)
                 {
@@ -230,6 +246,7 @@ namespace U5ki.RdService
         static Registry RdRegRef = null;
         static Semaphore semaphore = new Semaphore(1, 1);
         static MSStatus Status = new MSStatus();
+        static bool Master = false;
 
         #region Solo para TEST
         static public void GenerateResourceChange<T>(T eventdata)
