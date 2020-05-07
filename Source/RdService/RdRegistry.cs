@@ -435,10 +435,11 @@ namespace U5ki.RdService
 #if _PUBLISH_MNDIS_
             _Registry.SubscribeToTopic<MNDisabledNodes>(Identifiers.RdTopic);
 #endif
-            //_Registry.Join(Identifiers.RdMasterTopic, Identifiers.RdTopic);
-            _Registry.Join(Identifiers.RdTopic, Identifiers.CfgTopic, Identifiers.TopTopic, Identifiers.RdMasterTopic);
             /** 20200310. Inicializa el control de la Persistencia */
             MSTxPersistence.Init(_Registry);
+
+            //_Registry.Join(Identifiers.RdMasterTopic, Identifiers.RdTopic);
+            _Registry.Join(Identifiers.RdTopic, Identifiers.CfgTopic, Identifiers.TopTopic, Identifiers.RdMasterTopic);
         }
 
         #endregion

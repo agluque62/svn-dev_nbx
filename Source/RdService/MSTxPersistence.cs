@@ -36,14 +36,28 @@ namespace U5ki.RdService
         {
             RdRegRef = rdReg;
 
-            RdRegRef?.SubscribeToTopic<MSStatus>(Identifiers.RdTopic);
             RdRegRef.ResourceChanged += OnResourceChanged;
             RdRegRef.MasterStatusChanged += (wsender, master_status) =>
             {
                 Log.Trace($"MasterStatusChanged => {master_status}");
                 Master = master_status;
+                if (Master == true)
+                {
+                    try
+                    {
+                        Status = ServicesHelpers.DeserializeObject<MSStatus>(File.ReadAllText(FileName));
+                        Log.Trace($"OnMasterStatusChanged File loaded. {Status.ListToString()}");
+                    }
+                    catch (Exception x)
+                    {
+                        Status.main_nodes.Clear();
+                        Status.disabled_nodes.Clear();
+                        Log.Error("OnMasterStatusChanged Loading File Exception", x);
+                    }
+                }
             };
 
+            RdRegRef?.SubscribeToTopic<MSStatus>(Identifiers.RdTopic);
             Log.Trace("Modulo Incializado.");
         }
         /// <summary>
@@ -168,7 +182,7 @@ namespace U5ki.RdService
             {
                 try
                 {
-                    Log.Trace($"OnResourceChanged Cd40Cfg Event Received.");
+                    Log.Trace($"OnResourceChanged Cd40Cfg Event Received. Master {Master}");
                     if (Master == true)
                     {
                         MemoryStream ms = new MemoryStream(Tools.Decompress(e.Content));
@@ -188,17 +202,17 @@ namespace U5ki.RdService
             {
                 try
                 {
-                    Log.Trace($"OnResourceChanged MSStatus Event Received.");
+                    Log.Trace($"OnResourceChanged MSStatus Event Received.  Master {Master}");
                     MemoryStream ms = new MemoryStream(e.Content);
                     MSStatus MSNodesInfo = Serializer.Deserialize<MSStatus>(ms);
-                    Log.Trace($"OnResourceChanged Event Received. {MSNodesInfo.ListToString()}");
+                    Log.Trace($"OnResourceChanged MSStatus Event Received. Master {Master}. Info = { MSNodesInfo.ListToString()}");
                     DataAccess(() =>
                     {
                         try
                         {
                             Status = MSNodesInfo;
                             File.WriteAllText(FileName, ServicesHelpers.SerializeObject(MSNodesInfo/*.nodes_info*/));
-                            Log.Trace($"OnResourceChanged Event Received. Saved to {FileName}");
+                            Log.Trace($"OnResourceChanged MSStatus Event Received. Master {Master}. Saved to {FileName}");
                         }
                         catch (Exception x)
                         {
@@ -217,9 +231,9 @@ namespace U5ki.RdService
             /** Publico los cambios */
             try
             {
+                File.WriteAllText(FileName, ServicesHelpers.SerializeObject(Status/*.nodes_info*/));
                 RdRegRef?.SetValue<MSStatus>(Identifiers.RdTopic, "MSStatus", Status);
                 RdRegRef?.Publish();
-                File.WriteAllText(FileName, ServicesHelpers.SerializeObject(Status/*.nodes_info*/));
                 Log.Trace($"Data Saved and Published. {Status.ListToString()}");
             }
             catch (Exception x)
