@@ -148,7 +148,18 @@ namespace U5ki.RdService
         }
 
         public bool Connected
-        { get { return _ActiveResource.Connected; } }
+        { get 
+            {
+                if (this.isTx)
+                {
+                    return _ActiveResource.Connected;
+                }
+                else 
+                {
+                    return (_ActiveResource.Connected || _StandbyResource.Connected);
+                }
+            } 
+        }
         public bool OldSelected
         {
             get { return _ActiveResource.OldSelected; }
@@ -177,16 +188,25 @@ namespace U5ki.RdService
         }
         #endregion
         #region IRdResource methods
+
+        /// <summary>
+        /// Retorna true si se ha conectado algun recurso
+        /// </summary>
         public bool Connect()
         {
-            bool res = false;
-            if (_ActiveResource.Connected == false)
-                res |= _ActiveResource.Connect();
-            if (_StandbyResource.Connected == false)
+            bool ret = false;
+            if (_ActiveResource.Connected == false && _ActiveResource.Connecting == false && MSTxPersistence.IsNodeDisabled(_ActiveResource) == false)
+            {
+                _ActiveResource.Connect();
+                ret = true;
+            }
+            if (_StandbyResource.Connected == false && _StandbyResource.Connecting == false && MSTxPersistence.IsNodeDisabled(_StandbyResource) == false)
+            {
                 _StandbyResource.Connect();
-            return true;
+                ret = true;
+            }
+            return ret;
         }
-
         public void PttOff()
         {
             _ActiveResource.PttOff();
@@ -276,11 +296,15 @@ namespace U5ki.RdService
                 if ((_ActiveResource.SipCallId == sipCallId && _StandbyResource.Connected) ||
                     (_StandbyResource.SipCallId == sipCallId && _ActiveResource.Connected))
                 {
-                    if (checkPairWhenNbxStarts_Timer != null)
+                    if (checkPairWhenNbxStarts_Timer != null && checkPairWhenNbxStarts_Timer.Enabled)
+                    {
                         checkPairWhenNbxStarts_Timer.Stop();
-
-                    //The pair is connected
-                    MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+                        MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+                    }
+                    else if (checkPairWhenNbxStarts_Timer == null)
+                    {
+                        MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+                    }
                 }
             }
             else if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_DISCONNECTED)
@@ -361,6 +385,26 @@ namespace U5ki.RdService
             _StandbyResource = temp;
 
             MSTxPersistence.SelectMain(_ActiveResource, _StandbyResource);
+        }
+
+        /// <summary>
+        /// Metodo que desconecta un recurso de recepcion que ha sido desactivado
+        /// Retorna tru si se ha desactivado alguno
+        /// </summary>
+        public bool Check_1mas1_Resources_Disabled()
+        {
+            bool ret = false;
+            if (_ActiveResource.Connected == true && _ActiveResource.Connecting == false && MSTxPersistence.IsNodeDisabled(_ActiveResource) == true)
+            {
+                _ActiveResource.Dispose();
+                ret = true;
+            }
+            if (_StandbyResource.Connected == true && _StandbyResource.Connecting == false && MSTxPersistence.IsNodeDisabled(_StandbyResource) == true)
+            {
+                _StandbyResource.Dispose();
+                ret = true;
+            }
+            return ret;
         }
     }
 }

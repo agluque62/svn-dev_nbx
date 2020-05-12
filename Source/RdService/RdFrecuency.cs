@@ -379,7 +379,7 @@ namespace U5ki.RdService
                     }
                     else
                     {
-                        res = newPair;
+                        res = newPair;                        
                         res.Connect();
                     }
                     _RdRs[rsKey] = res;
@@ -747,6 +747,25 @@ namespace U5ki.RdService
             return _TxIds.FindIndex(delegate (string tx) { return (tx == host); }) < 0 ? false : true;
         }
 
+        public void Check_1mas1_Resources_Disabled()
+        {
+            foreach (IRdResource rdRs in _RdRs.Values)
+            {
+                try
+                {
+                    if (rdRs is RdResourcePair)
+                    {
+                        RdResourcePair rdRsPair = rdRs as RdResourcePair;
+                        rdRsPair.Check_1mas1_Resources_Disabled();                        
+                    }                    
+                }
+                catch (Exception exc)
+                {
+                    throw exc;
+                }
+            }
+        }
+
         public void RetryFailedConnections()
         {
             
@@ -754,12 +773,21 @@ namespace U5ki.RdService
             {
                 try
                 {
-                    foreach (RdResource simpleRes in rdRs.GetListResources())
-                        if ((!simpleRes.ToCheck) && !simpleRes.Connecting)
+                    if (rdRs is RdResourcePair)
+                    {
+                        if (!rdRs.ToCheck)
                         {
-                            simpleRes.Connect();
+                            rdRs.Connect();                            
                         }
-
+                    }
+                    else
+                    {
+                        foreach (RdResource simpleRes in rdRs.GetListResources())
+                            if ((!simpleRes.ToCheck) && !simpleRes.Connecting)
+                            {
+                                simpleRes.Connect();
+                            }
+                    }                   
                 }
                 catch (Exception exc)
                 {

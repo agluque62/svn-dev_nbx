@@ -1403,6 +1403,7 @@ namespace U5ki.RdService
                 {
                     try
                     {
+                        rdFr.Check_1mas1_Resources_Disabled();
                         rdFr.RetryFailedConnections();
                         rdFr.CheckFrequency();
                         //if (rdFr.SanityCheckCalls())
