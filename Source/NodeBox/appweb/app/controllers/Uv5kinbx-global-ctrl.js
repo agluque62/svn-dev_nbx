@@ -12,15 +12,10 @@ angular.module("Uv5kinbx")
 
         getInci();
 
-
         ctrl.user = "agl1";
         ctrl.date = (new Date()).toLocaleDateString();
         ctrl.hora = (new Date()).toLocaleTimeString();
         $location.path("/");
-
-
-        /** */
-        ctrl.appver = app_version;
 
         //** */
         ctrl.decodeHtml = function (html) {
@@ -31,12 +26,14 @@ angular.module("Uv5kinbx")
 
         ctrl.RadioOptionsShow = function () {
             var type = $lserv.globalType();
-            return type === srvtypes.Radio || type === srvtypes.Mixed;
+            var mode = $lserv.GlobalStd().rad.level;
+            return (type === srvtypes.Radio || type === srvtypes.Mixed) && (mode==='Master');
         };
 
         ctrl.PhoneOptionsShow = function () {
             var type = $lserv.globalType();
-            return ctrl.appver >= 1 && (type === srvtypes.Phone || type === srvtypes.Mixed);
+            var mode = $lserv.GlobalStd().pre.level;
+            return (type === srvtypes.Phone || type === srvtypes.Mixed) && (mode==='Master');
         };
 
         // Paginado Incidencias

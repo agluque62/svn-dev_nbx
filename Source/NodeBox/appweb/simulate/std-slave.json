@@ -1,0 +1,46 @@
+{
+	"cfg_activa": "El servicio no esta en modo MASTER",
+	"sw_version": "2.6.0.0",
+	"type": "Mixed",
+	"level": "Slave",
+	"cfg": {
+		"std": "Running",
+		"level": "Slave"
+	},
+	"ifx": {
+		"std": "Running",
+		"level": "Slave"
+	},
+	"pre": {
+		"std": "Running",
+		"level": "Slave"
+	},
+	"pho": {
+		"std": "",
+		"level": ""
+	},
+	"rad": {
+		"std": "Running",
+		"level": "Slave",
+		"modules": [
+			{
+				"id": "M+N",
+				"enable": 0,
+				"std": "",
+				"level": ""
+			},
+			{
+				"id": "HF",
+				"enable": 0,
+				"std": "",
+				"level": ""
+			},
+			{
+				"id": "1+1",
+				"enable": 0,
+				"std": "",
+				"level": ""
+			}
+		]
+	}
+}

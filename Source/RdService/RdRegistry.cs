@@ -110,18 +110,19 @@ namespace U5ki.RdService
 		public static void Publish(string fr, RdSrvFrRs rs)
 		{
 			string frId = fr.ToUpper();
+
             if (!_Master)
                 return;
 
-			if (_DisabledFr.ContainsKey(frId))
+            if (_DisabledFr.ContainsKey(frId))
 			{
-				if (rs != null)
+                if (rs != null)
 				{
-					_DisabledFr[frId] = rs;
+                    _DisabledFr[frId] = rs;
 				}
 				else
 				{
-					_DisabledFr.Remove(frId);
+                    _DisabledFr.Remove(frId);
                     if (_Registry != null)
                     {
                         _Registry.SetValue<RdSrvFrRs>(Identifiers.RdTopic, fr, rs);
@@ -166,7 +167,6 @@ namespace U5ki.RdService
             if (_Registry != null)
             {
                 string frId = fr.ToUpper();
-
                 _Registry.SetValue<RdSrvFrRs>(Identifiers.RdTopic, fr, rs);
                 _Registry.Publish();
 #if DEBUG

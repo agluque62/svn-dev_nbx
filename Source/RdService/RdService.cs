@@ -347,6 +347,8 @@ namespace U5ki.RdService
                                                 fstd = (int)frec.Status,
                                                 // Emplazamiento Seleccionado y QIDX del seleccionado...
                                                 selected_site = frec.SelectedSite,
+                                                selected_resource = frec.SelectedResource,
+                                                selected_BSS_method = frec.SelectedBSSMethod,
                                                 selected_site_qidx = frec.SelectedSiteQidx,
                                                 /** 20180618. Funcion Transmisor seleccionado */
                                                 selected_tx = frec.SelectedTxSiteString,
@@ -361,15 +363,14 @@ namespace U5ki.RdService
                                                 rx_rtp = rdr.new_params.rx_rtp_port,
                                                 rx_qidx = rdr.new_params.rx_qidx,
                                                 /** 20170807. */
-                                                site = rdr.new_params.site
+                                                site = rdr.new_params.site,
+                                                /** 20200522 */
+                                                UnoMasUno = frec.ContainsUnoMasUno,
                                             };
 
                                             local_rsp.Add(data);
                                         }
                                     }
-                                //local_rsp = local_rsp
-                                //    .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
-                                //    .ThenBy(o => ((GlobalTypes.radioSessionData)o).frec).ToList();
                                 }
                                 local_rsp = local_rsp
                                     .OrderBy(o => ((GlobalTypes.radioSessionData)o).std)
@@ -866,11 +867,15 @@ namespace U5ki.RdService
         private bool ActivateResource(string par, ref string err, List<string> resp = null)
         {
             foreach (RdFrecuency freq in Frecuencies.Values)
-                if (freq.ActivateResource(par))
+                if (freq.ActivateResource(par, (res)=>
                 {
-                    LogInfo<RdService>("Equipo " + par + " conmutado manualmente", 
-                        U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO, "RdService",                
-                        CTranslate.translateResource("Equipo " + par + " conmutado manualmente"));
+                    var msg = $"Equipo {par} seleccionado manualmente en grupo 1+1 {res.ID}";
+                    LogInfo<RdService>(msg,
+                        U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO, 
+                        freq.Frecuency,
+                        CTranslate.translateResource(msg));
+                }))
+                {
                     return true;
                 }
 
@@ -891,11 +896,16 @@ namespace U5ki.RdService
         {
             bool enable = err == "enable";
             foreach (RdFrecuency freq in Frecuencies.Values)
-                if (freq.EnableDisableResource(par, enable))
+                if (freq.EnableDisableResource(par, enable, (res)=>
                 {
-                    LogInfo<RdService>($"Equipo {par} Habilitado manualmente a {enable}",
-                        U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO, "RdService",
-                        CTranslate.translateResource($"Equipo {par} Habilitado manualmente a {enable}"));
+                    var ope = enable ? "Habilitado" : "Deshabilitado";
+                    var msg = $"Equipo {par} del grupo 1+1 {res.ID} {ope} Manualmente";
+                    LogInfo<RdService>(msg,
+                        U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO, 
+                        freq.Frecuency,
+                        CTranslate.translateResource(msg));
+                }))
+                {
                     return true;
                 }
             LogInfo<RdService>("Equipo " + par + " no encontrado.",
@@ -1402,9 +1412,9 @@ namespace U5ki.RdService
                 foreach (RdFrecuency rdFr in Frecuencies.Values)
                 {
                     try
-                    {
-                        rdFr.Check_1mas1_Resources_Disabled();
+                    {                        
                         rdFr.RetryFailedConnections();
+                        rdFr.Check_1mas1_Resources_Disabled();
                         rdFr.CheckFrequency();
                         //if (rdFr.SanityCheckCalls())
                         //    rdFr.LimpiaLlamadaDeRecurso();
@@ -2185,7 +2195,7 @@ namespace U5ki.RdService
                             "Recurso: " + rdRes.ID + " KeepAlive Timeout.");
                         break;
                     }
-                }
+                }               
             });
         }
         /// <summary>
@@ -2225,6 +2235,38 @@ namespace U5ki.RdService
             }
             return false;
         }
+
+        private void Clean_sessions_sip_control()
+        {
+            List<string> ses_states_to_remove = new List<string>();
+            //Al encontrar un recurso que no esta en ninguna frecuencia procedemos a limpiar _sessions_sip_control._sessions_states                            
+            foreach (KeyValuePair<string, CORESIP_CallState> ses_states in _sessions_sip_control._sessions_states)
+            {
+                bool found = false;
+                foreach (KeyValuePair<string, RdFrecuency> rdFr in Frecuencies)
+                {
+                    foreach (KeyValuePair<string, IRdResource> res in rdFr.Value.RdRs)
+                    {
+                        if (res.Value.ID == ses_states.Key)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found == true) break;
+                }
+                if (found == false)
+                {
+                    ses_states_to_remove.Add(ses_states.Key);
+                }
+            }
+
+            foreach (string ses_state_key in ses_states_to_remove)
+            {
+                _sessions_sip_control._sessions_states.Remove(ses_state_key);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -2255,6 +2297,7 @@ namespace U5ki.RdService
                         foreach (KeyValuePair<string, RdFrecuency> rdFr in Frecuencies)
                         {
                             /** 20170126. AGL. Identifico el Recurso para poder generar el Historico. */
+
                             IRdResource rdRes;
                             if (rdFr.Value.HandleChangeInCallState(call, stateInfo, out rdRes))
                             {
@@ -2268,24 +2311,34 @@ namespace U5ki.RdService
                                 if (stateInfo.State == CORESIP_CallState.CORESIP_CALL_STATE_DISCONNECTED)
                                 {
                                     /** 20170126. AGL. Control de Eventos de Conexion / Desconexion */
+                                    /** 20200624. AGL. Adaptacion a grupos 1+1 */
                                     if (_sessions_sip_control.Event(rdRes.ID, CORESIP_CallState.CORESIP_CALL_STATE_DISCONNECTED) == true)
                                     {
-                                        LogWarn<RdService>(String.Format("Desconexion SIP. Causa: {0}. Frecuencia {1}, Equipo {2}", stateInfo.LastCode, rdFr.Value.Frecuency, rdRes.ID),
+                                        var msg = rdRes is RdResourcePair ?
+                                        $"Desconexion Sip. Grupo 1+1: {rdRes.ID} Recurso {(rdRes as RdResourcePair).LastRdResourceChanged.ID}. Causa: {stateInfo.LastCode}" :
+                                        $"Desconexion Sip. Recurso: {rdRes.ID}. Causa: {stateInfo.LastCode}";
+                                        LogWarn<RdService>(
+                                            rdFr.Value.Frecuency + " " + msg,
                                             U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_ERROR,
                                             rdFr.Value.Frecuency,
-                                            CTranslate.translateResource("Recurso: " + rdRes.ID +". Desconexion SIP. Causa: "+ stateInfo.LastCode.ToString() + "." ));
+                                            CTranslate.translateResource(msg));
                                     }
                                     /**********************************/
                                 }
                                 else
                                 {
                                     /** 20170126. AGL. Control de Eventos de Conexion / Desconexion */
+                                    /** 20200624. AGL. Adaptacion a grupos 1+1 */
                                     if (_sessions_sip_control.Event(rdRes.ID, CORESIP_CallState.CORESIP_CALL_STATE_CONFIRMED) == true)
                                     {
-                                        LogInfo<RdService>(String.Format("Conexion SIP. Frecuencia {0}, Equipo {1}", rdFr.Value.Frecuency, rdRes.ID),
+                                        var msg = rdRes is RdResourcePair ?
+                                        $"Conexion Sip. Grupo 1+1: {rdRes.ID} Recurso {(rdRes as RdResourcePair).LastRdResourceChanged.ID}" :
+                                        $"Conexion Sip. Recurso: {rdRes.ID}";
+                                        LogInfo<RdService>(
+                                            rdFr.Value.Frecuency + " " + msg,
                                             U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO,
                                             rdFr.Value.Frecuency,
-                                            CTranslate.translateResource("Recurso:"+ rdRes.ID +". Conexion SIP."));
+                                            CTranslate.translateResource(msg));
                                     }
                                     /**********************************/
                                 }
@@ -2297,10 +2350,12 @@ namespace U5ki.RdService
                                 break;
                             }
                         }
-
+                        
                         /** */
                         if (eventZombie == true)
                         {
+                            Clean_sessions_sip_control();
+
                             /** AGL. */
                             LogDebug<RdService>(String.Format("OnCallState: Recibido Evento de Sesion ZOMBI {0:X} estado {1}", call, stateInfo.State));
                         }
@@ -2418,7 +2473,7 @@ namespace U5ki.RdService
         SessionSipLogControl _sessions_sip_control = new SessionSipLogControl();
         class SessionSipLogControl
         {
-            Dictionary<string, CORESIP_CallState> _sessions_states = new Dictionary<string, CORESIP_CallState>();
+            public Dictionary<string, CORESIP_CallState> _sessions_states = new Dictionary<string, CORESIP_CallState>();
             public void Init()
             {
                 _sessions_states.Clear();
@@ -2433,7 +2488,7 @@ namespace U5ki.RdService
                 }
                 _sessions_states[idres] = current;
                 return true;
-            }
+            }            
         }
 
 

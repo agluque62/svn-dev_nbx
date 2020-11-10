@@ -12,8 +12,6 @@ angular.module("Uv5kinbx")
         var frec_prio = { Normal: 0, Emergencia: 1 };
         var frec_cclimax = { Realtivo: 0, Absoluto: 1 };
 
-        ctrl.app_version = app_version;
-
         ctrl.pagina = 0;
         ctrl.leds = led_std.Off;
         ctrl.sessions = [];
@@ -28,6 +26,7 @@ angular.module("Uv5kinbx")
         ctrl.uhf_mode_select = -1;
 
         ctrl.lsrv = $lserv;
+        ctrl.StringCut = StringCut;
         //** */
         ctrl.Pagina = function (pg) {
             if (pg == 0)
@@ -43,8 +42,8 @@ angular.module("Uv5kinbx")
         ctrl.colorEstadoFrecuencia = function (std) {
             return (std == frec_stdcodes.NoDisponible ? "bg-warning text-danger" :
                 std == frec_stdcodes.Disponible ? "text-info" :
-                    std == frec_stdcodes.Degradada ? "bg-warning text-info" : "text-danger bg-danger");
-        };
+                    std == frec_stdcodes.Degradada ? "bg-warning text-warning" : "text-danger bg-danger");
+};
         ctrl.textTipoPrio = function (tp, pr) {
             var txtTipo = tp == frec_tipos.Normal ? $lserv.translate("Simple") :
                 tp == frec_tipos.UnoMasUno ? $lserv.translate("Dual") :
@@ -52,7 +51,8 @@ angular.module("Uv5kinbx")
                         tp == frec_tipos.EM ? $lserv.translate("ME") : $lserv.translate("ERR");
             var txtPrio = pr == frec_prio.Normal ? $lserv.translate("Normal") :
                 pr == frec_prio.Emergencia ? $lserv.translate("Emergencia") : $lserv.translate("Error");
-            return txtTipo + "/" + txtPrio;
+            //return txtTipo + "/" + txtPrio;
+            return { txtTipo, txtPrio };
         };
         ctrl.colorEstadoSesion = function (std) {
             return std == session_stdcodes.Desconectado ? "bg-warning text-danger" :
@@ -64,7 +64,7 @@ angular.module("Uv5kinbx")
                 md == frec_cclimax.Realtivo ? "R" : "?";
         };
         ctrl.enableOnFD = function (tp) {
-            return tp == frec_tipos.FD ? true : false;
+            return { FD: tp == frec_tipos.FD ? true : false, UnoMasUno: true };
         };
         ctrl.showOnTx = function (tp) {
             return (tp == session_types.TX || tp == session_types.RXTX);
@@ -73,8 +73,8 @@ angular.module("Uv5kinbx")
             return (tp == session_types.RX || tp == session_types.RXTX);
         };
         ctrl.txtPestana = function (pes) {
-            if (pes == 0) return app_version == 0 ? $lserv.translate("Sesiones Activas") : $lserv.translate("Frecuencias");
-            if (pes == 1) return app_version >= 1 ? $lserv.translate("Gestor M+N") : $lserv.translate("Gestor M+N (VHF)");
+            if (pes == 0) return $lserv.translate("Frecuencias");
+            if (pes == 1) return $lserv.translate("Gestor M+N");
             if (pes == 2) return $lserv.translate("Gestor M+N (UHF)");
             if (pes == 3) return $lserv.translate("Transmisores HF");
             if (pes == 4) return $lserv.translate("Radio 1+1");
@@ -200,7 +200,7 @@ angular.module("Uv5kinbx")
             }
             if (item.selected_site == "")
                 return "";
-            return item.selected_site + "/" + item.selected_site_qidx.toString();
+            return StringCut(item.selected_site, 10) + "/" + StringCut(item.selected_rx,10) + "/" + item.selected_site_qidx.toString();
         };
         ctrl.TxSelected = function (item) {
             switch (item.ftipo) {
@@ -214,7 +214,7 @@ angular.module("Uv5kinbx")
                 default:
                     return "????";
             }
-            return item.selected_tx;
+            return StringCut(item.selected_tx, 12);
         };
         //** */
         ctrl.txtOnVHF = function () {
@@ -354,8 +354,7 @@ angular.module("Uv5kinbx")
                 if (rdSessionsChanged(response.data) == true) {
                     console.log("Cambio en tabla de sesiones");
                     ctrl.sessions = response.data;
-                    if (app_version >= 1)
-                        rdSessionsSort();
+                    rdSessionsSort();
                 }
             }
                 , function (response) {
@@ -394,6 +393,10 @@ angular.module("Uv5kinbx")
                         selected_site: session.selected_site,
                         selected_site_qidx: session.selected_site_qidx,
                         selected_tx: session.selected_tx,
+                        selected_rx: session.selected_resource,
+                        fp_unomasuno: session.UnoMasUno,
+                        fp_bss_mod: session.selected_BSS_method,
+                        fp_tx_mod: session.ftipo == 2 ? (session.selected_tx == "CLX" ? "Climax" : "BTS") : "",
                         ses: new Object()
                     };
                 }
@@ -432,8 +435,7 @@ angular.module("Uv5kinbx")
                     if (rdMNManagerChanged(response.data) == true) {
                         console.log("Cambio en tabla de M+N");
                         ctrl.gestormn = response.data;
-                        if (app_version >= 1)
-                            rdMNManagerSort();
+                        rdMNManagerSort();
                     }
                     ctrl.leds = ctrl.leds == led_std.On2 ? led_std.On1 : led_std.On2;
                 }, function (response) {
@@ -521,7 +523,9 @@ angular.module("Uv5kinbx")
                     if (rdUnoMasUnoChanged(normalizedData) == true) {
                         console.log("Cambio en tabla de 1+1");
                         ctrl.dtUnoMasUno = normalizedData;
-                        ctrl.dtUnoMasUnoSelectedFrec = ctrl.dtUnoMasUno.length > 0 ? ctrl.dtUnoMasUno[0].fr : "";
+                        ctrl.dtUnoMasUnoSelectedFrec = ctrl.dtUnoMasUnoSelectedFrec == "" ?
+                            ctrl.dtUnoMasUno.length > 0 ? ctrl.dtUnoMasUno[0].fr : "" :
+                            ctrl.dtUnoMasUnoSelectedFrec;
                     }
                 }, function (response) {
                     console.log(response);

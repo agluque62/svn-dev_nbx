@@ -304,7 +304,7 @@
         <util:XmlFile Id="FrequencyDisabled" Action="setValue"
                         File = "[#U5ki.NodeBox.cfg]"
                         ElementPath="/configuration/applicationSettings/U5ki.RdService.Properties.Settings/setting[\[]@name='FrequencyDisabled'[\]]/value"
-                        Value="8"/>
+                        Value="0"/>
         <util:XmlFile Id="RtxDelay" Action="setValue"
                         File = "[#U5ki.NodeBox.cfg]"
                         ElementPath="/configuration/applicationSettings/U5ki.RdService.Properties.Settings/setting[\[]@name='RtxDelay'[\]]/value"

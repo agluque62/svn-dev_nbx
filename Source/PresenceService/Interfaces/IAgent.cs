@@ -30,6 +30,7 @@ namespace U5ki.PresenceService.Interfaces
         bool MainService { get; set; }
         string DependencyName { get; set; }
         //string ProxyOptionsUri { get; }
+        int Order { get; set; }
         string callIdOptions { get; set; }
         List<PresenceServerResource> RsTable { get; }
 

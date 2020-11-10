@@ -119,7 +119,7 @@ namespace U5ki.PresenceService.Agentes
         {
             PSHelper.LOGGER.Trace<PSBaseAgent>(String.Format("Disposing Base Agent: [{0}]", this.name));
             if (wkTimer != null)
-                wkTimer.Enabled = false;
+            wkTimer.Enabled = false;
             /** 20180724. Evita que se produzca un error al tratar eventos del timer que ya estan en la cola al invocar esta funcion */
             //wkTimer.Dispose();
 
@@ -219,6 +219,8 @@ namespace U5ki.PresenceService.Agentes
                 return "";
             }
         }
+
+        public int Order { get; set; } = 0;
 
         #endregion
 

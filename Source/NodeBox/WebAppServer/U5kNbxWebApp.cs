@@ -639,7 +639,7 @@ namespace U5ki.NodeBox.WebServer
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
                     if (JObjectPropertyExist(data, "equ"))
                     {
-                        var idEquipo = data?.equ as string;
+                        var idEquipo = (string)data["equ"];
                         string error = default;
                         if (RadioService?.Commander(ServiceCommands.RdMNGearToogle, idEquipo, ref error) == true)
                         {
@@ -677,9 +677,11 @@ namespace U5ki.NodeBox.WebServer
                     dynamic data = JsonConvert.DeserializeObject(reader.ReadToEnd());
                     if (JObjectPropertyExist(data, "equ") && JObjectPropertyExist(data, "frec") && JObjectPropertyExist(data, "cmd"))
                     {
-                        var idEquipo = data?.equ as string;
-                        string error = data?.frec as string;
-                        var cmd = (int)data?.cmd == 1 ? ServiceCommands.RdMNGearAssign : ServiceCommands.RdMNGearUnassing;
+                        var idEquipo = (string)data["equ"];
+                        string error = (string)data["frec"];
+                        var cmdi = (int)data["cmd"];
+                        var cmd = cmdi == 1 ? ServiceCommands.RdMNGearAssign : ServiceCommands.RdMNGearUnassing;
+
                         if (RadioService?.Commander(cmd, idEquipo, ref error) == true)
                         {
                             context.Response.StatusCode = 200;

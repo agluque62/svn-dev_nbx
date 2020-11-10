@@ -1567,6 +1567,9 @@
             <Component Id="cmp15C8BB754848D0E123AFEC9F0988C829" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
                 <File Id="fil13B153039E3DBDF30BC478EB3A351980" KeyPath="yes" Source="$(var.SourcePath)\simulate\lconfig.json" />
             </Component>
+            <Component Id="cmp2B55C711BF35DF861C8EFCDE613B0EB1" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
+                <File Id="fil6024E91837430794BA1D2D1681A3DE42" KeyPath="yes" Source="$(var.SourcePath)\simulate\master.cmd" />
+            </Component>
             <Component Id="cmp715AA1CA8A92D47F2CCB191D3C29428E" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
                 <File Id="fil7D40D7FAFC3F7512C1A2CCACE55A6E3A" KeyPath="yes" Source="$(var.SourcePath)\simulate\preconf.json" />
             </Component>
@@ -1588,8 +1591,17 @@
             <Component Id="cmp8738632C344939E2C0AA00856A03277A" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
                 <File Id="fil12C705673544ED70C77CF7F6B913B83A" KeyPath="yes" Source="$(var.SourcePath)\simulate\rdsessions_1.json" />
             </Component>
+            <Component Id="cmp125DC1C7B235C0229846D05A7314C842" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
+                <File Id="fil1711E4C2ACEBA5EACC31654084D94644" KeyPath="yes" Source="$(var.SourcePath)\simulate\slave.cmd" />
+            </Component>
             <Component Id="cmp530801957E33A1841EE786AEC6B5E140" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
                 <File Id="fil770A985FFFAE17E5349A16076B40E62C" KeyPath="yes" Source="$(var.SourcePath)\simulate\std - copia.json" />
+            </Component>
+            <Component Id="cmpE457995AE0B296398B4CAFE2527FF425" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
+                <File Id="fil3FE6CF697711140D764EE660B91A08B7" KeyPath="yes" Source="$(var.SourcePath)\simulate\std-master.json" />
+            </Component>
+            <Component Id="cmpFA9F6F310FAFE4E22C6D281B4700AACF" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
+                <File Id="filBF9AF4216EE2001C4A238E55A19A76AF" KeyPath="yes" Source="$(var.SourcePath)\simulate\std-slave.json" />
             </Component>
             <Component Id="cmp19861550FB95A5DDCA586A9964882683" Directory="dir7C2FAD6E7933E5FBF78A87B423644714" Guid="*">
                 <File Id="fil6668EC0601B4A8A11348A21BE4B435BE" KeyPath="yes" Source="$(var.SourcePath)\simulate\std.json" />

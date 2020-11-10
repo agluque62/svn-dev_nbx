@@ -341,3 +341,5 @@ healthchecksdb
 
 /bin/Debug/Utilities.dll
 .svn
+*.bak
+appweb.wxs

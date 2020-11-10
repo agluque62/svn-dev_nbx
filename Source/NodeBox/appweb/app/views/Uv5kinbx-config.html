@@ -1,59 +1,14 @@
 <h3 translate>Configuracion Local</h3>
 <section id="_tabs">
     <ul class="nav nav-tabs">
-        <li data-ng-class="{'active': ctrl.pagina==0}" ng-show="ctrl.app_version < 2">
-            <a href="" data-ng-click="ctrl.change_pagina(0)">Parametros Generales</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==1}" ng-show="ctrl.app_version < 2">
-            <a href="" data-ng-click="ctrl.change_pagina(1)">Infraestructura</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==2}" ng-show="ctrl.app_version < 2">
-            <a href="" data-ng-click="ctrl.change_pagina(2)">Servicio Radio</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==3}" ng-show="ctrl.app_version < 2">
-            <a href="" data-ng-click="ctrl.change_pagina(3)">Servicio Configuracion</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==4}" ng-show="ctrl.app_version < 2">
-            <a href="" data-ng-click="ctrl.change_pagina(4)">Servicio Interfaces</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==5}" ng-show="ctrl.app_version < 2">
-            <a href="" data-ng-click="ctrl.change_pagina(5)">Servicio Pabx</a>
-        </li>
         <li data-ng-class="{'active': ctrl.pagina==6}">
             <a href="" data-ng-click="ctrl.change_pagina(6)" translate>Fichero de Configuracion</a>
         </li>
     </ul>
 </section>
 <section id="_contenido">
-    <div id="cfLocalConfig" data-ng-show="ctrl.pagina<6">
-    <h1><strong>{{ctrl.lp.name}}</strong></h1>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Parametro</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-ng-repeat="par in ctrl.lp.par">
-                    <td>{{par.mostrar}}</td>
-                    <td data-ng-switch on="par.tipo">
-                        <span data-ng-switch-when="0">
-                            <span class="error" ng-show="ctrl.validate(par)==false" translate>Error de Formato</span>
-                            <input type="text" class="form-control" data-ng-model="par.valor" data-ng-disabled="false" data-ng-blur="ctrl.autosave()" />
-                        </span>
-                        <select data-ng-switch-when="1" data-ng-model="par.valor" data-ng-disabled="false" data-ng-blur="ctrl.autosave()">
-                            <option data-ng-repeat="valor in par.opciones" data-ng-selected="{{$index==par.valor}}" value="{{$index}}">{{valor}}</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <button id="salvar" class="btn btn-primary" data-ng-click="ctrl.SalvarCambios()" translate>Salvar Cambios</button>
-    </div>
     <div class='cfg-editor' data-ng-show="ctrl.pagina==6">
         <div id='ace-editor'></div>        
         <button id="salvar" class="btn btn-primary" data-ng-click="ctrl.SalvarCambios()" translate>Salvar Cambios</button>
     </div>
-</section>
 </section>

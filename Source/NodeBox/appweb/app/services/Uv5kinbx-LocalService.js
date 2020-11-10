@@ -6,6 +6,7 @@ angular
         var $translate = $filter('translate');
         var globalType = undefined;
         var rdModules = [];
+        var globalStd = {};
 
         return {
             translate: function (key) {
@@ -49,6 +50,12 @@ angular
                 });
                 //console.log("RdModuleExist. Module ", modulename, ", ", modules.length > 0 ? "Existe" : "No Existe");
                 return modules.length > 0;
+            },
+            GlobalStd: (std) => {
+                if (std) {
+                    globalStd = std;
+                }
+                return globalStd;
             }
         };
 

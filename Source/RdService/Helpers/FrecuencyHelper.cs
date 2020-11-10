@@ -41,15 +41,15 @@ namespace U5ki.RdService.Helpers
         {
             if (!frecuency.RdRs.ContainsKey(key))
                 return false;
-           //Si está conectado, lo tengo que desconectar antes de borrar 
-           //para que no se queden sesiones abiertas
-           IRdResource resource = frecuency.RdRs[key];
-           if (resource.Connected)
-           {
+            //Si está conectado, lo tengo que desconectar antes de borrar 
+            //para que no se queden sesiones abiertas
+            IRdResource resource = frecuency.RdRs[key];
+            if (resource.Connected)
+            {
                 frecuency.RemoveSipCall(resource);
-           }
-           resource.Dispose();
-           return frecuency.RdRs.Remove(key);
+            }
+            resource.Dispose();
+            return frecuency.RdRs.Remove(key);
         }
 
         public String ResourceIdGet(String sipUri, RdRsType type)

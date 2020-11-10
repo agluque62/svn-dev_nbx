@@ -638,7 +638,10 @@ namespace U5ki.Infrastructure
         public int PttMute;
 		public int Squelch;
 		public int Sct;
-		
+
+        public int tx_ptt_mute_changed;     //Si es distinto de cero indica que ha habido un cambio en el PTT mute que el servidor de radio transmite a la radio.
+                                            //No es el valor del Ptt Mute que viene en la extension de cabecera, el cual es el campo PttMute
+
         //EDU 20170224
         public int rx_rtp_port;
         public int rx_qidx;
@@ -1441,6 +1444,10 @@ namespace U5ki.Infrastructure
         /** 20180208. */
         static bool IsInitialized = false;
         static bool IsStarted = false;
+
+        //Settings que se puedan acceder desde otros proyectos de la solución
+        public static uint _KAPeriod = Settings.Default.KAPeriod;
+
         public static void Init(string accId, string ip, uint port, uint max_calls = 32, string proxyIP=null)
 		{
 #if _TRACEAGENT_

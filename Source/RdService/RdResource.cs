@@ -459,7 +459,8 @@ namespace U5ki.RdService
 				}
 			//}
 
-			return ((oldSquelch != _Squelch) || (oldPtt != _Ptt) || oldSelected != info.rx_selected || oldQidxValue != info.rx_qidx);
+			return ((oldSquelch != _Squelch) || (oldPtt != _Ptt) || oldSelected != info.rx_selected || 
+                oldQidxValue != info.rx_qidx || info.tx_ptt_mute_changed != 0);
 		}
 
         /// <summary>
@@ -758,6 +759,7 @@ namespace U5ki.RdService
             _PttId = 0;
             _Ptt = RdRsPttType.NoPtt;
             _Squelch = false;
+            this.new_params.rx_selected = false;
 		}
 
         /// <summary>

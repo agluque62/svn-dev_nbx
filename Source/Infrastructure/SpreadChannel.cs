@@ -7,11 +7,11 @@ using System.Net.Sockets;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 using NLog;
 using Utilities;
+using U5ki;
 
 namespace U5ki.Infrastructure
 {
@@ -153,45 +153,21 @@ namespace U5ki.Infrastructure
             group_name id;
 			sp_time tm = new sp_time(1, 0);
 
-            if (!ServicesHelpers.IgnoreSpreadChannel)
+            int res = SP_connect_timeout(host, name, 0, 1, out _SpreadHandle, out id, tm);
+            if (ACCEPT_SESSION != res)
             {
-                int res = SP_connect_timeout(host, name, 0, 1, out _SpreadHandle, out id, tm);
-                if (ACCEPT_SESSION != res)
-                {
-                    throw new Exception(string.Format("ERROR {0} conectando al servidor spread. {1}##{2}", res, host, name));
-                }
+                throw new Exception(string.Format("ERROR {0} conectando al servidor spread. {1}##{2}", res, host, name));
             }
-            else
-            {
-                id.Name = $"#{name}#SimSpc";
-            }
-
+            
             Trace(name, "{0}::{2}. Conectado en: host={1}.", name, host, id.Name);
 
             _Name = name;
             _Id = id.Name;
 			_Connected = true;
 
-            if (ServicesHelpers.IgnoreSpreadChannel)
-            {
-                // todo. Generar el evento que ponga al servicio correspondiente en MODO MASTER.
-                Task.Factory.StartNew(() =>
-                {
-                    Task.Delay(TimeSpan.FromSeconds(2)).Wait();
-                    foreach(var topic in _PresentMembersInNetwork)
-                    {
-                        SpreadMembershipMsg msg = new SpreadMembershipMsg(topic.Key, true,  MembershipChange.Join, Id);
-                        General.SafeLaunchEvent(MembershipMsg, this, msg);
-                    }
-                });
-
-                _ReceiveThread = null;
-                return;
-            }
-            _ReceiveThread = new Thread(ReceiveThread);
+			_ReceiveThread = new Thread(ReceiveThread);
             _ReceiveThread.IsBackground = true;
 			_ReceiveThread.Start();
-
 #if _SPREAD_ALL_MEMBERS_
             string[] names = _Id.Split('#');
             _Pict = (names.Length >= 3 ? names[2] : "PICT???").ToUpper();
@@ -228,14 +204,13 @@ namespace U5ki.Infrastructure
 #if _SPREAD_ALL_MEMBERS_
                 _AllMembers[topic] = new List<string>();
 #endif
+
                 Debug.Assert(topic.Length < MAX_GROUP_NAME);
-                if (!ServicesHelpers.IgnoreSpreadChannel)
-                {
-                    if (SP_join(_SpreadHandle, topic) != 0)
-                    {
-                        throw new Exception("ERROR subscribiendose al topic " + topic);
-                    }
-                }
+				if (SP_join(_SpreadHandle, topic) != 0)
+				{
+					throw new Exception("ERROR subscribiendose al topic " + topic);
+				}
+
                 Trace(_Name, "{0}::{1}<->{2} JOIN",_Name, _Id, topic);
 			}
 		}
@@ -265,13 +240,10 @@ namespace U5ki.Infrastructure
             Trace(_Name, "SEND {1}-->{2} TIPO {3}: {4}",
                 _Name, _Id, topic, messType, BitConverter.ToString(mess, 0, mess.Length > 16 ? 16 : mess.Length));
 
-            if (!ServicesHelpers.IgnoreSpreadChannel)
-            {
-                int err = SP_multigroup_multicast(_SpreadHandle, (int)quality | SELF_DISCARD, groups.Length, groups, messType, mess.Length, mess);
-                if (err < 0)
-                {
-                    throw new Exception("ERROR enviando mensaje [Type: " + messType + ", Error: " + err + ", LMS: " + mess.Length + " ]");
-                }
+            int err = SP_multigroup_multicast(_SpreadHandle, (int)quality | SELF_DISCARD, groups.Length, groups, messType, mess.Length, mess);
+			if ( err < 0)
+			{
+				throw new Exception("ERROR enviando mensaje [Type: " + messType + ", Error: " + err + ", LMS: "+ mess.Length + " ]");
             }
 #if DEBUG_TIME
             if (timeMeasure != null)
@@ -282,7 +254,7 @@ namespace U5ki.Infrastructure
 #endif
         }
 
-#region IDisposable Members
+		#region IDisposable Members
         /// <summary>
         /// 
         /// </summary>
@@ -295,9 +267,9 @@ namespace U5ki.Infrastructure
             Trace(_Name, "Dispose desde Fuera....");
 		}
 
-#endregion
+		#endregion
 
-#region Dll Interface
+		#region Dll Interface
 
         /// <summary>
         /// 
@@ -554,9 +526,9 @@ namespace U5ki.Infrastructure
 		[DllImport("libspread", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi, ExactSpelling = true)]
 		static extern int SP_poll(int mbox);
 
-#endregion
+		#endregion
 
-#region Private Members
+		#region Private Members
         /// <summary>
         /// 
         /// </summary>
@@ -606,10 +578,7 @@ namespace U5ki.Infrastructure
 			if (_Connected)
 			{
 				_Connected = false;
-                if (!ServicesHelpers.IgnoreSpreadChannel)
-                {
-                    SP_disconnect(_SpreadHandle);
-                }
+				SP_disconnect(_SpreadHandle);
                 _Logger.Info("SpreadChannel {0}, SP_disconnect.", Id);
             }
 
@@ -899,10 +868,7 @@ namespace U5ki.Infrastructure
                 _Logger.Error(String.Format("SpreadChannel::ReceiveThread {0}.", _Name), ex);
 			}
 		}
-        /// <summary>
-        /// Solo la llama el Thread,
-        /// </summary>
-        /// <param name="buffer"></param>
+
         private void PrintListaRecibida(byte[] buffer)
         {
             vs_set_info[] vsSets = new vs_set_info[128];
@@ -929,7 +895,6 @@ namespace U5ki.Infrastructure
         /// miembros presentes en la red en cada grupo en el caso de un mensaje recibido de 
         /// membership - caused by changes in network. 
         /// Envia mensajes de join o leave a Registry, con los cambios detectados
-        /// Solo la llama el Thread.
         /// </summary>
         /// <param name= "buffer" mensaje recibido></param>
         /// <param name="topic" nombre del grupo></param> 
@@ -972,7 +937,7 @@ namespace U5ki.Infrastructure
       
         }
 
-#endregion
+		#endregion
 
         /// <summary>
         /// inci, rd-inci, Cd40CfgReg, Cd40RdSrv, Cd40GwReg
@@ -988,7 +953,7 @@ namespace U5ki.Infrastructure
         }
 
         /// <summary>
-        /// Solo la llama el Thread...
+        /// 
         /// </summary>
         /// <param name="name"></param>
         /// <param name="topic"></param>

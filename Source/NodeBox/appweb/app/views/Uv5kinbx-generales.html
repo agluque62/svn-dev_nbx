@@ -101,11 +101,11 @@
                 <div class="col-md-4 text-primary btn" style="text-align: left;"><strong translate>Radio</strong></div>
                 <div class="col-md-2 btn" style="text-align: left;" translate>{{ctrl.txtModo(ctrl.std.rad)}}</div>
                 <div class="col-md-2 btn" style="text-align: left;" translate>{{ctrl.txtEstado(ctrl.std.rad)}}</div>
-                <div class="col-md-4 text-right">
+                <div class="col-md-4 text-right" ng-show="ctrl.std.rad.level=='Master'">
                     <button class="btn btn-default " data-toggle="collapse" data-target="#demo" style="float:right;" translate>Modulos</button>
                 </div>
             </div>
-            <div class="row collapse" id="demo" style="width:33%; margin-left:66%; border: 1px solid lightgray; padding: 1em;">
+            <div class="row collapse" id="demo" style="width:33%; margin-left:66%; border: 1px solid lightgray; padding: 1em;" ng-show="ctrl.std.rad.level=='Master'">
                 <div class="col-md4">
                     <div class="row" data-ng-repeat="mod in ctrl.std.rad.modules | filter : {enable: 1}">
                         <div class="col-md-8 text-primary">{{mod.id}}</div>

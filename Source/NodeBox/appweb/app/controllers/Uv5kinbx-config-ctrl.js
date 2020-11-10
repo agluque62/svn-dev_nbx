@@ -3,8 +3,7 @@ angular.module("Uv5kinbx")
 
         /** Inicializacion */
         var ctrl = this;
-        ctrl.app_version = app_version;
-        ctrl.pagina = app_version < 2 ? 0 : 6;
+        ctrl.pagina = 6;
         ctrl.editor = null;
         ctrl.editor_hash = null;
         ctrl.cambios = false;
@@ -16,35 +15,22 @@ angular.module("Uv5kinbx")
         /** */
         //** */
         ctrl.change_pagina = function (new_pagina) {
-            /** Salvamos lo cambios */
-            if (app_version < 2) lp_set(ctrl.lp);
             /** Cargamos la nueva lista */
             ctrl.pagina = new_pagina;
-            if (app_version < 2) ctrl.lp = lp_get();
         };
 
         /** */
         ctrl.SalvarCambios = function () {
-            if (app_version < 2) {
-                /** Salvar los cambios locales */
-                lp_set(ctrl.lp);
-
-                if (confirm($lserv.translate("¿Desea Salvar los cambios efectuados?")) == true) {
-                    lconfig_save();
-                }
+            var data_rem = { fichero: ctrl.editor.getValue() };
+            if ($lserv.validate(5, data_rem.fichero) == false) {
+                return;
             }
-            else {
-                var data_rem = { fichero: ctrl.editor.getValue() };
-                if ($lserv.validate(5, data_rem.fichero) == false) {
-                    return;
-                }
-                ctrl.lcext = data_rem;
-                alertify.confirm($lserv.translate("Desea Salvar los cambios efectuados?"), function () {
-                    lconfig_save();
-                }, function () {
-                    alertify.message($lserv.translate("Operacion Cancelada"));
-                });
-            }
+            ctrl.lcext = data_rem;
+            alertify.confirm($lserv.translate("Desea Salvar los cambios efectuados?"), function () {
+                lconfig_save();
+            }, function () {
+                alertify.message($lserv.translate("Operacion Cancelada"));
+            });
         };
 
         /** */
@@ -105,45 +91,25 @@ angular.module("Uv5kinbx")
 
         /** */
         function lconfig_load() {
+            $serv.lconfig_ext_get().then(function (response) {
+                ctrl.lcext = response.data;
+                ctrl.editor_hash = CryptoJS.MD5(ctrl.lcext.fichero);
+                $lserv.validate(5, ctrl.lcext.fichero);
+                ctrl.editor.setValue(ctrl.lcext.fichero, -1);
 
-            if (app_version < 2) {
-                $serv.lconfig_get().then(function (response) {
-                    ctrl.lc = response.data;
-                    ctrl.lp = lp_get();
-                }, function (response) {
-                    alertify.error($lserv.translate("No se ha podido ejecutar la operacion."));
-                });
-            }
-            else {
-                $serv.lconfig_ext_get().then(function (response) {
-                    ctrl.lcext = response.data;
-                    ctrl.editor_hash = CryptoJS.MD5(ctrl.lcext.fichero);
-                    $lserv.validate(5, ctrl.lcext.fichero);
-                    ctrl.editor.setValue(ctrl.lcext.fichero, -1);
-
-                }, function (response) {
-                    alertify.error($lserv.translate("No se ha podido ejecutar la operacion."));
-                });
-            }
+            }, function (response) {
+                alertify.error($lserv.translate("No se ha podido ejecutar la operacion."));
+            });
         }
 
         //** */
         function lconfig_save(data) {
-            if (app_version < 2) {
-                $serv.lconfig_set(ctrl.lc).then(function (response) {
-                    alertify.success($lserv.translate("Operacion Ejecutada."));
-                }, function (response) {
-                    alertify.error($lserv.translate("No se ha podido ejecutar la operacion."));
-                });
-            }
-            else {
-                $serv.lconfig_ext_set(ctrl.lcext).then(function (response) {
-                    alertify.success($lserv.translate("Operacion Ejecutada."));
-                    ctrl.editor_hash = CryptoJS.MD5(ctrl.editor.getValue());
-                }, function (response) {
-                    alertify.error($lserv.translate("No se ha podido ejecutar la operacion."));
-                });
-            }
+            $serv.lconfig_ext_set(ctrl.lcext).then(function (response) {
+                alertify.success($lserv.translate("Operacion Ejecutada."));
+                ctrl.editor_hash = CryptoJS.MD5(ctrl.editor.getValue());
+            }, function (response) {
+                alertify.error($lserv.translate("No se ha podido ejecutar la operacion."));
+            });
         }
 
         /** */

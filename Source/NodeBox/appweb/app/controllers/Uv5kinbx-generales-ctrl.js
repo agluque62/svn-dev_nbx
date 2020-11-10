@@ -216,6 +216,7 @@ angular.module("Uv5kinbx")
             /* Obtener el estado del servidor... */
             $serv.stdgen_get().then(function (response) {
                 ctrl.std = response.data;
+                $lserv.GlobalStd(ctrl.std);
                 $lserv.globalType(ctrl.std.type);
                 $lserv.RdModulesInfoSet(ctrl.std.rad.modules);
                 //$lserv.RdModuleExist("1+1");

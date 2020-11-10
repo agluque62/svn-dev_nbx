@@ -2,7 +2,6 @@
 var Simulate = location.port == 1444;
 var pollingTime = 5000;
 var maxPreconf = Simulate == true ? 16 : 8;
-var app_version = 2;            /** 0: Version 2.5.3 o anterior. 1: Version 2.5.4 o posterior. 2: Version 2.5.6 o posterior */
 var userLang = navigator.language;
 
 /** */

@@ -1,3 +1,4 @@
+#define _SBCs_VERSION_
 using System;
 using System.IO;
 using System.Linq;
@@ -90,7 +91,11 @@ namespace U5ki.TifxService
                            res = from res in gw.Resources
                                  select new
                                  {
+#if _SBCs_VERSION_
+                                     id = res.Type > 4 ? res.GwIp : res.RsId,
+#else
                                      id = res.RsId,
+#endif
                                      dep = GetResourceDep(res), // ;GetGwResourceIpInfo(res, gw.GwIp),
                                      prio = res.Priority,
                                      std = res.State,
@@ -116,7 +121,11 @@ namespace U5ki.TifxService
                                res = from res in gw.Resources
                                      select new
                                      {
+#if _SBCs_VERSION_
+                                         id = res.Type > 4 ? res.GwIp : res.RsId,
+#else
                                          id = res.RsId,
+#endif
                                          dep = GetResourceDep(res), // ;GetGwResourceIpInfo(res, gw.GwIp),
                                          prio = res.Priority,
                                          std = res.State,
@@ -238,9 +247,9 @@ namespace U5ki.TifxService
             LogInfo<TifxService>("Servicio Detenido.", U5kiIncidencias.U5kiIncidencia.IGRL_U5KI_NBX_INFO, "TifxService", CTranslate.translateResource("Servicio Detenido"));
         }
 
-        #endregion
+#endregion
 
-        #region Private Members
+#region Private Members
 
         /// <summary>
         /// 
@@ -645,19 +654,17 @@ namespace U5ki.TifxService
                                         gwInfo.GwIp = gwInfo.GwId;
                                         break;
                                     case 4:     // Informacion de Proxies...
-                                        if (IPAddress.Parse(Settings.Default.tifxMcastSrc).ToString().Equals(dg.Client.Address.ToString()))
-                                            gwInfo.GwIp = gwInfo.GwId;
-                                        else
-                                            //Descarto datos del servicio de presencia de otro NBX
-                                            return;
-                                        break;
-#if DEBUG1
-                                        return;
+                                        /** 20201021. SBCs. */
+#if _SBCs_VERSION_
+                                        gwInfo = NormalizeForProxies(gwInfo);
+#else
+                                        gwInfo.GwIp = gwInfo.GwId;
 #endif
+                                        break;
                                     case 3:     // Abonados Externos.
-                                        //Descarto datos del servicio de presencia de otro NBX
-                                        if (!IPAddress.Parse(Settings.Default.tifxMcastSrc).ToString().Equals(dg.Client.Address.ToString()))
-                                            return;
+                                        ////Descarto datos del servicio de presencia de otro NBX
+                                        //if (!IPAddress.Parse(Settings.Default.tifxMcastSrc).ToString().Equals(dg.Client.Address.ToString()))
+                                        //    return;
                                         break;
                                     case 1:     // De Pasarela.
                                         gwInfo.GwIp = dg.Client.Address.ToString();
@@ -753,9 +760,9 @@ namespace U5ki.TifxService
             });
         }
 
-        #endregion
+#endregion
 
-        #region Datos de la configuracion
+#region Datos de la configuracion
         /// <summary>
         /// 
         /// </summary>
@@ -778,22 +785,15 @@ namespace U5ki.TifxService
                 }
                 else if (rsInfo.Type < 9)
                 {
-                   /** Para proxies. El ID es el Endpoint zzz.yyy.xxx.www:ppppp 
-                        La ip debe contener la dependencia */
+#if _SBCs_VERSION_
+                    return rsInfo.GwIp;
+#else
+                    /** Para proxies. El ID es el Endpoint zzz.yyy.xxx.www:ppppp 
+                         La ip debe contener la dependencia */
                     return rsInfo.RsId;
-
-                    /** Busco la dependencia que contenga como proxy al dominio de la uri */
-                    //var dependencia = last_cfg.ConfiguracionGeneral.PlanDireccionamientoIP
-                    //    .Where(dep => dep.IpRed1 == rsInfo.RsId || dep.IpRed2 == rsInfo.RsId || dep.IpRed3 == rsInfo.RsId)
-                    //    .FirstOrDefault();
-                    //if (dependencia != null)
-                    //    return dependencia.IdHost;
-
+#endif
                 }
             }
-
-
-
             return gwIp;
         }
         /// <summary>
@@ -818,6 +818,9 @@ namespace U5ki.TifxService
                 }
                 else if (rsInfo.Type < 9)
                 {
+#if _SBCs_VERSION_
+                    return rsInfo.RsId;
+#else
                     /** Para proxies. El ID es el Endpoint zzz.yyy.xxx.www:ppppp , viene configurado con o sin puerto
                         La ip debe contener la dependencia */
                     string dominio = rsInfo.RsId;
@@ -831,6 +834,7 @@ namespace U5ki.TifxService
                         .FirstOrDefault();
                     if (dependencia != null)
                         return dependencia.IdHost;
+#endif
                 }
             }
 
@@ -852,6 +856,27 @@ namespace U5ki.TifxService
                 var CentralPropia = Dependencias.Where(dep => dep.Interno == true).FirstOrDefault();
                 return CentralPropia == null ? "LOCAL" : CentralPropia.IdHost;
             }
+#if _SBCs_VERSION_
+            else if (rsInfo.Type == 4)
+            {
+                /** Para abonandos. El ID es el SIP-URI <sip:UUUUU@zzz.yyy.xxx.www:ppppp> 
+                    La ip debe contener la dependencia */
+                var dominio = new SipUtilities.SipUriParser(rsInfo.RsId).HostPort;
+                var dependencia = Dependencias
+                    .Where(dep =>
+                        (dep.IpRed1 != "" && dominio.Contains(dep.IpRed1) == true) ||
+                        (dep.IpRed2 != "" && dominio.Contains(dep.IpRed2) == true) ||
+                        (dep.IpRed3 != "" && dominio.Contains(dep.IpRed3) == true))
+                    .FirstOrDefault();
+                if (dependencia != null)
+                    return dependencia.IdHost;
+            }
+            else
+            {
+                /** Para los proxies ya está formateado */
+                return rsInfo.RsId;
+            }
+#else
             else if (rsInfo.Type < 9)
             {
                 /** Para abonandos. El ID es el SIP-URI <sip:UUUUU@zzz.yyy.xxx.www:ppppp> 
@@ -868,9 +893,66 @@ namespace U5ki.TifxService
                 if (dependencia != null)
                     return dependencia.IdHost;
             }
+#endif
             return "???";
         }
+#if _SBCs_VERSION_
+        /** 20201021. SBCs. */
+        private class DepInfo4Proxy
+        {
+            public string name { get; set; }
+            public int prio { get; set; }
+        }
+        private GwInfo NormalizeForProxies(GwInfo gwInfo)
+        {
+            gwInfo.GwIp = gwInfo.GwId;
+            var proxies = gwInfo.Resources
+                .ToList()
+                .GroupBy(r => r.RsId).Select(r=>r.First());
+            
+            var tifxRes = new List<RsInfo>();
 
-        #endregion
+            foreach(var proxy in proxies)
+            {
+                ProxyDeps(proxy, (deps) =>
+                {
+                    deps.ToList().ForEach(dep =>
+                    {
+                        var newres = new RsInfo()
+                        {
+                            RsId = dep.name,
+                            GwIp = proxy.RsId,
+                            Type = proxy.Type,
+                            Version = proxy.Version,
+                            State = proxy.State,
+                            Priority = (uint)dep.prio,
+                            Steps = proxy.Steps,
+                            CallBegin = proxy.CallBegin    
+                        };
+                        tifxRes.Add(newres);
+                    });
+                });
+            }
+            gwInfo.Resources = tifxRes.OrderBy(r => r.RsId).ThenBy(r=>r.Priority).ToArray();
+            return gwInfo; 
+        }
+        private void ProxyDeps(RsInfo prx, Action<IEnumerable<DepInfo4Proxy>> DepsNotify)
+        {
+            var dominio = prx.RsId;
+            /** Busco la dependencia que contenga como proxy al dominio de la uri */
+            var deps = last_cfg.ConfiguracionGeneral.PlanDireccionamientoIP
+                .Where(dep => dep.TipoHost == Tipo_Elemento_HW.TEH_EXTERNO_TELEFONIA && (
+                    (dep.IpRed1 != "" && dominio.Contains(dep.IpRed1) == true) ||
+                    (dep.IpRed2 != "" && dominio.Contains(dep.IpRed2) == true) ||
+                    (dep.IpRed3 != "" && dominio.Contains(dep.IpRed3) == true)))
+                .Select(dep => new DepInfo4Proxy()
+                {
+                    name = dep.IdHost,
+                    prio = dominio.Contains(dep.IpRed1) ? 1 : dominio.Contains(dep.IpRed2) ? 2 : 3
+                });
+            DepsNotify(deps);
+        }
+#endif
+#endregion
     }
 }
